@@ -117,7 +117,15 @@ function App() {
   // const responseGetAllIPDPatients = useGetAllIPDPatientsQuery();
   // const responseGetAllBillings = useGetAllBillingsQuery();
   // const responseGetAllAdmins = useGetAllAdminsQuery();
-  const responseGetProfile = useAdminProfileQuery(Cookies.get("AdminToken"));
+
+  const { adminRole, updateAdmin } = useSelector((state) => state.AdminState);
+  const responseGetProfile = useAdminProfileQuery(
+    localStorage.getItem("AdminToken")
+  );
+
+  React.useEffect(() => {
+    responseGetProfile.refetch();
+  }, [updateAdmin]);
   // -------------------------------------------------------------------
 
   // -------------------------------------------------------------------
@@ -140,8 +148,6 @@ function App() {
   // const { billings, createBilling, updateBilling, deleteBilling } = useSelector(
   //   (state) => state.BillingState
   // );
-
-  const { adminRole } = useSelector((state) => state.AdminState);
 
   React.useEffect(() => {
     if (

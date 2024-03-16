@@ -184,6 +184,62 @@ Router.put("/Admin-PUT/:adminId", async (req, res) => {
   }
 });
 
+Router.put("/AdminChangePasswordSelf-PUT/:adminId", async (req, res) => {
+  const AdminID = req.params.adminId;
+
+  const { adminOldPassword, adminPassword } = req.body;
+
+  try {
+    // const adminExistWithEmail = await AdminModel.findOne({
+    //   adminEmail: adminEmail,
+    // });
+    // const adminExistWithID = await AdminModel.findOne({ adminId: AdminID });
+    // if (
+    //   adminExistWithEmail.adminEmail &&
+    //   adminExistWithEmail.adminEmail !== adminExistWithID.adminEmail
+    // ) {
+    //   return res.status(422).json("Admin already exist with same email id!");
+    // }
+
+    const admin = await AdminModel.findOne({ adminId: AdminID });
+
+    const password = await bcrypt.compare(
+      adminOldPassword,
+      admin.adminPassword
+    );
+    if (!password) {
+      return res.status(401).json("Old password is incorrect!");
+    }
+
+    if (password) {
+      bcrypt.hash(adminPassword, 10, async (error, hashedPassword) => {
+        if (error) {
+          return next(error);
+        }
+
+        const admin = await AdminModel.findOneAndUpdate(
+          { adminId: AdminID },
+          {
+            // adminEmail: adminEmail ? adminEmail : AdminModel.adminEmail,
+            adminPassword: adminPassword
+              ? hashedPassword
+              : AdminModel.adminPassword,
+          }
+        );
+
+        if (!admin) {
+          return res.status(404).json("Admin not found");
+        }
+        return res
+          .status(200)
+          .json({ message: "Password changed successfully!" });
+      });
+    }
+  } catch (error) {
+    res.status(500).json("Internal Server Error!");
+  }
+});
+
 Router.put("/AdminActive/:adminId", async (req, res) => {
   const AdminID = req.params.adminId;
   const { isActive } = req.body;

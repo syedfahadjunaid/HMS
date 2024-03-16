@@ -61,41 +61,71 @@ export default function Login() {
 
   useEffect(() => {
     setTimeout(() => {
+      //   if (
+      //     Cookies.get("AdminToken") &&
+      //     adminLoggedInData?.adminRole === "Super Admin"
+      //   ) {
+      //     navigate(
+      //       `${browserLinks.superadmin.category}/${browserLinks.superadmin.internalPages.dashboard}`
+      //     );
+      //   }
+      //   if (Cookies.get("AdminToken") && adminLoggedInData?.adminRole === "HR") {
+      //     navigate(
+      //       `${browserLinks.hr.category}/${browserLinks.hr.internalPages.dashboard}`
+      //     );
+      //   }
+      //   if (
+      //     Cookies.get("AdminToken") &&
+      //     adminLoggedInData?.adminRole === "Receptionist"
+      //   ) {
+      //     navigate(
+      //       `${browserLinks.nurse.category}/${browserLinks.nurse.internalPages.dashboard}`
+      //     );
+      //   }
+      //   if (Cookies.get("AdminToken")) {
+      //     navigate(1);
+      //   }
+      // }, [1000]);
       if (
-        Cookies.get("AdminToken") &&
+        localStorage.getItem("AdminToken") &&
         adminLoggedInData?.adminRole === "Super Admin"
       ) {
         navigate(
           `${browserLinks.superadmin.category}/${browserLinks.superadmin.internalPages.dashboard}`
         );
       }
-      if (Cookies.get("AdminToken") && adminLoggedInData?.adminRole === "HR") {
+      if (
+        localStorage.getItem("AdminToken") &&
+        adminLoggedInData?.adminRole === "HR"
+      ) {
         navigate(
           `${browserLinks.hr.category}/${browserLinks.hr.internalPages.dashboard}`
         );
       }
       if (
-        Cookies.get("AdminToken") &&
+        localStorage.getItem("AdminToken") &&
         adminLoggedInData?.adminRole === "Receptionist"
       ) {
         navigate(
           `${browserLinks.nurse.category}/${browserLinks.nurse.internalPages.dashboard}`
         );
       }
-      if (Cookies.get("AdminToken")) {
+      if (localStorage.getItem("AdminToken")) {
         navigate(1);
       }
     }, [1000]);
-  }, [Cookies.get("AdminToken"), adminLoggedInData?.adminRole]);
+  }, [localStorage.getItem("AdminToken"), adminLoggedInData?.adminRole]);
 
   // console.log(responseAdminLogin);
   useEffect(() => {
     setTimeout(() => {
       if (responseAdminLogin.isSuccess) {
-        Cookies.set("AdminToken", responseAdminLogin?.data?.token, {
-          expires: 1,
-          secure: true,
-        });
+        // Cookies.set("AdminToken", responseAdminLogin?.data?.token, {
+        //   expires: 1,
+        //   secure: true,
+        // });
+        // dispatch(getAdminLoggedIn(responseAdminLogin?.data?.token));
+        localStorage.setItem("AdminToken", responseAdminLogin?.data?.token);
         dispatch(getAdminLoggedIn(responseAdminLogin?.data?.token));
         dispatch(getAdminLoggedInData(responseAdminLogin?.data?.data));
         dispatch(getAdminRole(responseAdminLogin?.data?.adminRole));

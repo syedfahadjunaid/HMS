@@ -55,6 +55,16 @@ export const AdminService = createApi({
       },
     }),
 
+    adminChangePasswordById: builder.mutation({
+      query: (updateData) => {
+        return {
+          url: `AdminChangePasswordSelf-PUT/${updateData.id}`,
+          method: "PUT",
+          body: updateData.data,
+        };
+      },
+    }),
+
     adminProfile: builder.query({
       query: (token) => {
         return {
@@ -87,4 +97,5 @@ export const {
   useGetAllAdminsQuery,
   useAdminProfileQuery,
   useAdminActiveInactiveMutation,
+  useAdminChangePasswordByIdMutation,
 } = AdminService;

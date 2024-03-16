@@ -35,7 +35,8 @@ export default function Logout({ Style }) {
     dispatch(getAdminRole(null));
     dispatch(getAdminLoggedIn(null));
     dispatch(getAdminLoggedInData(null));
-    Cookies.remove("AdminToken");
+    // Cookies.remove("AdminToken");
+    localStorage.removeItem("AdminToken");
 
     handleClose();
     navigate("/");
