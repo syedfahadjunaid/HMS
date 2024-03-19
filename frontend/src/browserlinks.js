@@ -28,6 +28,9 @@ const browserLinks = {
       employeeCreation: "Employee Creation",
       searchEmployee: "Search Employee",
       employeeBulkUpdate: "Employee Bulk Update",
+      employeeBackgroundVerification: "Background Verification",
+      employeeCompensation: "Compensation",
+      employeeAppointments: "Appointments",
     },
   },
   nurse: {

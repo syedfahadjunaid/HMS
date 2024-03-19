@@ -85,12 +85,26 @@ const BillDownloadPage = lazy(() =>
 );
 
 // HR Panel
-const HRPanelDashboard = lazy(() => import("./pages/HR//Dashboard"));
+const HRPanelDashboard = lazy(() => import("./pages/HR/Dashboard"));
 const HRPanelEmployeeManagement = lazy(() =>
   import("./pages/HR/EmployeeManagement/EmployeeManagement")
 );
 const HRPanelEmployeeCreation = lazy(() =>
   import("./pages/HR/EmployeeCreation/EmployeeCreation")
+);
+const HRPanelEmployeeBulkUpload = lazy(() =>
+  import("./pages/HR/EmployeeBulkUpload/EmployeeBulkUpload")
+);
+const HRPanelEmployeeBackGroundVerification = lazy(() =>
+  import(
+    "./pages/HR/EmployeeBackgroundVerfication/EmployeeBackgroundVerfication"
+  )
+);
+const HRPanelEmployeeCompensation = lazy(() =>
+  import("./pages/HR/EmployeeCompensation/EmployeeCompensation")
+);
+const HRPanelEmployeeAppoiment = lazy(() =>
+  import("./pages/HR/EmployeeAppoiment/EmployeeAppoiment")
 );
 
 // Nurse Panel
@@ -192,6 +206,16 @@ function App() {
     browserLinks?.hr?.internalPages?.employeeManagement?.split(" ").join("");
   const hrPanelEmployeeCreation =
     browserLinks?.hr?.internalPages?.employeeCreation?.split(" ").join("");
+  const hrPanelEmployeeBulkUpload =
+    browserLinks?.hr?.internalPages?.employeeBulkUpdate?.split(" ").join("");
+  const hrPanelEmployeeBackgroundVerification =
+    browserLinks?.hr?.internalPages?.employeeBackgroundVerification
+      ?.split(" ")
+      .join("");
+  const hrPanelEmployeeCompensation =
+    browserLinks?.hr?.internalPages?.employeeCompensation?.split(" ").join("");
+  const hrPanelEmployeeAppoiment =
+    browserLinks?.hr?.internalPages?.employeeAppointments?.split(" ").join("");
 
   // -----------------------
 
@@ -481,6 +505,70 @@ function App() {
                         }
                       >
                         <HRPanelEmployeeCreation />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${browserLinks.hr.category}/${hrPanelEmployeeBulkUpload}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <HRPanelEmployeeBulkUpload />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${browserLinks.hr.category}/${hrPanelEmployeeBackgroundVerification}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <HRPanelEmployeeBackGroundVerification />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${browserLinks.hr.category}/${hrPanelEmployeeCompensation}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <HRPanelEmployeeCompensation />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${browserLinks.hr.category}/${hrPanelEmployeeAppoiment}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <HRPanelEmployeeAppoiment />
                       </Suspense>
                     }
                   />
