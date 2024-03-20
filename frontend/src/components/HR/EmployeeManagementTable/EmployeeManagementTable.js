@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./EmployeeManagementTable.css";
 import Table from "../../Table";
 import { RiEdit2Fill } from "react-icons/ri";
 import { Switch } from "@mui/material";
+import { getAllEmployeeData } from "../HrApiCollection";
 function EmployeeManagementTable() {
+  const [employeeData, setEmployeeData] = useState();
+  const getAllEmployeeDataHandle = async () => {
+    const result = await getAllEmployeeData();
+    setEmployeeData(result && result?.data);
+    console.log(result);
+  };
   const date = (dateTime) => {
     const newdate = new Date(dateTime);
 
@@ -18,11 +25,11 @@ function EmployeeManagementTable() {
   const config = [
     {
       label: "Candidate ID",
-      // render: (list) => list.tableId,
+      // render: (list) => list.index,
     },
     {
       label: "Candidate Name",
-      // render: (list) => list.adminName,
+      // render: (list) => list.fullname,
     },
     {
       label: "Expected date  of  joining",
@@ -55,6 +62,9 @@ function EmployeeManagementTable() {
       // ),
     },
   ];
+  useEffect(() => {
+    getAllEmployeeDataHandle();
+  }, []);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">

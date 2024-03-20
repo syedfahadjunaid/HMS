@@ -24,12 +24,13 @@ function Table({ data, config, keyFn }) {
 
   const renderedHeaders = config?.map((column) => {
     if (column.header) {
-      return <Fragment key={column.label}>{column.header()}</Fragment>;
+      return <Fragment key={column?.label}>{column?.header()}</Fragment>;
     }
     return (
       <th
-        className='text-center px-[4px] border-b-[1px] p-[10px]'
-        key={column.label}>
+        className="text-center px-[4px] border-b-[1px] p-[10px]"
+        key={column.label}
+      >
         {column.label}
       </th>
     );
@@ -42,14 +43,15 @@ function Table({ data, config, keyFn }) {
         return (
           <td
             key={`column-${index}`}
-            className='justify-center text-[12px] py-4 px-[4px] text-center border-b-[1px]'>
-            {column.render(row)}
+            className="justify-center text-[12px] py-4 px-[4px] text-center border-b-[1px]"
+          >
+            {column?.render(row)}
           </td>
         );
       });
 
       return (
-        <tr className='' key={keyFn(row)}>
+        <tr className="" key={keyFn(row)}>
           {renderedCells}
           {/* {
             <div className="flex flex-row items-center justify-center">
@@ -71,9 +73,9 @@ function Table({ data, config, keyFn }) {
 
   return (
     <div>
-      <table className='w-full table-auto border-spacing-2 text-[#595959] font-[300]'>
+      <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
         <thead>
-          <tr className='border-b-[1px]'>{renderedHeaders}</tr>
+          <tr className="border-b-[1px]">{renderedHeaders}</tr>
         </thead>
         <tbody>{renderedRows}</tbody>
       </table>

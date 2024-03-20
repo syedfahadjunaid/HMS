@@ -3,7 +3,6 @@ import SideNav from "../../../components/HR/SideNav";
 import UpperNav from "../../../components/HR/UpperNav/UpperNav";
 import browserLinks from "../../../browserlinks";
 import EmployeeCreationForm from "../../../components/HR/EmployeeCreationForm/EmployeeCreationForm";
-
 function EmployeeCreation() {
   return (
     <div className="superadmin-main flex flex-row w-full h-screen">
