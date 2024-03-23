@@ -9,6 +9,7 @@ import { useState } from "react";
 
 function Table({ data, config, keyFn }) {
   //Table Pagination
+  console.log(data, config, "fgfgf");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -39,7 +40,9 @@ function Table({ data, config, keyFn }) {
   const renderedRows = data
     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     ?.map((row, index) => {
+      // console.log(row, "row");
       const renderedCells = config?.map((column, index) => {
+        // console.log(column, "column");
         return (
           <td
             key={`column-${index}`}

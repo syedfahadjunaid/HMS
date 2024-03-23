@@ -44,10 +44,10 @@ export default function SideNav({ activePage }) {
       icon: <FaUserGroup />,
       name: browserLinks.hr.internalPages.employeeCreation,
     },
-    {
-      icon: <FaFileLines />,
-      name: browserLinks.hr.internalPages.searchEmployee,
-    },
+    // {
+    //   icon: <FaFileLines />,
+    //   name: browserLinks.hr.internalPages.searchEmployee,
+    // },
     {
       icon: <FaUserDoctor />,
       name: browserLinks.hr.internalPages.employeeBulkUpdate,

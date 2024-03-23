@@ -14,6 +14,7 @@ function EmployeeCreationForm() {
     open: false,
     message: "",
   });
+  const [image, setImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -45,6 +46,9 @@ function EmployeeCreationForm() {
   useEffect(() => {
     console.log(errors);
   }, [errors]);
+  useEffect(() => {
+    console.log(image);
+  }, [image]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">
@@ -328,11 +332,16 @@ function EmployeeCreationForm() {
                     "Image size should be less than or equal to 10MB",
                 },
               })}
+              onChange={(e) => setImage(e.target.files[0])}
             />
             {errors?.image && <p className="errors ">This Field is Required</p>}
           </span>
           <span>
-            <img src={img} alt="employee" className="w-[250px] h-[200px]" />
+            <img
+              src={image ? URL.createObjectURL(image) : img}
+              alt="employee"
+              className="w-[250px] h-[200px]"
+            />
           </span>
           <br />
           <h4 className="border-b-[4px] border-[#3497F9] text-start w-fit">

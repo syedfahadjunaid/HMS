@@ -15,6 +15,7 @@ import { OPDPatientService } from "./Services/OPDPatientService";
 import { IPDPatientService } from "./Services/IPDPatientService";
 import { billingService } from "./Services/BillingService";
 import { AdminService } from "./Services/AdminService";
+import Employee from "./Slices/HrSlice";
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ export const store = configureStore({
     [billingService.reducerPath]: billingService.reducer,
     AdminState: AdminSlice,
     [AdminService.reducerPath]: AdminService.reducer,
+    EmployeeTableData: Employee,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([

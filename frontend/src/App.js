@@ -40,6 +40,7 @@ import {
 } from "./Store/Slices/AdminSlice";
 
 import Cookies from "js-cookie";
+import { getEmployeeDataHandle } from "./Store/Slices/HrSlice";
 
 const LoginPage = lazy(() => import("./Login"));
 
@@ -184,7 +185,9 @@ function App() {
     }
   }, [responseGetProfile.isError]);
   // ------------------------------------------------------------------
-
+  React.useEffect(() => {
+    dispatch(getEmployeeDataHandle());
+  }, []);
   // Super Admin Link
   const opdPatientlink = browserLinks?.superadmin?.internalPages?.opdPatients
     ?.split(" ")
