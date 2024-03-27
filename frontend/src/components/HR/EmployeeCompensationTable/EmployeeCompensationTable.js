@@ -10,6 +10,7 @@ import {
 import Snackbars from "../../SnackBar";
 import { IoMdPrint } from "react-icons/io";
 import { RiEdit2Fill } from "react-icons/ri";
+import { useSelector } from "react-redux";
 
 function EmployeeCompensationTable() {
   const style = {
@@ -37,6 +38,8 @@ function EmployeeCompensationTable() {
     setOpen1(false);
     setIsLoading(false);
   };
+  const { adminLoggedInData } = useSelector((state) => state?.AdminState);
+
   const [allCompensationData, setAllCompensationData] = useState();
   const [compensationId, setCompensationId] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +71,7 @@ function EmployeeCompensationTable() {
     formData.append("Compensationpayout", compensationData?.compensationPayout);
     formData.append("EffectiveDate", compensationData?.effectiveData);
     formData.append("Status", compensationData?.status);
+    formData.append("createdBy", adminLoggedInData?.adminEmail);
     setIsLoading(true);
     const resuult = await addCompensationData(formData);
     if (resuult) {
@@ -336,13 +340,16 @@ function EmployeeCompensationTable() {
                   {item?.fullname}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.workedemail}
+                  {item?.mainId}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
                   {item?.bloodgroup}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
                   {item?.PAN}
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                  {item?.compensation?.[0]?.EffectiveDate}
                 </td>
                 <td>
                   <div className="flex gap-[10px] justify-center">
@@ -352,17 +359,23 @@ function EmployeeCompensationTable() {
                     >
                       <IoMdPrint className="text-[25px] text-[#96999C]" />
                     </div>
-                    <div
-                      onClick={() => [
-                        handleOpen1(),
-                        getOneCompensationDataHandle(
-                          item?.compensation?.[0]?._id
-                        ),
-                      ]}
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                    >
-                      <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
-                    </div>
+                    {item?.compensation?.length > 0 ? (
+                      <div
+                        onClick={() => [
+                          handleOpen1(),
+                          getOneCompensationDataHandle(
+                            item?.compensation?.[0]?._id
+                          ),
+                        ]}
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                      >
+                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                      </div>
+                    ) : (
+                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-not-allowed">
+                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>

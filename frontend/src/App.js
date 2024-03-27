@@ -41,6 +41,7 @@ import {
 
 import Cookies from "js-cookie";
 import { getEmployeeDataHandle } from "./Store/Slices/HrSlice";
+import PatientsList from "./pages/Pharmacist/PatientsList/PatientsList";
 
 const LoginPage = lazy(() => import("./Login"));
 
@@ -221,7 +222,10 @@ function App() {
     browserLinks?.hr?.internalPages?.employeeAppointments?.split(" ").join("");
 
   // -----------------------
-
+  // Medicine Wise Details
+  const medicineWiseDetails =
+    browserLinks?.Pharmacist?.internalPages?.Patientlist.split("").join("");
+  // ------
   // Nurse Panel Link
   const nursePanelAddPatientLink =
     browserLinks?.nurse?.internalPages?.addPatient?.split(" ").join("");
@@ -683,6 +687,48 @@ function App() {
                         }
                       >
                         <NursePanelEmergencyPatientList />
+                      </Suspense>
+                    }
+                  />
+                </Route>
+              ) : (
+                <Route
+                  path="*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <>
+                          <Box sx={{ width: "100%" }}>
+                            <LinearProgress />
+                          </Box>
+                        </>
+                      }
+                    >
+                      <UnauthorizedPage />
+                    </Suspense>
+                  }
+                />
+              )}
+              {/* Pharmacist Panel */}
+              {adminRole === "Pharmacist" ? (
+                <Route path={browserLinks.Pharmacist.category}>
+                  <Route
+                    path={`${
+                      browserLinks.Pharmacist.category
+                    }/${browserLinks?.Pharmacist?.internalPages?.Patientlist?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <PatientsList />
                       </Suspense>
                     }
                   />

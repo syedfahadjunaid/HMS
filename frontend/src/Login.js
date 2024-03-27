@@ -114,6 +114,18 @@ export default function Login() {
           `${browserLinks.nurse.category}/${browserLinks.nurse.internalPages.dashboard}`
         );
       }
+      if (
+        localStorage.getItem("AdminToken") &&
+        adminLoggedInData?.adminRole === "Pharmacist"
+      ) {
+        navigate(
+          `${
+            browserLinks.Pharmacist.category
+          }/${browserLinks.Pharmacist.internalPages.Patientlist?.split(
+            " "
+          ).join("")}`
+        );
+      }
       if (localStorage.getItem("AdminToken")) {
         navigate(1);
       }

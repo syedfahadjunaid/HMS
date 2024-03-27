@@ -50,6 +50,12 @@ const browserLinks = {
       editEmergencyPatient: "Emergency Patient List",
     },
   },
+  Pharmacist: {
+    category: "/Pharmacist",
+    internalPages: {
+      Patientlist: "Patient List",
+    },
+  },
 };
 
 // 1 = "Super Admin"
