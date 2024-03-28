@@ -1,7 +1,9 @@
 import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdAdd, IoMdPrint } from "react-icons/io";
-import { RiEdit2Fill } from "react-icons/ri";
+import { CiViewList } from "react-icons/ci";
+import { FaDownload } from "react-icons/fa";
+import img from "../../../assets/20180125_001_1_.jpg";
 
 function PatientsTable() {
   const style = {
@@ -21,12 +23,28 @@ function PatientsTable() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [open1, setOpen1] = React.useState(false);
+  const handleOpen1 = () => setOpen1(true);
+  const handleClose1 = () => setOpen1(false);
   const [consumables, setConsumables] = useState([]);
   const [medicines, setMedicines] = useState([]);
-  const addConsumableHandle = () => {
+  const [total, setTotal] = useState({
+    consumablesSubTotal: "",
+    medicinesSubTotal: "",
+    overAllTotal: "",
+  });
+  const addConsumableHandle = (e) => {
+    e.preventDefault();
     setConsumables([
       ...consumables,
-      { title: "", date: "", qty: "", rate: "", discount: "", amount: "" },
+      { title: "", date: "", qty: 0, rate: 0, discount: 0, amount: 0 },
+    ]);
+  };
+  const addMedicinesHandle = (e) => {
+    e.preventDefault();
+    setMedicines([
+      ...medicines,
+      { title: "", date: "", qty: 0, rate: 0, discount: 0, amount: 0 },
     ]);
   };
   const getConsumableValueHandle = (e, index) => {
@@ -37,14 +55,75 @@ function PatientsTable() {
     };
     setConsumables(oldValue && oldValue);
   };
-  const deleteConsumableValueHandle = (index) => {
+  const getMedicinesValueHandle = (e, index) => {
+    let oldValue = [...medicines];
+    oldValue[index] = {
+      ...oldValue[index],
+      [e.target.name]: e.target.value,
+    };
+    setMedicines(oldValue && oldValue);
+  };
+  const deleteConsumableValueHandle = (e, index) => {
+    e.preventDefault();
     let oldValue = [...consumables];
     oldValue.splice(index, 1);
     setConsumables(oldValue && oldValue);
   };
-  useEffect(() => {
-    console.log(consumables);
+  const deleteMedicinesValueHandle = (e, index) => {
+    e.preventDefault();
+    let oldValue = [...medicines];
+    oldValue.splice(index, 1);
+    setMedicines(oldValue && oldValue);
+  };
+  const getConsumableTotalAmountHandle = () => {
+    let getTotalArray = [...consumables];
+    const result = getTotalArray?.map((item, index) => {
+      const amount =
+        item?.qty * item?.rate -
+        (item?.qty * item?.rate * item?.discount) / 100;
+
+      return { ...item, amount };
+    });
+    setConsumables(result && result);
+  };
+  const getMedicineTotalAmountHandle = useCallback(() => {
+    let getTotalArray = [...medicines];
+    const result = getTotalArray?.map((item, index) => {
+      const amount =
+        item?.qty * item?.rate -
+        (item?.qty * item?.rate * item?.discount) / 100;
+      return { ...item, amount };
+    });
+    setMedicines(result && result);
+  }, [medicines]);
+  const getConsumeableTotalPriceHandle = useMemo(() => {
+    const sumWithInitial = consumables.reduce(
+      (accumulator, currentValue) => accumulator + currentValue?.amount,
+      0
+    );
+    return sumWithInitial;
   }, [consumables]);
+
+  const getMedicineTotalPriceHandle = useMemo(() => {
+    const sumWithInitial = medicines.reduce(
+      (accumulator, currentValue) => accumulator + currentValue?.amount,
+      0
+    );
+    return sumWithInitial;
+  }, [medicines]);
+  useEffect(() => {
+    // console.log(consumables);
+    getConsumableTotalAmountHandle();
+  }, [consumables]);
+
+  useEffect(() => {
+    // console.log(consumables);
+    getMedicineTotalAmountHandle();
+  }, [medicines]);
+  // useEffect(() => {
+  //   console.log(total);
+  // }, [total]);
+
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">
@@ -90,25 +169,19 @@ function PatientsTable() {
               </td>
               <td className="justify-center align-center flex text-[16px] py-4 px-[4px] text-center border-b-[1px]">
                 <div
-                  // onClick={() => handleOpenUpdateModal(list)}
+                  onClick={handleOpen}
                   className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
                 >
-                  <IoMdAdd
-                    className="text-[25px] text-[#3497F9]"
-                    onClick={handleOpen}
-                  />
+                  <IoMdAdd className="text-[25px] text-[#3497F9]" />
                 </div>
               </td>
               <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
                 <div className="flex gap-[10px] justify-center">
                   <div
-                    // onClick={() => handleOpenUpdateModal(list)}
                     className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                    onClick={handleOpen1}
                   >
-                    <IoMdPrint className="text-[25px] text-[#96999C]" />
-                  </div>
-                  <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer">
-                    <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                    <CiViewList className="text-[25px] text-[#96999C]" />
                   </div>
                 </div>
               </td>
@@ -197,109 +270,346 @@ function PatientsTable() {
               </div>
             </div>
             <hr />
-            <div className="w-full">
-              <div className="flex justify-between pt-[10px] pb-[10px]">
-                <p className="">Consumables</p>
-                <button
-                  className="bg-[#3497F9] text-white p-[8px] rounded-md "
-                  onClick={addConsumableHandle}
-                >
-                  Add Items
-                </button>
-              </div>
-              <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
-                <thead>
-                  <tr>
-                    <th className="border-b-[1px]">
-                      <p>SN</p>
-                    </th>
-                    <th className="border-b-[1px]">
-                      <p>Date</p>
-                    </th>
-                    <th className="border-b-[1px]">
-                      <p>Material Name</p>
-                    </th>
-                    <th className="border-b-[1px]">
-                      <p>Qty</p>
-                    </th>
-                    <th className="border-b-[1px]">
-                      <p>Rate</p>
-                    </th>
-                    <th className="border-b-[1px]">
-                      <p>Discount</p>
-                    </th>
-                    <th className="border-b-[1px]">
-                      <p>Amount</p>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="overflow-x-scroll">
-                  {consumables?.map((item, index) => (
+            <form>
+              <div className="w-full">
+                <div className="flex justify-between pt-[10px] pb-[10px]">
+                  <p className="border-b-[4px] border-[#444444]">Consumables</p>
+                  <button
+                    className="bg-[#3497F9] text-white p-[8px] rounded-md "
+                    onClick={addConsumableHandle}
+                  >
+                    Add Items
+                  </button>
+                </div>
+                <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+                  <thead>
                     <tr>
-                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                        <p>{index + 1}</p>
-                      </td>
-                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                        <input
-                          type="date"
-                          name="date"
-                          onChange={(e) => getConsumableValueHandle(e, index)}
-                          className="w-[8rem] h-[2rem] border-[2px] border-[#888] rounded outline-none"
-                        />
-                      </td>
-                      <td className="flex align-center justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                        <textarea
-                          rows={5}
-                          name="title"
-                          onChange={(e) => getConsumableValueHandle(e, index)}
-                          className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
-                        />
-                      </td>
-                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] outline-none">
-                        <input
-                          type="text"
-                          name="qty"
-                          onChange={(e) => getConsumableValueHandle(e, index)}
-                          className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
-                        />
-                      </td>
-                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                        <input
-                          type="text"
-                          name="rate"
-                          onChange={(e) => getConsumableValueHandle(e, index)}
-                          className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
-                        />
-                      </td>
-                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                        <input
-                          type="text"
-                          name="discount"
-                          onChange={(e) => getConsumableValueHandle(e, index)}
-                          className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
-                        />
-                      </td>
-                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                        <input
-                          type="text"
-                          name="amount"
-                          onChange={(e) => getConsumableValueHandle(e, index)}
-                          className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
-                        />
-                      </td>
-                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                        <button
-                          className="bg-[red] text-white p-[4px] rounded-md "
-                          onClick={() => deleteConsumableValueHandle(index)}
-                        >
-                          Delete
-                        </button>
-                      </td>
+                      <th className="border-b-[1px]">
+                        <p>SN</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Date</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Material Name</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Qty</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Rate</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Discount</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Amount</p>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="overflow-x-scroll">
+                    {consumables?.map((item, index) => (
+                      <tr>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <p>{index + 1}</p>
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="date"
+                            name="date"
+                            onChange={(e) => getConsumableValueHandle(e, index)}
+                            className="w-[8rem] h-[2rem] border-[2px] border-[#888] rounded outline-none"
+                          />
+                        </td>
+                        <td className="flex align-center justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <textarea
+                            rows={5}
+                            name="title"
+                            placeholder="Medicine Name"
+                            onChange={(e) => getConsumableValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] outline-none">
+                          <input
+                            type="text"
+                            name="qty"
+                            placeholder="Quantity"
+                            onChange={(e) => getConsumableValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="text"
+                            name="rate"
+                            placeholder="Price"
+                            onChange={(e) => getConsumableValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="text"
+                            name="discount"
+                            placeholder="In Percentage"
+                            onChange={(e) => getConsumableValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="text"
+                            name="amount"
+                            value={item?.amount}
+                            placeholder="Total"
+                            disabled
+                            // onChange={(e) => getConsumableValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <button
+                            className="bg-[red] text-white p-[4px] rounded-md "
+                            onClick={(e) =>
+                              deleteConsumableValueHandle(e, index)
+                            }
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="w-full justify-end flex pt-[10px] pb-[10px] text-[#0495F5]">
+                  <p className="font-bold mr-[10px]">Sub Total</p>
+                  <strong>₹ {getConsumeableTotalPriceHandle}</strong>
+                </div>
+                <hr />
+              </div>
+              <div className="w-full">
+                <div className="flex justify-between pt-[10px] pb-[10px]">
+                  <p className="border-b-[4px] border-[#444444]">Medicines</p>
+                  <button
+                    className="bg-[#3497F9] text-white p-[8px] rounded-md "
+                    onClick={addMedicinesHandle}
+                  >
+                    Add Items
+                  </button>
+                </div>
+                <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+                  <thead>
+                    <tr>
+                      <th className="border-b-[1px]">
+                        <p>SN</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Date</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Material Name</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Qty</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Rate</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Discount</p>
+                      </th>
+                      <th className="border-b-[1px]">
+                        <p>Amount</p>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="overflow-x-scroll">
+                    {medicines?.map((item, index) => (
+                      <tr>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <p>{index + 1}</p>
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="date"
+                            name="date"
+                            onChange={(e) => getMedicinesValueHandle(e, index)}
+                            className="w-[8rem] h-[2rem] border-[2px] border-[#888] rounded outline-none"
+                          />
+                        </td>
+                        <td className="flex align-center justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <textarea
+                            rows={5}
+                            name="title"
+                            placeholder="Medicine Name"
+                            onChange={(e) => getMedicinesValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] outline-none">
+                          <input
+                            type="text"
+                            name="qty"
+                            placeholder="Quantity"
+                            onChange={(e) => getMedicinesValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="text"
+                            name="rate"
+                            placeholder="Price"
+                            onChange={(e) => getMedicinesValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="text"
+                            name="discount"
+                            placeholder="In Percentage"
+                            onChange={(e) => getMedicinesValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <input
+                            type="text"
+                            name="amount"
+                            value={item?.amount}
+                            placeholder="Amount"
+                            onChange={(e) => getMedicinesValueHandle(e, index)}
+                            className=" border-[2px] border-[#888] w-[10rem] h-[2rem] rounded pl-[5px] outline-none"
+                          />
+                        </td>
+                        <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                          <button
+                            className="bg-[red] text-white p-[4px] rounded-md "
+                            onClick={(e) =>
+                              deleteMedicinesValueHandle(e, index)
+                            }
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="w-full justify-end flex pt-[10px] pb-[10px] text-[#0495F5]">
+                  <p className="font-bold mr-[10px]">Sub Total</p>
+                  <strong>₹ {getMedicineTotalPriceHandle}</strong>
+                </div>
+                <hr />
+                <div className="w-full justify-end flex pt-[10px] pb-[10px] text-[#0495F5]">
+                  <p className="font-bold mr-[10px]">Total</p>
+                  <strong>
+                    ₹{" "}
+                    {getMedicineTotalPriceHandle +
+                      getConsumeableTotalPriceHandle}
+                  </strong>
+                </div>
+                <hr />
+                <div className="w-full flex justify-center pt-[10px]">
+                  <button className="bg-[#3497F9] text-white p-[8px] rounded-md ">
+                    Save
+                  </button>
+                </div>
+              </div>
+            </form>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open1}
+        onClose={handleClose1}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={open1}>
+          <Box sx={style}>
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              className="w-full pb-[10px]"
+            >
+              <span className="w-full justify-between flex">
+                <h2 className="border-b-[4px] border-[#3497F9]">
+                  Patients Full Details
+                </h2>
+                <button className="bg-[#3497F9] text-white p-[4px] rounded-md text-[14px] flex items-center">
+                  <FaDownload className="pr-[2px]" /> Download
+                </button>
+              </span>
+            </Typography>
+            <hr />
+            <div className="flex pt-[10px] pb-[10px] gap-[10%]">
+              <span>
+                <img src={img} alt="patients " className="w-[15rem] " />
+              </span>
+              <div class="grid grid-cols-2 gap-4">
+                <div className="flex gap-[10px]">
+                  <span>Patients Reg ID</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Admission Date / Time</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Name</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Discharge Date / Time</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Gender</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Patient Categ</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Age</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Tarilt Catrg</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>IPD NO</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>MR and IP No</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Bill Bed Catrg</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Admitting Doctor</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>OCC bed categ</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Room and bed NO</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Bill Date and Time</span>:<p>19</p>
+                </div>
+              </div>
             </div>
+            <hr />
+            <h4 className="border-b-[4px] border-[#3497F9] w-fit pt-[10px] pb-[10px]">
+              Patients Medicine wise details
+            </h4>
+            <hr />
           </Box>
         </Fade>
       </Modal>
