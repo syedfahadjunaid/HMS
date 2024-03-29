@@ -1,11 +1,25 @@
 import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { IoMdAdd, IoMdPrint } from "react-icons/io";
 import { CiViewList } from "react-icons/ci";
 import { FaDownload } from "react-icons/fa";
 import img from "../../../assets/20180125_001_1_.jpg";
-
+import img1 from "../../../assets/logo.png";
+import jsPdf from "jspdf";
+import ReactDOMServer from "react-dom/server";
+import { useReactToPrint } from "react-to-print";
+import "./PatientsTable.css";
 function PatientsTable() {
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   const style = {
     position: "absolute",
     top: "50%",
@@ -20,6 +34,33 @@ function PatientsTable() {
     height: "600px",
     overflowY: "scroll",
   };
+  const doc = new jsPdf();
+  const foo = (
+    <div className="w-full">
+      <div className="w-full justify-between ">
+        <img
+          src={
+            "http://localhost:3000/static/media/logo.e6018157ad383ab41871.png"
+          }
+          alt="logo"
+        />
+      </div>
+    </div>
+  );
+  const save = () => {
+    doc.html(ReactDOMServer.renderToStaticMarkup(foo), {
+      callback: () => {
+        const pdfData = doc.output("datauristring");
+        const pdfWindow = window.open();
+        pdfWindow.document.write(
+          '<iframe width="100%" height="100%" src="' +
+            pdfData +
+            '" frameborder="0"></iframe>'
+        );
+      },
+    });
+  };
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -28,11 +69,7 @@ function PatientsTable() {
   const handleClose1 = () => setOpen1(false);
   const [consumables, setConsumables] = useState([]);
   const [medicines, setMedicines] = useState([]);
-  const [total, setTotal] = useState({
-    consumablesSubTotal: "",
-    medicinesSubTotal: "",
-    overAllTotal: "",
-  });
+
   const addConsumableHandle = (e) => {
     e.preventDefault();
     setConsumables([
@@ -120,9 +157,6 @@ function PatientsTable() {
     // console.log(consumables);
     getMedicineTotalAmountHandle();
   }, [medicines]);
-  // useEffect(() => {
-  //   console.log(total);
-  // }, [total]);
 
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
@@ -507,8 +541,10 @@ function PatientsTable() {
                   <p className="font-bold mr-[10px]">Total</p>
                   <strong>
                     ₹{" "}
-                    {getMedicineTotalPriceHandle +
-                      getConsumeableTotalPriceHandle}
+                    {Math.round(
+                      getMedicineTotalPriceHandle +
+                        getConsumeableTotalPriceHandle
+                    )}
                   </strong>
                 </div>
                 <hr />
@@ -547,7 +583,10 @@ function PatientsTable() {
                 <h2 className="border-b-[4px] border-[#3497F9]">
                   Patients Full Details
                 </h2>
-                <button className="bg-[#3497F9] text-white p-[4px] rounded-md text-[14px] flex items-center">
+                <button
+                  className="bg-[#3497F9] text-white p-[4px] rounded-md text-[14px] flex items-center"
+                  onClick={handlePrint}
+                >
                   <FaDownload className="pr-[2px]" /> Download
                 </button>
               </span>
@@ -609,10 +648,415 @@ function PatientsTable() {
             <h4 className="border-b-[4px] border-[#3497F9] w-fit pt-[10px] pb-[10px]">
               Patients Medicine wise details
             </h4>
+
+            <div className="w-full ">
+              <div className="flex justify-start pt-[10px] pb-[10px]">
+                <p className="border-b-[4px] border-[#444444]">Consumables</p>
+              </div>
+              <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+                <thead>
+                  <tr>
+                    <th className="border-b-[1px]">
+                      <p>S N</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Date</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Item Name</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Qty</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Rate</p>
+                    </th>
+
+                    <th className="border-b-[1px]">
+                      <p>Amount</p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="overflow-x-scroll">
+                  <tr>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>1</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>12/02/2024</p>
+                    </td>
+                    <td className="flex align-center justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>Ghjj</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] outline-none">
+                      <p>vgfg</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>grfg</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>fdgf</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr />
+            </div>
+            <div className="w-full ">
+              <div className="flex justify-start pt-[10px] pb-[10px]">
+                <p className="border-b-[4px] border-[#444444]">Medicine</p>
+              </div>
+              <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+                <thead>
+                  <tr>
+                    <th className="border-b-[1px]">
+                      <p>S N</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Date</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Item Name</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Qty</p>
+                    </th>
+                    <th className="border-b-[1px]">
+                      <p>Rate</p>
+                    </th>
+
+                    <th className="border-b-[1px]">
+                      <p>Amount</p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="overflow-x-scroll">
+                  <tr>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>1</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>12/02/2024</p>
+                    </td>
+                    <td className="flex align-center justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>Ghjj</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] outline-none">
+                      <p>vgfg</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>grfg</p>
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      <p>fdgf</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr />
+            </div>
+            <div className="w-full pt-[20px]">
+              <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+                <thead>
+                  <tr>
+                    <th className="border-b-[1px] text-start">Service Name</th>
+                    <th className="border-b-[1px] text-start">CN AMT</th>
+                    <th className="border-b-[1px] text-start">
+                      Credit Note Type
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="overflow-x-scroll w-full">
+                  <tr className="justify-between  w-full">
+                    <td className="justify-start text-[16px] py-4 px-[4px]  ">
+                      <p>IP Routine Visit</p>
+                    </td>
+                    <td className="justify-start text-[16px] py-4 px-[4px]  ">
+                      <p>1500.00</p>
+                    </td>
+                    <td className="justify-start text-[16px] py-4 px-[4px]  ">
+                      <p>Doctor sugession</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <hr />
+            <div className="w-full pt-[10px]">
+              <div class="grid grid-cols-2 gap-4">
+                <div className="flex gap-[10px]">
+                  <span>Authorised by :</span>
+                  <p className="text-[#3E454D]">Nemesis12312</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Total Amount :</span>
+                  <p className="text-[#3E454D]">₹90,000.00</p>
+                </div>
+              </div>
+            </div>
+            <div className="w-full pt-[10px]">
+              <div class="grid grid-cols-2 gap-4">
+                <div className="flex gap-[10px]">
+                  <span>Amount in words :</span>
+                  <p className="text-[#3E454D]">one one one two three five .</p>
+                </div>
+              </div>
+            </div>
+            <div className="w-full pt-[10px]">
+              <div class="grid grid-cols-2 gap-4">
+                <div className="flex gap-[10px]">
+                  <span>Remarks :</span>
+                  <p className="text-[#3E454D]">Dr Aquib Nemesis</p>
+                </div>
+              </div>
+            </div>
           </Box>
         </Fade>
       </Modal>
+      <div className="print-hide">
+        <div className="print-show w-full" ref={componentRef}>
+          <div className="flex justify-between items-center pl-[15px] pr-[15px]">
+            <span className="flex items-center gap-[18px]">
+              <img
+                src={img1}
+                alt="logo"
+                className="w-[150px] h-[120px] object-contain"
+              />
+              <span>
+                <h4 className="text-start text-[20px] font-bold">
+                  City Hospital and Trauma Centre
+                </h4>
+                <p className="text-start text-[14px]">
+                  Contact No. 9119900861,9119900862
+                </p>
+              </span>
+            </span>
+            <p className="text-start w-[20rem] text-[14px]">
+              C1-C2 cinder dump complex ,near Alambagh bus stand ,Kanpur road,
+              Lucknow 226005{" "}
+            </p>
+          </div>
+          <hr />
+          <h2 className="pt-[10px] pb-[10px] font-semibold text-center">
+            Medicine wise details
+          </h2>
+          <hr />
+          <div className="flex items-center pt-[20px] pb-[20px] gap-[10%]">
+            <div class="grid grid-cols-3 gap-4 w-full pl-[20px] pr-[20px]">
+              <div className="flex gap-[10px]">
+                <span>Patients Reg ID</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Admission Date / Time</span>:<p>19/02/24 10:30pm</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Name</span>:<p>Arman Ali</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Discharge Date / Time</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Gender</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Patient Categ</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Age</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Tarilt Catrg</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>IPD NO</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>MR and IP No</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Bill Bed Catrg</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Admitting Doctor</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>OCC bed categ</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Room and bed NO</span>:<p>19</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Bill Date and Time</span>:<p>19</p>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="w-full pl-[15px] pr-[15px]">
+            <div className="flex justify-start pt-[10px] pb-[10px]">
+              <p className="border-b-[4px] border-[#444444]">Consumables</p>
+            </div>
+            <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+              <thead>
+                <tr>
+                  <th className="border-b-[1px]">
+                    <p>S N</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Date</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Item Name</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Qty</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Rate</p>
+                  </th>
+
+                  <th className="border-b-[1px]">
+                    <p>Amount</p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="overflow-x-scroll">
+                <tr>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>1</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>12/02/2024</p>
+                  </td>
+                  <td className="flex align-center justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>Ghjj</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] outline-none">
+                    <p>vgfg</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>grfg</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>fdgf</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr />
+          </div>
+          <div className="w-full pl-[15px] pr-[15px]">
+            <div className="flex justify-start pt-[10px] pb-[10px]">
+              <p className="border-b-[4px] border-[#444444]">Medicine</p>
+            </div>
+            <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+              <thead>
+                <tr>
+                  <th className="border-b-[1px]">
+                    <p>S N</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Date</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Item Name</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Qty</p>
+                  </th>
+                  <th className="border-b-[1px]">
+                    <p>Rate</p>
+                  </th>
+
+                  <th className="border-b-[1px]">
+                    <p>Amount</p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="overflow-x-scroll">
+                <tr>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>1</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>12/02/2024</p>
+                  </td>
+                  <td className="flex align-center justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>Ghjj</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] outline-none">
+                    <p>vgfg</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>grfg</p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>fdgf</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr />
+          </div>
+          <div className="w-full pt-[20px]  pl-[15px] pr-[15px]">
+            <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300] overflow-x-scroll">
+              <thead>
+                <tr>
+                  <th className="border-b-[1px] text-start">Service Name</th>
+                  <th className="border-b-[1px] text-start">CN AMT</th>
+                  <th className="border-b-[1px] text-start">
+                    Credit Note Type
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="overflow-x-scroll w-full">
+                <tr className="justify-between  w-full">
+                  <td className="justify-start text-start text-[16px] py-4 px-[4px]  ">
+                    <p>IP Routine Visit</p>
+                  </td>
+                  <td className="justify-start text-start text-[16px] py-4 px-[4px]  ">
+                    <p>1500.00</p>
+                  </td>
+                  <td className="justify-start text-start text-[16px] py-4 px-[4px]  ">
+                    <p>Doctor sugession</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="w-full pt-[10px]  pl-[15px] pr-[15px]">
+            <div class="grid grid-cols-2 gap-4">
+              <div className="flex gap-[10px]">
+                <span>Authorised by :</span>
+                <p className="text-[#3E454D]">Nemesis12312</p>
+              </div>
+              <div className="flex gap-[10px]">
+                <span>Total Amount :</span>
+                <p className="text-[#3E454D]">₹90,000.00</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-full pt-[10px]  pl-[15px] pr-[15px]">
+            <div class="grid grid-cols-2 gap-4">
+              <div className="flex gap-[10px]">
+                <span>Amount in words :</span>
+                <p className="text-[#3E454D]">one one one two three five .</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-full pt-[10px]  pl-[15px] pr-[15px]">
+            <div class="grid grid-cols-2 gap-4">
+              <div className="flex gap-[10px]">
+                <span>Remarks :</span>
+                <p className="text-[#3E454D]">Dr Aquib Nemesis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
