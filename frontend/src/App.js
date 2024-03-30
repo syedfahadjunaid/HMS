@@ -91,6 +91,9 @@ const HRPanelDashboard = lazy(() => import("./pages/HR/Dashboard"));
 const HRPanelEmployeeManagement = lazy(() =>
   import("./pages/HR/EmployeeManagement/EmployeeManagement")
 );
+const HRPanelEmployeePreOnBoarding = lazy(() =>
+  import("./pages/HR/EmployeePreOnBoarding/EmployeePreOnBoarding")
+);
 const HRPanelEmployeeCreation = lazy(() =>
   import("./pages/HR/EmployeeCreation/EmployeeCreation")
 );
@@ -208,6 +211,10 @@ function App() {
   // HR Panel Link
   const hrPanelEmployeeManagement =
     browserLinks?.hr?.internalPages?.employeeManagement?.split(" ").join("");
+  const hrPanelEmployeePreOnBoarding =
+    browserLinks?.hr?.internalPages?.preOnboardingCandidate
+      ?.split(" ")
+      .join("");
   const hrPanelEmployeeCreation =
     browserLinks?.hr?.internalPages?.employeeCreation?.split(" ").join("");
   const hrPanelEmployeeBulkUpload =
@@ -496,6 +503,22 @@ function App() {
                         }
                       >
                         <HRPanelEmployeeManagement />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${browserLinks.hr.category}/${hrPanelEmployeePreOnBoarding}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <HRPanelEmployeePreOnBoarding />
                       </Suspense>
                     }
                   />

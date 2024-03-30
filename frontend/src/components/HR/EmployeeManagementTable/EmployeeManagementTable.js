@@ -13,6 +13,7 @@ import {
 import { useSelector } from "react-redux";
 import { IoMdPrint } from "react-icons/io";
 import Snackbars from "../../SnackBar";
+import PaginationComponent from "../../Pagination";
 function EmployeeManagementTable() {
   const style = {
     position: "absolute",
@@ -27,6 +28,16 @@ function EmployeeManagementTable() {
     p: 4,
     outline: "transparent",
     overflowY: "scroll",
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -209,60 +220,69 @@ function EmployeeManagementTable() {
               ))}
             </thead>
             <tbody>
-              {employeeData?.map((item, index) => (
-                <tr key={index}>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {index + 1}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.fullname}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.workedemail}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.bloodgroup}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.PAN}
-                  </td>
-                  <td>
-                    <div className="flex gap-[10px] justify-center">
-                      <Switch
-                        onChange={() =>
-                          updateEmployeeStatusDataHandle(
-                            item?.mainId,
-                            item?.empolyeeType
-                          )
-                        }
-                        inputProps={{ "aria-label": "controlled" }}
-                        checked={item?.empolyeeType == "Active" && true}
-                      />
-                    </div>
-                  </td>
-                  <td className="justify-center text-[12px] py-4 px-[4px] text-center border-b-[1px]">
-                    <div className="flex gap-[10px] justify-center">
-                      <div
-                        // onClick={() => handleOpenUpdateModal(list)}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      >
-                        <IoMdPrint className="text-[25px] text-[#96999C]" />
+              {employeeData
+                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                ?.map((item, index) => (
+                  <tr key={index}>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      {index + 1}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      {item?.fullname}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      {item?.workedemail}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      {item?.bloodgroup}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                      {item?.PAN}
+                    </td>
+                    <td>
+                      <div className="flex gap-[10px] justify-center">
+                        <Switch
+                          onChange={() =>
+                            updateEmployeeStatusDataHandle(
+                              item?.mainId,
+                              item?.empolyeeType
+                            )
+                          }
+                          inputProps={{ "aria-label": "controlled" }}
+                          checked={item?.empolyeeType == "Active" && true}
+                        />
                       </div>
-                      <div
-                        onClick={() => [
-                          handleOpen(),
-                          getOneEmployeeDataHandle(item?.mainId),
-                        ]}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      >
-                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                    </td>
+                    <td className="justify-center text-[12px] py-4 px-[4px] text-center border-b-[1px]">
+                      <div className="flex gap-[10px] justify-center">
+                        <div
+                          // onClick={() => handleOpenUpdateModal(list)}
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        >
+                          <IoMdPrint className="text-[25px] text-[#96999C]" />
+                        </div>
+                        <div
+                          onClick={() => [
+                            handleOpen(),
+                            getOneEmployeeDataHandle(item?.mainId),
+                          ]}
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        >
+                          <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
+          <PaginationComponent
+            page={page}
+            rowsPerPage={rowsPerPage}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+            data={employeeData}
+          />
         </div>
       </div>
       <Modal

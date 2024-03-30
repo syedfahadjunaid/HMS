@@ -8,6 +8,7 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { IoMdPrint } from "react-icons/io";
 import Snackbars from "../../SnackBar";
 import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
+import PaginationComponent from "../../Pagination";
 
 function EmployeeBackgroundVerificationForm() {
   const style = {
@@ -24,6 +25,16 @@ function EmployeeBackgroundVerificationForm() {
     outline: "transparent",
     overflowY: "scroll",
   };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -31,6 +42,9 @@ function EmployeeBackgroundVerificationForm() {
     getSingleBackgroundVerificationData,
     setGetSingleBackgroundVerificationData,
   ] = useState({
+    verificationType: "",
+    PreviewsOrganization: "",
+    VerifingPerson: "",
     employeeId: "",
     ValidDate: "",
     comment: "",
@@ -104,6 +118,9 @@ function EmployeeBackgroundVerificationForm() {
   useEffect(() => {
     getAllBackGroundVericationDataHandle();
   }, []);
+  useEffect(() => {
+    console.log(getSingleBackgroundVerificationData);
+  }, [getSingleBackgroundVerificationData]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">
@@ -116,26 +133,50 @@ function EmployeeBackgroundVerificationForm() {
         onSubmit={addBackGroundVerificationHandle}
       >
         <span className="flex flex-col align-start justify-start gap-[5px]">
-          <p className="w-fit">Organization</p>
-          <select className="border-[2px] border-[#C8C8C8] w-[22rem] h-[2.5rem] rounded outline-none">
-            <option>Select Category</option>
-          </select>
+          <p className="w-fit">Previews Organization</p>
+
+          <input
+            type="text"
+            placeholder="Enter Name Of Organization"
+            name="PreviewsOrganization"
+            className="border-[2px] border-[#C8C8C8] w-[22rem] h-[2.5rem] rounded outline-none pl-[5px]"
+            onChange={getValueHandle}
+            required
+          />
         </span>
         <div className="w-[25rem] flex justify-between">
           <span className="flex gap-[5px]">
-            <input type="checkbox" />
+            <input
+              type="radio"
+              name="verificationType"
+              value="0"
+              onChange={getValueHandle}
+              required
+            />
             <p className="text-[12px]">Pre-Employment Verification</p>
           </span>
           <span className="flex gap-[5px]">
-            <input type="checkbox" />
+            <input
+              type="radio"
+              name="verificationType"
+              value="1"
+              onChange={getValueHandle}
+              required
+            />
             <p className="text-[12px]">On Boarded Employee</p>
           </span>
         </div>
         <span className="flex flex-col align-start justify-start gap-[5px]">
-          <p className="w-fit">Select Candidate</p>
-          <select className="border-[2px] border-[#C8C8C8] w-[22rem] h-[2.5rem] rounded outline-none">
-            <option>Select Candidate</option>
-          </select>
+          <p className="w-fit">Verifing Person</p>
+
+          <input
+            type="text"
+            placeholder="Enter Name Of Verifing Person"
+            name="VerifingPerson"
+            className="border-[2px] border-[#C8C8C8] w-[22rem] h-[2.5rem] rounded outline-none pl-[5px]"
+            onChange={getValueHandle}
+            required
+          />
         </span>
         <div className="grid grid-cols-2 gap-4">
           <span className="flex flex-col align-start justify-start gap-[5px]">
@@ -205,40 +246,52 @@ function EmployeeBackgroundVerificationForm() {
             </tr>
           </thead>
           <tbody>
-            {allBackgroundVerification?.map((item, index) => (
-              <tr key={index}>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {index + 1}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.EmployeeId}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  <p> {item.isVarified === true ? "Completed" : "InProcess"}</p>
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.comments}
-                </td>
+            {allBackgroundVerification
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
+                <tr key={index}>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {item?.EmployeeId}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    <p>
+                      {" "}
+                      {item.isVarified === true ? "Completed" : "InProcess"}
+                    </p>
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {item?.comments}
+                  </td>
 
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
-                  <div className="flex gap-[10px] justify-center">
-                    <div
-                      onClick={() => [
-                        handleOpen(),
-                        getOneBackgroundVerificationDataHandle(
-                          item?.EmployeeId
-                        ),
-                      ]}
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                    >
-                      <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
+                    <div className="flex gap-[10px] justify-center">
+                      <div
+                        onClick={() => [
+                          handleOpen(),
+                          getOneBackgroundVerificationDataHandle(
+                            item?.EmployeeId
+                          ),
+                        ]}
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                      >
+                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        <PaginationComponent
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          data={allBackgroundVerification}
+        />
       </div>
       <Modal
         aria-labelledby="transition-modal-title"

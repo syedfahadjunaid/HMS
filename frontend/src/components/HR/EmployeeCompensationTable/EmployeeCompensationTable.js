@@ -11,6 +11,7 @@ import Snackbars from "../../SnackBar";
 import { IoMdPrint } from "react-icons/io";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useSelector } from "react-redux";
+import PaginationComponent from "../../Pagination";
 
 function EmployeeCompensationTable() {
   const style = {
@@ -25,6 +26,16 @@ function EmployeeCompensationTable() {
     p: 4,
     outline: "transparent",
     height: "400px",
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -331,57 +342,66 @@ function EmployeeCompensationTable() {
             ))}
           </thead>
           <tbody>
-            {allCompensationData?.data?.map((item, index) => (
-              <tr key={index}>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {index + 1}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.fullname}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.mainId}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.bloodgroup}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.PAN}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                  {item?.compensation?.[0]?.EffectiveDate}
-                </td>
-                <td>
-                  <div className="flex gap-[10px] justify-center">
-                    <div
-                      // onClick={() => handleOpenUpdateModal(list)}
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                    >
-                      <IoMdPrint className="text-[25px] text-[#96999C]" />
-                    </div>
-                    {item?.compensation?.length > 0 ? (
+            {allCompensationData?.data
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
+                <tr key={index}>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {item?.fullname}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {item?.mainId}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {item?.bloodgroup}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {item?.PAN}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                    {item?.compensation?.[0]?.EffectiveDate}
+                  </td>
+                  <td>
+                    <div className="flex gap-[10px] justify-center">
                       <div
-                        onClick={() => [
-                          handleOpen1(),
-                          getOneCompensationDataHandle(
-                            item?.compensation?.[0]?._id
-                          ),
-                        ]}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        // onClick={() => handleOpenUpdateModal(list)}
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
                       >
-                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                        <IoMdPrint className="text-[25px] text-[#96999C]" />
                       </div>
-                    ) : (
-                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-not-allowed">
-                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {item?.compensation?.length > 0 ? (
+                        <div
+                          onClick={() => [
+                            handleOpen1(),
+                            getOneCompensationDataHandle(
+                              item?.compensation?.[0]?._id
+                            ),
+                          ]}
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        >
+                          <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                        </div>
+                      ) : (
+                        <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-not-allowed">
+                          <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        <PaginationComponent
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          data={allCompensationData?.data}
+        />
       </div>
       <Modal
         aria-labelledby="transition-modal-title"

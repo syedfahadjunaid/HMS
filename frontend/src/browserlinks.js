@@ -24,7 +24,7 @@ const browserLinks = {
     internalPages: {
       dashboard: "Dashboard",
       employeeManagement: "Employee Management",
-      preOnboardingCandidate: "Pre-Onboarding Candidate",
+      preOnboardingCandidate: "Pre Onboarding Candidate",
       employeeCreation: "Employee Creation",
       searchEmployee: "Search Employee",
       employeeBulkUpdate: "Employee Bulk Update",
