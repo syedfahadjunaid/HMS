@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import "./EmployeeManagementTable.css";
-import Table from "../../Table";
-import { RiDeleteBin6Fill, RiEdit2Fill } from "react-icons/ri";
+import { RiEdit2Fill } from "react-icons/ri";
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
 
 import {
@@ -10,10 +9,9 @@ import {
   updateEmployeeData,
   updateEmployeeStatusHandle,
 } from "../HrApiCollection";
-import { useSelector } from "react-redux";
-import { IoMdPrint } from "react-icons/io";
 import Snackbars from "../../SnackBar";
 import PaginationComponent from "../../Pagination";
+import { CiViewList } from "react-icons/ci";
 function EmployeeManagementTable() {
   const style = {
     position: "absolute",
@@ -205,11 +203,6 @@ function EmployeeManagementTable() {
         <div className="flex justify-start">
           <h2 className="border-b-[4px] border-[#3497F9]">Candidate List</h2>
         </div>
-        {/* <Table
-          data={EmpoyeeData?.data?.length > 0 && EmpoyeeData?.data}
-          config={config}
-          keyFn={keyFn}
-        /> */}
         <div>
           <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
             <thead>
@@ -259,7 +252,7 @@ function EmployeeManagementTable() {
                           // onClick={() => handleOpenUpdateModal(list)}
                           className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
                         >
-                          <IoMdPrint className="text-[25px] text-[#96999C]" />
+                          <CiViewList className="text-[25px] text-[#96999C]" />
                         </div>
                         <div
                           onClick={() => [

@@ -132,12 +132,14 @@ export const updateAppoimentData = async (id, formData) => {
   return data;
 };
 export const updateCompensationData = async (id, formData) => {
-  const { data } = await axios
+  const data = await axios
     .put(
-      `${process.env.React_App_Base_url + "Empoyee/comapensation/" + id}`,
+      `${
+        process.env.React_App_Base_url + "Employee/compensation-update/" + id
+      }`,
       formData,
       {
-        headers: { "Content-type": "multipart/form-data" },
+        headers: { "Content-type": "application/json" },
       }
     )
     .then((response) => response)

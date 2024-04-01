@@ -314,7 +314,7 @@ function EmployeeBackgroundVerificationForm() {
               component="h2"
               className="border-b-[4px] border-[#3497F9] w-fit"
             >
-              Appointments
+              Employee Background Verification
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <form
@@ -361,10 +361,21 @@ function EmployeeBackgroundVerificationForm() {
                       required
                     />
                   </span>
+                  <span className="flex flex-col align-start justify-start gap-[5px]">
+                    <p className="w-fit">Status</p>
+                    <select
+                      value={getSingleBackgroundVerificationData?.isVerified}
+                      className="border-[2px] border-[#C8C8C8]  h-[2.5rem] rounded outline-none pl-[5px]"
+                    >
+                      <option value="">Select Status</option>
+                      <option value={true}>Active</option>
+                      <option value={false}>IsActive</option>
+                    </select>
+                  </span>
                 </div>
 
                 <button className="bg-[#3497F9] text-white p-[10px] rounded-md w-[150px]">
-                  Submit
+                  Update
                 </button>
               </form>
             </Typography>

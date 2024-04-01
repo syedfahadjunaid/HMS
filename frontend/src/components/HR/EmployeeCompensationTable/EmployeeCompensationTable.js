@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Table from "../../Table";
 import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
 import {
   addCompensationData,
@@ -8,10 +7,10 @@ import {
   updateCompensationData,
 } from "../HrApiCollection";
 import Snackbars from "../../SnackBar";
-import { IoMdPrint } from "react-icons/io";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import PaginationComponent from "../../Pagination";
+import { CiViewList } from "react-icons/ci";
 
 function EmployeeCompensationTable() {
   const style = {
@@ -57,6 +56,7 @@ function EmployeeCompensationTable() {
   const [snackBarData, setSnackBarData] = useState({
     open: false,
     message: "",
+    severity: "success",
   });
   const [compensationData, setCompensationData] = useState({
     employeeId: "",
@@ -112,6 +112,15 @@ function EmployeeCompensationTable() {
     formData.append("EffectiveDate", compensationData?.effectiveData);
     formData.append("Status", compensationData?.status);
     const result = await updateCompensationData(compensationId, formData);
+    if (!result) {
+      console.log("nothing");
+      setSnackBarData({
+        ...snackBarData,
+        open: true,
+        message: "Something Wnet Wrong Try After Sometime",
+        severity: "warning",
+      });
+    }
     console.log(result);
   };
   const addCompensation = (
@@ -306,6 +315,9 @@ function EmployeeCompensationTable() {
   useEffect(() => {
     getAllCompensitionDataHandle();
   }, []);
+  useEffect(() => {
+    console.log(compensationData);
+  }, [compensationData]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -350,19 +362,19 @@ function EmployeeCompensationTable() {
                     {index + 1}
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.fullname}
+                    {item?.employee?.[0]?.fullname}
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.mainId}
+                    {item?.employee?.[0]?.mainId}
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.bloodgroup}
+                    {item?.employee?.[0]?.bloodgroup}
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.PAN}
+                    {item?.employee?.[0]?.PAN}
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.compensation?.[0]?.EffectiveDate}
+                    {item?.EffectiveDate}
                   </td>
                   <td>
                     <div className="flex gap-[10px] justify-center">
@@ -370,25 +382,18 @@ function EmployeeCompensationTable() {
                         // onClick={() => handleOpenUpdateModal(list)}
                         className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
                       >
-                        <IoMdPrint className="text-[25px] text-[#96999C]" />
+                        <CiViewList className="text-[25px] text-[#96999C]" />
                       </div>
-                      {item?.compensation?.length > 0 ? (
-                        <div
-                          onClick={() => [
-                            handleOpen1(),
-                            getOneCompensationDataHandle(
-                              item?.compensation?.[0]?._id
-                            ),
-                          ]}
-                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                        >
-                          <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
-                        </div>
-                      ) : (
-                        <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-not-allowed">
-                          <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
-                        </div>
-                      )}
+
+                      <div
+                        onClick={() => [
+                          handleOpen1(),
+                          getOneCompensationDataHandle(item?._id),
+                        ]}
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                      >
+                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -455,7 +460,14 @@ function EmployeeCompensationTable() {
         open={snackBarData?.open}
         message={snackBarData?.message}
         setOpen={setSnackBarData}
+        severity={snackBarData?.severity}
       />
+      {/* <Snackbars
+        open={snackBarData?.open}
+        setOpen={setOpenSnackBarWarning}
+        severity='warning'
+        message={snackBarMessageWarning}
+      /> */}
     </div>
   );
 }

@@ -34,21 +34,22 @@ function EmployeeCreationForm() {
     formData.append("PAN", data?.panNumber);
     formData.append("gender", data?.gender);
     formData.append("image", data?.image[0]);
+    formData.append("BasicSalary", data?.basisSalary);
+    formData.append("Allowance", data?.specialAllowance);
+    formData.append("Incentive", data?.incentive);
+    formData.append("currentAddress", data?.currentAddress);
+    formData.append("permanentaddress", data?.permanentAddress);
     setIsLoading(true);
     const result = await addNewEmployee(formData);
     if (result) {
       setSnackBarData({ open: true, message: result?.message });
       console.log(result);
       reset();
+      setImage();
     }
     setIsLoading(false);
   };
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
-  useEffect(() => {
-    console.log(image);
-  }, [image]);
+
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">
@@ -384,19 +385,52 @@ function EmployeeCreationForm() {
               <p className="errors ">This Field is Required</p>
             )}
           </span>
+          <span></span>
+
+          <h4 className="border-b-[4px] border-[#3497F9] text-start w-fit">
+            Salary
+          </h4>
+          <br />
+          <span></span>
+
           <span className="border-[2px] border-[#C8C8C8]  rounded ">
-            <textarea
-              rows={5}
+            <input
+              type="text"
               className="w-full h-[40px] pl-[5px] outline-none"
-              placeholder="Zip  Code"
-              {...register("currentAddressZipcode", {
+              placeholder="Enter Basic Salary"
+              {...register("basisSalary", {
                 required: true,
+
                 pattern: /^[0-9+-]+$/,
-                minLength: 6,
-                maxLength: 6,
               })}
             />
-            {errors?.currentAddressZipcode && (
+            {errors?.basisSalary && (
+              <p className="errors ">This Field is Required</p>
+            )}
+          </span>
+          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+            <input
+              type="text"
+              className="w-full h-[40px] pl-[5px] outline-none"
+              placeholder="Enter Special Allowance"
+              {...register("specialAllowance", {
+                pattern: /^[0-9+-]+$/,
+              })}
+            />
+            {errors?.specialAllowance && (
+              <p className="errors ">This Field is Required</p>
+            )}
+          </span>
+          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+            <input
+              type="text"
+              className="w-full h-[40px] pl-[5px] outline-none"
+              placeholder="INCENTIVE"
+              {...register("incentive", {
+                pattern: /^[0-9+-]+$/,
+              })}
+            />
+            {errors?.incentive && (
               <p className="errors ">This Field is Required</p>
             )}
           </span>
