@@ -1617,9 +1617,9 @@ export default function BillingTable() {
             type='submit'
             className='buttonFilled'
             onClick={() => setSubmitButton("update")}>{`Save >`}</button>
-          <button
+          {/* <button
             onClick={() => setSubmitButton("updateprint")}
-            className='buttonOutlined'>{`Save & Print >`}</button>
+            className='buttonOutlined'>{`Save & Print >`}</button> */}
         </div>
       </form>
     </div>

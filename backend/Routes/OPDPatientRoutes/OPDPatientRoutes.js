@@ -129,9 +129,10 @@ Router.put("/OPDPatient-PUT/:Id", async (req, res) => {
     if (!OPDPatientData) {
       return res.status(404).json("OPD Patient data not found");
     }
-    return res
-      .status(200)
-      .json({ message: "OPD Patient data Updated successfully" });
+    return res.status(200).json({
+      message: "OPD Patient data Updated successfully",
+      data: OPDPatientData,
+    });
   } catch (error) {
     res.status(500).json("Internal Server Error");
   }

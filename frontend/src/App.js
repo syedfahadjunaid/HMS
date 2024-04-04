@@ -83,6 +83,11 @@ const SuperAdminOPDPage = lazy(() => import("./pages/superadmin/OPD/OPD"));
 const BillDownloadPage = lazy(() =>
   import("./components/superadmin/BillingTable/BillDownload/BillDownload")
 );
+const OPDPatientRecieptDownloadPage = lazy(() =>
+  import(
+    "./components/superadmin/OPD_PatientTable/OPD_PatientReciept/OPD_PatientReciept"
+  )
+);
 
 // HR Panel
 const HRPanelDashboard = lazy(() => import("./pages/HR//Dashboard"));
@@ -288,6 +293,25 @@ function App() {
                           </>
                         }>
                         <BillDownloadPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.superadmin.category
+                    }/${browserLinks.superadmin.internalPages.opdPatients
+                      .split(" ")
+                      .join("")}/:opdPatientId`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }>
+                        <OPDPatientRecieptDownloadPage />
                       </Suspense>
                     }
                   />

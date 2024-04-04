@@ -15,6 +15,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
+import browserLinks from "../../../browserlinks";
+
 import Select from "react-select";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -39,7 +41,11 @@ import {
   deleteOPDPatientChange,
 } from "../../../Store/Slices/OPDPatientSlice";
 
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 export default function OPD_PatientTable() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { doctors } = useSelector((state) => state.DoctorState);
   const { patients } = useSelector((state) => state.PatientState);
@@ -53,6 +59,8 @@ export default function OPD_PatientTable() {
 
   const [deleteOPDPatientById, responseDeleteOPDPatientById] =
     useDeleteOPDPatientByIdMutation();
+
+  const [submitButton, setSubmitButton] = React.useState("");
 
   // Snackbar--------------------
   // ----Succcess
@@ -196,20 +204,31 @@ export default function OPD_PatientTable() {
   });
 
   React.useEffect(() => {
-    if (responseCreateOPDPatient.isSuccess) {
-      dispatch(createOPDPatientChange(Math.random()));
-      setSnackBarSuccessMessage(responseCreateOPDPatient?.data?.message);
-      handleClickSnackbarSuccess();
-      handleClose();
-      setOpdPatientId({ value: "", label: "" });
-      setOpdCaseId({ value: "", label: "" });
-      setOpdId({ value: "", label: "" });
-      setOpdDoctorId({ value: "", label: "" });
-      setOpdPatientBloodPressure("");
-      setOpdPatientStandardCharges("");
-      setOpdPatientPaymentMode("");
-      setOpdPatientNotes("");
-      reset();
+    if (submitButton === "add") {
+      if (responseCreateOPDPatient.isSuccess) {
+        dispatch(createOPDPatientChange(Math.random()));
+        setSnackBarSuccessMessage(responseCreateOPDPatient?.data?.message);
+        handleClickSnackbarSuccess();
+        handleClose();
+        setOpdPatientId({ value: "", label: "" });
+        setOpdCaseId({ value: "", label: "" });
+        setOpdId({ value: "", label: "" });
+        setOpdDoctorId({ value: "", label: "" });
+        setOpdPatientBloodPressure("");
+        setOpdPatientStandardCharges("");
+        setOpdPatientPaymentMode("");
+        setOpdPatientNotes("");
+        reset();
+      }
+    }
+    if (submitButton === "addPrint") {
+      navigate(
+        `${
+          browserLinks.superadmin.category
+        }/${browserLinks.superadmin.internalPages.opdPatients
+          .split(" ")
+          .join("")}/${responseCreateOPDPatient?.data?.data?.mainId}`
+      );
     } else if (responseCreateOPDPatient.isError) {
       setSnackBarSuccessWarning(responseCreateOPDPatient?.error?.data);
       handleClickSnackbarWarning();
@@ -324,8 +343,13 @@ export default function OPD_PatientTable() {
         <div className='flex gap-[1rem] items-center'>
           <button
             type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            className='buttonFilled'
+            onClick={() => setSubmitButton("add")}>{`Save >`}</button>
+          <button
+            className='buttonOutlined'
+            onClick={() =>
+              setSubmitButton("addPrint")
+            }>{`Save & Print >`}</button>
         </div>
       </form>
     </div>
@@ -370,11 +394,26 @@ export default function OPD_PatientTable() {
   };
 
   React.useEffect(() => {
-    if (responseUpdateOPDPatientById.isSuccess) {
-      dispatch(updateOPDPatientChange(Math.random()));
+    if (submitButton === "update") {
+      if (responseUpdateOPDPatientById.isSuccess) {
+        dispatch(updateOPDPatientChange(Math.random()));
+        setSnackBarSuccessMessage(responseUpdateOPDPatientById?.data?.message);
+        handleClickSnackbarSuccess();
+        handleCloseUpdateModal();
+      }
+    }
+    if (submitButton === "updatePrint") {
+      // dispatch(updateOPDPatientChange(Math.random()));
       setSnackBarSuccessMessage(responseUpdateOPDPatientById?.data?.message);
       handleClickSnackbarSuccess();
       handleCloseUpdateModal();
+      navigate(
+        `${
+          browserLinks.superadmin.category
+        }/${browserLinks.superadmin.internalPages.opdPatients
+          .split(" ")
+          .join("")}/${responseUpdateOPDPatientById?.data?.data?.mainId}`
+      );
     } else if (responseUpdateOPDPatientById.isError) {
       setSnackBarSuccessWarning(responseUpdateOPDPatientById?.error?.data);
       handleClickSnackbarWarning();
@@ -410,10 +449,7 @@ export default function OPD_PatientTable() {
   const modalUpdatePatient = (
     <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
       <h2 className='border-b py-[1rem]'>Update Patient</h2>
-      <form
-        className='flex flex-col gap-[1rem]'
-        // onSubmit={handleUpdateDoctor}
-      >
+      <form className='flex flex-col gap-[1rem]' onSubmit={handleUpdateDoctor}>
         <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
           <div className='flex flex-col gap-[6px] relative w-full'>
             <label className='text-[14px]'>Patient Registration Id *</label>
@@ -499,9 +535,13 @@ export default function OPD_PatientTable() {
         <div className='flex gap-[1rem] items-center'>
           <button
             type='submit'
-            onClick={handleUpdateDoctor}
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            onClick={() => setSubmitButton("update")}
+            className='buttonFilled'>{`Save >`}</button>
+          {/* <button
+            className='buttonOutlined'
+            onClick={() =>
+              setSubmitButton("updatePrint")
+            }>{`Save & Print >`}</button> */}
         </div>
       </form>
     </div>
@@ -515,7 +555,7 @@ export default function OPD_PatientTable() {
     setOpdPatientData(data);
     setOpenViewModal(true);
   };
-  // console.log(opdPatientData);
+  console.log(opdPatientData);
   const handleCloseViewModal = () => setOpenViewModal(false);
 
   const modalViewPatientDetails = (
@@ -536,7 +576,7 @@ export default function OPD_PatientTable() {
             }
             alt='patientImage'
           />
-          <button className='buttonFilled w-fit'>Button</button>
+          {/* <button className='buttonFilled w-fit'>Button</button> */}
         </div>
         <div className='w-[75%] flex flex-col gap-[10px] text-[14px]'>
           <div className='grid grid-cols-2 gap-[10px]'>
@@ -787,10 +827,15 @@ export default function OPD_PatientTable() {
               <h1 className='headingBottomUnderline w-fit pb-[10px]'>
                 OPD Patient Details
               </h1>
-              <button className='buttonFilled flex items-center gap-[10px]'>
+              <Link
+                // onClick={handleGeneratePdf}
+                target='_blank'
+                to={opdPatientData?.data?.mainId}
+                // to={`${browserLinks.superadmin.category}/${browserLinks.superadmin.internalPages.opdPatients}/${opdPatientData?.data?.mainId}`}
+                className='buttonFilled flex items-center gap-[10px]'>
                 <LuHardDriveDownload />
                 <p>Download</p>
-              </button>
+              </Link>
             </div>
           </Typography>
           <Typography id='modal-modal-description' sx={{ mt: 2 }}>

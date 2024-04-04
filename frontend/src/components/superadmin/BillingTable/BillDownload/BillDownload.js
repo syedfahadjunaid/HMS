@@ -22,7 +22,7 @@ export default function BillDownload() {
       setDoctorId(responseGetBillById?.currentData?.billingAdmittingDoctorId);
     }
   }, [responseGetBillById.isSuccess]);
-  console.log(responseGetDoctorById);
+  // console.log(responseGetDoctorById);
   const date = (dateTime) => {
     const newdate = new Date(dateTime);
 
