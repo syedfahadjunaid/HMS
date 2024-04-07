@@ -304,12 +304,10 @@ Router.put("/Billing-PUT/:Id", async (req, res) => {
       return res.status(404).json("Billing Details Not Found");
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Billing Details Updated successfully",
-        data: billingData,
-      });
+    return res.status(200).json({
+      message: "Billing Details Updated successfully",
+      data: billingData,
+    });
   } catch (error) {
     res.status(500).json("Internal Server Error");
   }

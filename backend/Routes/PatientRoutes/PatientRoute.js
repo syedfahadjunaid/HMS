@@ -19,11 +19,12 @@ const generateUniqueId = () => {
   const year = date.getFullYear().toString();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
+  // const hours = date.getHours().toString().padStart(2, "0");
+  // const minutes = date.getMinutes().toString().padStart(2, "0");
   const seconds = date.getSeconds().toString().padStart(2, "0");
 
-  const uniqueId = `${year}${month}${day}${hours}${minutes}${seconds}`;
+  // const uniqueId = `${year}${month}${day}${hours}${minutes}${seconds}`;
+  const uniqueId = `${year}${month}${day}${seconds}`;
 
   return uniqueId;
 };
@@ -83,6 +84,7 @@ router.post(
       patientFatherName,
       patientHusbandName,
       patientDateOfBirth,
+      patientAge,
       patientPhone,
       patientPhone2,
       patientHeight,
@@ -100,15 +102,15 @@ router.post(
       editedBy,
     } = req.body;
 
-    if (
-      !patientName ||
-      !patientEmail ||
-      !patientDateOfBirth ||
-      !patientPhone ||
-      !patientGender
-    ) {
-      res.status(422).json({ error: "Please fill the field completely!" });
-    }
+    // if (
+    //   !patientName ||
+    //   !patientEmail ||
+    //   !patientDateOfBirth ||
+    //   !patientPhone ||
+    //   !patientGender
+    // ) {
+    //   res.status(422).json({ error: "Please fill the field completely!" });
+    // }
 
     try {
       const patientImage = req.file ? req.file.filename : "";
@@ -133,12 +135,13 @@ router.post(
       // }
 
       const newPatient = new PatientModel({
-        patientId: "P" + generateUniqueId(),
+        patientId: generateUniqueId(),
         patientName: patientName,
         patientEmail: patientEmail,
         patientFatherName: patientFatherName,
         patientHusbandName: patientHusbandName,
         patientDateOfBirth: patientDateOfBirth,
+        patientAge: patientAge,
         patientPhone: patientPhone,
         patientPhone2: patientPhone2,
         patientHeight: patientHeight,
@@ -180,6 +183,7 @@ router.put(
       patientFatherName,
       patientHusbandName,
       patientDateOfBirth,
+      patientAge,
       patientPhone,
       patientPhone2,
       patientHeight,
@@ -253,6 +257,7 @@ router.put(
           patientDateOfBirth: patientDateOfBirth
             ? patientDateOfBirth
             : PatientModel.patientDateOfBirth,
+          patientAge: patientAge ? patientAge : PatientModel.patientAge,
           patientPhone: patientPhone ? patientPhone : PatientModel.patientPhone,
           patientPhone2: patientPhone2
             ? patientPhone2

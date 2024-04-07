@@ -16,7 +16,7 @@ const PatientSchema = new Schema(
     },
     patientEmail: {
       type: String,
-      required: true,
+      // required: true,
     },
     patientFatherName: {
       type: String,
@@ -27,6 +27,10 @@ const PatientSchema = new Schema(
     patientDateOfBirth: {
       type: String,
       required: true,
+    },
+    patientAge: {
+      type: Number,
+      // required: true,
     },
     patientPhone: {
       type: String,

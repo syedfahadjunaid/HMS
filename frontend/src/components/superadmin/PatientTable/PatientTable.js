@@ -39,6 +39,9 @@ import {
   deletePatientChange,
 } from "../../../Store/Slices/PatientSlice";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 export default function PatientTable() {
   const dispatch = useDispatch();
 
@@ -61,7 +64,10 @@ export default function PatientTable() {
   const [patientEmail, setPatientEmail] = React.useState("");
   const [patientFatherName, setPatientFatherName] = React.useState("");
   const [patientHusbandName, setPatientHusbandName] = React.useState("");
-  const [patientDateOfBirth, setPatientDateOfBirth] = React.useState("");
+  const [patientDateOfBirth, setPatientDateOfBirth] = React.useState({
+    startDate: new Date(),
+  });
+  const [patientAge, setPatientAge] = React.useState("");
   const [patientPhone, setPatientPhone] = React.useState("");
   const [patientPhone2, setPatientPhone2] = React.useState("");
   const [patientHeight, setPatientHeight] = React.useState("");
@@ -128,6 +134,8 @@ export default function PatientTable() {
 
   // ----------------------------------
 
+  console.log(patientDateOfBirth);
+
   const date = (dateTime) => {
     const newdate = new Date(dateTime);
 
@@ -172,116 +180,120 @@ export default function PatientTable() {
   const handleCloseViewModal = () => setOpenViewModal(false);
 
   const modalViewPatientDetails = (
-    <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
-      <div className='border-b flex gap-[1rem] py-[1rem] w-full'>
-        <h3 className='font-[500]'>Patient ID: </h3>
+    <div className="flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]">
+      <div className="border-b flex gap-[1rem] py-[1rem] w-full">
+        <h3 className="font-[500]">Patient ID: </h3>
         <h3>{patientData?.patientId}</h3>
       </div>
-      <div className='flex w-full'>
-        <div className='w-[25%] flex flex-col items-center'>
+      <div className="flex w-full">
+        <div className="w-[25%] flex flex-col items-center">
           <img
-            className='w-[200px] h-[200px] object-contain'
+            className="w-[200px] h-[200px] object-contain"
             src={
               patientData.patientImage
                 ? process.env.React_App_Base_Image_Url +
                   patientData.patientImage
                 : placeholder
             }
-            alt='patientImage'
+            alt="patientImage"
           />
-          <button className='buttonFilled w-fit'>Button</button>
+          <button className="buttonFilled w-fit">Button</button>
         </div>
-        <div className='w-[75%] flex flex-col gap-[10px] text-[14px]'>
-          <div className='grid grid-cols-2 gap-[10px]'>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Name: </p>
+        <div className="w-[75%] flex flex-col gap-[10px] text-[14px]">
+          <div className="grid grid-cols-2 gap-[10px]">
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Name: </p>
               <p>{patientData.patientName}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Gender: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Gender: </p>
               <p>{patientData.patientGender}</p>
             </div>
             {patientData.patientFatherName !== "" && (
-              <div className='flex'>
-                <p className='font-[600] w-[150px]'>Father Name: </p>
+              <div className="flex">
+                <p className="font-[600] w-[150px]">Father Name: </p>
                 <p>{patientData.patientFatherName}</p>
               </div>
             )}
             {patientData.patientHusbandName !== "" && (
-              <div className='flex'>
-                <p className='font-[600] w-[150px]'>Husband Name: </p>
+              <div className="flex">
+                <p className="font-[600] w-[150px]">Husband Name: </p>
                 <p>{patientData.patientHusbandName}</p>
               </div>
             )}
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Date Of Birth: </p>
-              <p>{patientData.patientDateOfBirth}</p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Date Of Birth: </p>
+              <p>{date(patientData.patientDateOfBirth)}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Phone: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Age: </p>
+              <p>{patientData.patientAge}</p>
+            </div>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Phone: </p>
               <p>{patientData.patientPhone}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Attendent Phone: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Attendent Phone: </p>
               <p>{patientData.patientPhone2}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Height: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Height: </p>
               <p>{patientData.patientHeight}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Weight: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Weight: </p>
               <p>{patientData.patientWeight}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Blood Group: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Blood Group: </p>
               <p>{patientData.patientBloodGroup}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>City: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">City: </p>
               <p>{patientData.patientCity}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>State: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">State: </p>
               <p>{patientData.patientState}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Country: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Country: </p>
               <p>{patientData.patientCountry}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Zipcode: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Zipcode: </p>
               <p>{patientData.patientZipCode}</p>
             </div>
           </div>
-          <div className='flex flex-col gap-[10px]'>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Email Id: </p>
-              <p className='text-[14px]'>{patientData.patientEmail}</p>
+          <div className="flex flex-col gap-[10px]">
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Email Id: </p>
+              <p className="text-[14px]">{patientData.patientEmail}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Local Address: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Local Address: </p>
+              <p className="break-word text-[14px]">
                 {patientData.patientLocalAddress}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Permanent Address: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Permanent Address: </p>
+              <p className="break-word text-[14px]">
                 {patientData.patientPermanentAddress}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Created On: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Created On: </p>
+              <p className="break-word text-[14px]">
                 {`${date(patientData?.createdAt)} ${time(
                   patientData?.createdAt
                 )}`}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Updated On: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Updated On: </p>
+              <p className="break-word text-[14px]">
                 {`${date(patientData?.updatedAt)} ${time(
                   patientData?.updatedAt
                 )}`}
@@ -312,6 +324,7 @@ export default function PatientTable() {
     setPatientFatherName(data?.patientFatherName);
     setPatientHusbandName(data?.patientHusbandName);
     setPatientDateOfBirth(data?.patientDateOfBirth);
+    setPatientAge(data?.patientAge);
     setPatientPhone(data?.patientPhone);
     setPatientPhone2(data?.patientPhone2);
     setPatientHeight(data?.patientHeight);
@@ -346,7 +359,12 @@ export default function PatientTable() {
   }, [responseAddPatient.isSuccess, responseAddPatient.isError]);
 
   const handleAddPatient = (data) => {
-    const patientData = { ...data, patientGender, patientImage };
+    const patientData = {
+      ...data,
+      patientGender,
+      patientImage,
+      patientDateOfBirth,
+    };
 
     const formData = new FormData();
 
@@ -354,7 +372,11 @@ export default function PatientTable() {
     formData.append("patientEmail", patientData?.patientEmail);
     formData.append("patientFatherName", patientData?.patientFatherName);
     formData.append("patientHusbandName", patientData?.patientHusbandName);
-    formData.append("patientDateOfBirth", patientData?.patientDateOfBirth);
+    formData.append(
+      "patientDateOfBirth",
+      patientData?.patientDateOfBirth?.startDate
+    );
+    formData.append("patientAge", patientData?.patientAge);
     formData.append("patientPhone", patientData?.patientPhone);
     formData.append("patientPhone2", patientData?.patientPhone2);
     formData.append("patientHeight", patientData?.patientHeight);
@@ -394,144 +416,194 @@ export default function PatientTable() {
   };
 
   const modalADDPatient = (
-    <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
-      <h2 className='border-b py-[1rem]'>Add Patient Information</h2>
+    <div className="flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]">
+      <h2 className="border-b py-[1rem]">Add Patient Information</h2>
       <form
-        className='flex flex-col gap-[1rem]'
-        onSubmit={handleSubmit(handleAddPatient)}>
-        <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patients Name *</label>
+        className="flex flex-col gap-[1rem]"
+        onSubmit={handleSubmit(handleAddPatient)}
+      >
+        <div className="grid grid-cols-3 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Patients Name *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter patient name'
+              placeholder="Enter patient name"
               {...register("patientName", { required: true })}
             />
             {errors.patientName && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Email *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Email</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='email'
-              required
-              placeholder='Enter patient email'
-              {...register("patientEmail", { required: true })}
+              className="py-[10px] outline-none border-b"
+              type="email"
+              placeholder="Enter patient email"
+              {...register("patientEmail")}
             />
-            {errors.patientEmail && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientEmail && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Father Name</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Father Name</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              placeholder='Enter patient father name'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient father name"
               {...register("patientFatherName")}
             />
             {errors.patientFatherName && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Husband Name</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Husband Name</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              placeholder='Enter patient husband name'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient husband name"
               {...register("patientHusbandName")}
             />
             {errors.patientHusbandName && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Date Of Birth *</label>
-            <input
-              className='py-[10px] outline-none border-b'
-              type='date'
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Date Of Birth *</label>
+            <DatePicker
+              className="py-[10px] outline-none border-b"
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            />
+            {/* <input
+              className="py-[10px] outline-none border-b"
+              type="date"
               required
               {...register("patientDateOfBirth", { required: true })}
-            />
+            /> */}
             {errors.patientDateOfBirth && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Phone *</label>
-            <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Age </label>
+            {/* <DatePicker
+              className="py-[10px] outline-none border-b"
               required
-              minLength={10}
-              maxLength={10}
-              placeholder='Enter patient phone number'
-              {...register("patientPhone", { required: true })}
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            /> */}
+            <input
+              className="py-[10px] outline-none border-b"
+              type="number"
+              placeholder="Enter age"
+              {...register("patientAge", { required: true })}
+            />
+            {errors.patientAge && (
+              <span className="text-[red]">This field is required</span>
+            )}
+          </div>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Phone *</label>
+            <input
+              className="py-[10px] outline-none border-b"
+              type="number"
+              required
+              // minLength={10}
+              // maxLength={10}
+              placeholder="Enter patient phone number"
+              {...register("patientPhone", {
+                required: true,
+                minLength: 10,
+                maxLength: 10,
+              })}
             />
             {errors.patientPhone && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">
+                This field is required with 10 digits
+              </span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Phone Number of Attendent</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Phone Number of Attendent</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
-              minLength={10}
-              maxLength={10}
-              placeholder='Enter phone number of attendent'
-              {...register("patientPhone2")}
+              className="py-[10px] outline-none border-b"
+              type="number"
+              // minLength={10}
+              // maxLength={10}
+              placeholder="Enter phone number of attendent"
+              {...register("patientPhone2", {
+                required: true,
+                minLength: 10,
+                maxLength: 10,
+              })}
             />
+            {errors.patientPhone2 && (
+              <span className="text-[red]">
+                This field is required with 10 digits
+              </span>
+            )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Height</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Height</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              placeholder='Enter height'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter height"
               {...register("patientHeight")}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Weight</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Weight</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              placeholder='Enter weight'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter weight"
               {...register("patientWeight")}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patient Gender *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Patient Gender *</label>
             <RadioGroup
-              aria-labelledby='demo-radio-buttons-group-label'
+              aria-labelledby="demo-radio-buttons-group-label"
               value={patientGender}
-              name='radio-buttons-group'
+              name="radio-buttons-group"
               onChange={(e) => setPatientGender(e.target.value)}
-              sx={{ display: "flex", flexDirection: "row" }}>
+              sx={{ display: "flex", flexDirection: "row" }}
+            >
               <FormControlLabel
-                value='Female'
+                value="Female"
                 control={<Radio />}
-                label='Female'
+                label="Female"
               />
-              <FormControlLabel value='Male' control={<Radio />} label='Male' />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
               <FormControlLabel
-                value='Other'
+                value="Other"
                 control={<Radio />}
-                label='Other'
+                label="Other"
               />
             </RadioGroup>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Blood Group *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Blood Group *</label>
             <select
-              className='py-[11.5px] outline-none border-b bg-transparent'
-              {...register("patientBloodGroup", { required: true })}>
+              className="py-[11.5px] outline-none border-b bg-transparent"
+              {...register("patientBloodGroup", { required: true })}
+            >
               <option>O positive</option>
               <option>O negative</option>
               <option>A positive</option>
@@ -542,112 +614,107 @@ export default function PatientTable() {
               <option>AB negative</option>
             </select>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patient Photo *</label>
-            <div className='flex flex-col gap-[1rem]'>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Patient Photo *</label>
+            <div className="flex flex-col gap-[1rem]">
               <input
-                type='file'
-                accept='image/png, image/gif, image/jpeg'
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => setPatientImage(e.target.files[0])}
               />
 
               <img
-                className='object-contain w-[100px] h-[100px]'
+                className="object-contain w-[100px] h-[100px]"
                 src={
                   patientImage ? URL.createObjectURL(patientImage) : placeholder
                 }
-                alt='placeholderimg'
+                alt="placeholderimg"
               />
             </div>
           </div>
         </div>
 
-        <h3 className='border-b py-[1rem]'>Patient Address Details</h3>
-        <div className='grid grid-cols-2 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Local Address *</label>
+        <h3 className="border-b py-[1rem]">Patient Address Details</h3>
+        <div className="grid grid-cols-2 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Local Address</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient local address'
-              {...register("patientLocalAddress", { required: true })}
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient local address"
+              {...register("patientLocalAddress")}
             />
-            {errors.patientLocalAddress && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientLocalAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Permanent Address *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Permanent Address</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient permanent address'
-              {...register("patientPermanentAddress", { required: true })}
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient permanent address"
+              {...register("patientPermanentAddress")}
             />
-            {errors.patientPermanentAddress && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientPermanentAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>City *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">City</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient city'
-              {...register("patientCity", { required: true })}
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient city"
+              {...register("patientCity")}
             />
-            {errors.patientCity && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientCity && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>State *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">State</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient state'
-              {...register("patientState", { required: true })}
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient state"
+              {...register("patientState")}
             />
-            {errors.patientState && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientState && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Country *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Country</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient country'
-              {...register("patientCountry", { required: true })}
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient country"
+              {...register("patientCountry")}
             />
-            {errors.patientCountry && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientCountry && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Zipcode *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Zipcode</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
-              required
-              placeholder='Enter patient zipcode'
-              {...register("patientZipCode", { required: true })}
+              className="py-[10px] outline-none border-b"
+              type="number"
+              placeholder="Enter patient zipcode"
+              {...register("patientZipCode")}
             />
-            {errors.patientZipcode && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientZipcode && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
         </div>
-        <div className='flex gap-[1rem] items-center'>
+        <div className="flex gap-[1rem] items-center">
           <button
-            type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            type="submit"
+            className="buttonFilled"
+          >{`Save & Print >`}</button>
+          <button className="buttonOutlined">{`Save >`}</button>
         </div>
       </form>
     </div>
@@ -681,7 +748,8 @@ export default function PatientTable() {
     formData.append("patientEmail", patientEmail);
     formData.append("patientFatherName", patientFatherName);
     formData.append("patientHusbandName", patientHusbandName);
-    formData.append("patientDateOfBirth", patientDateOfBirth);
+    formData.append("patientDateOfBirth", patientDateOfBirth?.startDate);
+    formData.append("patientAge", patientAge);
     formData.append("patientPhone", patientPhone);
     formData.append("patientPhone2", patientPhone2);
     formData.append("patientHeight", patientHeight);
@@ -714,140 +782,171 @@ export default function PatientTable() {
   };
 
   const modalUpdatePatient = (
-    <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
-      <h2 className='border-b py-[1rem]'>Update Patient Information</h2>
-      <form className='flex flex-col gap-[1rem]' onSubmit={handleUpdatePatient}>
-        <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patients Name</label>
+    <div className="flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]">
+      <h2 className="border-b py-[1rem]">Update Patient Information</h2>
+      <form className="flex flex-col gap-[1rem]" onSubmit={handleUpdatePatient}>
+        <div className="grid grid-cols-3 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Patients Name</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
               value={patientName}
-              placeholder='Enter patient name'
+              placeholder="Enter patient name"
               onChange={(e) => setPatientName(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Email</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Email</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='email'
-              required
-              disabled
+              className="py-[10px] outline-none border-b"
+              type="email"
               value={patientEmail}
-              placeholder='Enter patient email'
+              placeholder="Enter patient email"
               onChange={(e) => setPatientEmail(e.target.value)}
             />
           </div>
           {patientFatherName !== "" && (
-            <div className='flex flex-col gap-[6px]'>
-              <label className='text-[14px]'>Father Name</label>
+            <div className="flex flex-col gap-[6px]">
+              <label className="text-[14px]">Father Name</label>
               <input
-                className='py-[10px] outline-none border-b'
-                type='text'
+                className="py-[10px] outline-none border-b"
+                type="text"
                 value={patientFatherName}
-                placeholder='Enter patient father name'
+                placeholder="Enter patient father name"
                 onChange={(e) => setPatientFatherName(e.target.value)}
               />
             </div>
           )}
           {patientHusbandName !== "" && (
-            <div className='flex flex-col gap-[6px]'>
-              <label className='text-[14px]'>Husband Name</label>
+            <div className="flex flex-col gap-[6px]">
+              <label className="text-[14px]">Husband Name</label>
               <input
-                className='py-[10px] outline-none border-b'
-                type='text'
+                className="py-[10px] outline-none border-b"
+                type="text"
                 value={patientHusbandName}
-                placeholder='Enter patient husband name'
+                placeholder="Enter patient husband name"
                 onChange={(e) => setPatientHusbandName(e.target.value)}
               />
             </div>
           )}
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Date Of Birth</label>
-            <input
-              className='py-[10px] outline-none border-b'
-              type='date'
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Date Of Birth</label>
+            <DatePicker
+              className="py-[10px] outline-none border-b"
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            />
+            {/* <input
+              className="py-[10px] outline-none border-b"
+              type="date"
               required
               value={patientDateOfBirth}
               onChange={(e) => setPatientDateOfBirth(e.target.value)}
+            /> */}
+          </div>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Age </label>
+            {/* <DatePicker
+              className="py-[10px] outline-none border-b"
+              required
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            /> */}
+            <input
+              className="py-[10px] outline-none border-b"
+              type="number"
+              placeholder="Enter age"
+              value={patientAge}
+              onChange={(e) => setPatientAge(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Phone</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Phone</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               required
               disabled
               minLength={10}
               maxLength={10}
-              placeholder='Enter patient phone number'
+              placeholder="Enter patient phone number"
               value={patientPhone}
               onChange={(e) => setPatientPhone(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Phone number of attendent</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Phone number of attendent</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               minLength={10}
               maxLength={10}
-              placeholder='Enter phone number of attendent'
+              placeholder="Enter phone number of attendent"
               value={patientPhone2}
               onChange={(e) => setPatientPhone2(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Height</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Height</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              placeholder='Enter height'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter height"
               value={patientHeight}
               onChange={(e) => setPatientHeight(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Weight</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Weight</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              placeholder='Enter weight'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter weight"
               value={patientWeight}
               onChange={(e) => setPatientWeight(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patient Gender</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Patient Gender</label>
             <RadioGroup
-              aria-labelledby='demo-radio-buttons-group-label'
+              aria-labelledby="demo-radio-buttons-group-label"
               value={patientGender}
-              name='radio-buttons-group'
+              name="radio-buttons-group"
               onChange={(e) => setPatientGender(e.target.value)}
-              sx={{ display: "flex", flexDirection: "row" }}>
+              sx={{ display: "flex", flexDirection: "row" }}
+            >
               <FormControlLabel
-                value='Female'
+                value="Female"
                 control={<Radio />}
-                label='Female'
+                label="Female"
               />
-              <FormControlLabel value='Male' control={<Radio />} label='Male' />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
               <FormControlLabel
-                value='Other'
+                value="Other"
                 control={<Radio />}
-                label='Other'
+                label="Other"
               />
             </RadioGroup>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Blood Group</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Blood Group</label>
             <select
-              className='py-[11.5px] outline-none border-b bg-transparent'
+              className="py-[11.5px] outline-none border-b bg-transparent"
               value={patientBloodGroup}
-              onChange={(e) => setPatientBloodGroup(e.target.value)}>
+              onChange={(e) => setPatientBloodGroup(e.target.value)}
+            >
               <option>O positive</option>
               <option>O negative</option>
               <option>A positive</option>
@@ -858,100 +957,95 @@ export default function PatientTable() {
               <option>AB negative</option>
             </select>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patient Photo</label>
-            <div className='flex flex-col gap-[1rem]'>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Patient Photo</label>
+            <div className="flex flex-col gap-[1rem]">
               <input
-                type='file'
-                accept='image/png, image/gif, image/jpeg'
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => setPatientImage(e.target.files[0])}
               />
 
               <img
-                className='object-contain w-[100px] h-[100px]'
+                className="object-contain w-[100px] h-[100px]"
                 src={
                   patientImage ? URL.createObjectURL(patientImage) : placeholder
                 }
-                alt='placeholderimg'
+                alt="placeholderimg"
               />
             </div>
           </div>
         </div>
 
-        <h3 className='border-b py-[1rem]'>Patient Address Details</h3>
-        <div className='grid grid-cols-2 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Local Address</label>
+        <h3 className="border-b py-[1rem]">Patient Address Details</h3>
+        <div className="grid grid-cols-2 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Local Address</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient local address'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient local address"
               value={patientLocalAddress}
               onChange={(e) => setPatientLocalAddress(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Permanent Address</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Permanent Address</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient permanent address'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient permanent address"
               value={patientPermanentAddress}
               onChange={(e) => setPatientPermanentAddress(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>City</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">City</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient city'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient city"
               value={patientCity}
               onChange={(e) => setPatientCity(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>State</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">State</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient state'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient state"
               value={patientState}
               onChange={(e) => setPatientState(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Country</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Country</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
-              required
-              placeholder='Enter patient country'
+              className="py-[10px] outline-none border-b"
+              type="text"
+              placeholder="Enter patient country"
               value={patientCountry}
               onChange={(e) => setPatientCountry(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Zipcode</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Zipcode</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
-              required
-              placeholder='Enter patient zipcode'
+              className="py-[10px] outline-none border-b"
+              type="number"
+              placeholder="Enter patient zipcode"
               value={patientZipCode}
               onChange={(e) => setPatientZipCode(e.target.value)}
             />
           </div>
         </div>
-        <div className='flex gap-[1rem] items-center'>
+        <div className="flex gap-[1rem] items-center">
           <button
-            type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            type="submit"
+            className="buttonFilled"
+          >{`Save & Print >`}</button>
+          <button className="buttonOutlined">{`Save >`}</button>
         </div>
       </form>
     </div>
@@ -973,7 +1067,7 @@ export default function PatientTable() {
 
   const config = [
     {
-      label: "Reg No.",
+      label: "UHID",
       render: (list) => list.patientId,
     },
     {
@@ -999,16 +1093,18 @@ export default function PatientTable() {
     {
       label: "Action",
       render: (list) => (
-        <div className='flex gap-[10px] justify-center'>
+        <div className="flex gap-[10px] justify-center">
           <div
             onClick={() => handleOpenViewModal(list)}
-            className='p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer'>
-            <MdViewKanban className='text-[25px] text-[#96999C]' />
+            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+          >
+            <MdViewKanban className="text-[25px] text-[#96999C]" />
           </div>
           <div
             onClick={() => handleOpenUpdateModal(list)}
-            className='p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer'>
-            <RiEdit2Fill className='text-[25px] text-[#3497F9]' />
+            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+          >
+            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
           </div>
           {/* <div
             onClick={() => handleClickOpenDialogBox(list)}
@@ -1025,21 +1121,22 @@ export default function PatientTable() {
   };
   return (
     <Suspense fallback={<>...</>}>
-      <div className='flex flex-col gap-[1rem] p-[1rem]'>
-        <div className='flex justify-between'>
-          <h2 className='border-b-[4px] border-[#3497F9]'>Patient</h2>
+      <div className="flex flex-col gap-[1rem] p-[1rem]">
+        <div className="flex justify-between">
+          <h2 className="border-b-[4px] border-[#3497F9]">Patient</h2>
           <button
             onClick={handleOpen}
-            className='bg-[#3497F9] text-white p-[10px] rounded-md'>
+            className="bg-[#3497F9] text-white p-[10px] rounded-md"
+          >
             + Add Patient
           </button>
         </div>
-        <div className='flex justify-between'>
-          <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
-            <FaSearch className='text-[#56585A]' />
+        <div className="flex justify-between">
+          <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+            <FaSearch className="text-[#56585A]" />
             <input
-              className='bg-transparent outline-none'
-              placeholder='Search by patient name'
+              className="bg-transparent outline-none"
+              placeholder="Search by patient name"
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
@@ -1052,15 +1149,16 @@ export default function PatientTable() {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'>
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box sx={style}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            <h1 className='headingBottomUnderline w-fit pb-[10px]'>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            <h1 className="headingBottomUnderline w-fit pb-[10px]">
               Add Patient
             </h1>
           </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {modalADDPatient}
           </Typography>
         </Box>
@@ -1068,15 +1166,16 @@ export default function PatientTable() {
       <Modal
         open={openUpdateModal}
         onClose={handleCloseUpdateModal}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'>
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box sx={style}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            <h1 className='headingBottomUnderline w-fit pb-[10px]'>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            <h1 className="headingBottomUnderline w-fit pb-[10px]">
               Update Patient
             </h1>
           </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {modalUpdatePatient}
           </Typography>
         </Box>
@@ -1084,21 +1183,22 @@ export default function PatientTable() {
       <Modal
         open={openViewModal}
         onClose={handleCloseViewModal}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'>
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box sx={style}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            <div className='flex justify-between items-center'>
-              <h1 className='headingBottomUnderline w-fit pb-[10px]'>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            <div className="flex justify-between items-center">
+              <h1 className="headingBottomUnderline w-fit pb-[10px]">
                 Patient Details
               </h1>
-              <button className='buttonFilled flex items-center gap-[10px]'>
+              <button className="buttonFilled flex items-center gap-[10px]">
                 <LuHardDriveDownload />
                 <p>Download</p>
               </button>
             </div>
           </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {modalViewPatientDetails}
           </Typography>
         </Box>
@@ -1107,14 +1207,14 @@ export default function PatientTable() {
       <Snackbars
         open={openSnackbarSuccess}
         setOpen={setOpenSnackBarSuccess}
-        severity='success'
+        severity="success"
         message={snackBarMessageSuccess}
       />
       {/* Warning Snackbar */}
       <Snackbars
         open={openSnackbarWarning}
         setOpen={setOpenSnackBarWarning}
-        severity='warning'
+        severity="warning"
         message={snackBarMessageWarning}
       />
       <DialogBoxToDelete

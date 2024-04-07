@@ -11,11 +11,12 @@ const generateUniqueId = () => {
   const year = date.getFullYear().toString();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
+  // const hours = date.getHours().toString().padStart(2, "0");
+  // const minutes = date.getMinutes().toString().padStart(2, "0");
   const seconds = date.getSeconds().toString().padStart(2, "0");
 
-  const uniqueId = `${year}${month}${day}${hours}${minutes}${seconds}`;
+  const uniqueId = `${year}${month}${day}${seconds}`;
+  // const uniqueId = `${year}${month}${day}${hours}${minutes}${seconds}`;
 
   return uniqueId;
 };
@@ -67,7 +68,7 @@ Router.post("/OPDPatient-POST", async (req, res) => {
     }
 
     const newOPDPatientData = new OPDPatientModel({
-      mainId: "P-OPD-" + generateUniqueId(),
+      mainId: generateUniqueId(),
       opdPatientId: opdPatientId,
       opdCaseId: opdCaseId,
       opdId: opdId,
