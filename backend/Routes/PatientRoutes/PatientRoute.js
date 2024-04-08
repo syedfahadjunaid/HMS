@@ -14,19 +14,52 @@ require("../../DB/connection");
 
 const PatientModel = require("../../Models/PatientSchema/PatientSchema");
 
-const generateUniqueId = () => {
-  const date = new Date();
-  const year = date.getFullYear().toString();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-  // const hours = date.getHours().toString().padStart(2, "0");
-  // const minutes = date.getMinutes().toString().padStart(2, "0");
-  const seconds = date.getSeconds().toString().padStart(2, "0");
+// const generateUniqueId = () => {
+//   const date = new Date();
+//   const year = date.getFullYear().toString();
+//   const month = (date.getMonth() + 1).toString().padStart(2, "0");
+//   const day = date.getDate().toString().padStart(2, "0");
+//   // const hours = date.getHours().toString().padStart(2, "0");
+//   // const minutes = date.getMinutes().toString().padStart(2, "0");
+//   const seconds = date.getSeconds().toString().padStart(2, "0");
 
-  // const uniqueId = `${year}${month}${day}${hours}${minutes}${seconds}`;
-  const uniqueId = `${year}${month}${day}${seconds}`;
+//   // const uniqueId = `${year}${month}${day}${hours}${minutes}${seconds}`;
+//   const uniqueId = `${year}${month}${day}${seconds}`;
 
-  return uniqueId;
+//   return uniqueId;
+// };
+const generateUniqueId = async () => {
+  try {
+    // Get current date
+    const date = new Date();
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+
+    // Find the latest patient ID
+    const latestPatient = await PatientModel.findOne(
+      {},
+      {},
+      { sort: { patientId: -1 } }
+    );
+    // console.log(latestPatient)
+
+    // Extract the sequence part from the latest patient ID and increment it
+    let sequence = 1;
+    if (latestPatient) {
+      const latestPatientId = latestPatient.patientId;
+      const sequencePart = latestPatientId.substr(9, 4); // Assuming the sequence part starts from the 9th character
+      sequence = parseInt(sequencePart) + 1;
+    }
+
+    // Construct the new patient ID
+    const paddedSequence = sequence.toString().padStart(4, "0");
+    const uniqueId = `${year}${month}${day}${paddedSequence}`;
+
+    return uniqueId;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const storage = multer.diskStorage({
@@ -135,7 +168,7 @@ router.post(
       // }
 
       const newPatient = new PatientModel({
-        patientId: generateUniqueId(),
+        patientId: await generateUniqueId(),
         patientName: patientName,
         patientEmail: patientEmail,
         patientFatherName: patientFatherName,
