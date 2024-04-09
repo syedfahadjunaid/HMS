@@ -329,6 +329,7 @@ export default function OPD_PatientTable() {
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Payment Mode *</label>
             <select
+              required
               className='py-[10px] outline-none border-b bg-transparent'
               value={opdPatientPaymentMode}
               onChange={(e) => setOpdPatientPaymentMode(e.target.value)}>
@@ -416,7 +417,7 @@ export default function OPD_PatientTable() {
     setOpdDoctorId({ value: "", label: "" });
     setOpdPatientBloodPressure("");
     setOpdPatientStandardCharges("");
-    setOpdPatientPaymentMode("");
+    setOpdPatientPaymentMode("UPI");
     setOpdDoctorVisitDate("");
     setOpdPatientNotes("");
     setOpenUpdateModal(false);
@@ -548,6 +549,7 @@ export default function OPD_PatientTable() {
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Payment Mode *</label>
             <select
+              required
               className='py-[10px] outline-none border-b bg-transparent'
               value={opdPatientPaymentMode}
               onChange={(e) => setOpdPatientPaymentMode(e.target.value)}>
@@ -764,7 +766,7 @@ export default function OPD_PatientTable() {
 
   const config = [
     {
-      label: "UHID",
+      label: "OPD Bill No",
       render: (list) => list?.data?.mainId,
     },
     {

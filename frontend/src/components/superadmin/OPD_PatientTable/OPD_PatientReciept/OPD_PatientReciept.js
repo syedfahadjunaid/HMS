@@ -90,13 +90,13 @@ export default function OPD_PatientReciept() {
                         City Hospital and Trauma Centre
                       </p>
                       <p className='text-[14px]'>
-                        Contact no. 9119900861,9119900862
+                        Contact no. 9119900861, 9119900862
                       </p>
                     </div>
                   </div>
                   <div className='flex text-[12px] gap-[10px]'>
                     <p className='w-[250px]'>
-                      C1-C2 cinder dump complex ,near Alambagh bus stand ,Kanpur
+                      C1-C2 Cinder Dump Complex, near Alambagh bus stand, Kanpur
                       road, Lucknow 226005
                     </p>
                   </div>

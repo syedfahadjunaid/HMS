@@ -33,8 +33,8 @@ const generateUniqueId = async () => {
     // Get current date
     const date = new Date();
     const year = date.getFullYear().toString();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
+    // const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    // const day = date.getDate().toString().padStart(2, "0");
 
     // Find the latest patient ID
     const latestPatient = await PatientModel.findOne(
@@ -53,8 +53,8 @@ const generateUniqueId = async () => {
     }
 
     // Construct the new patient ID
-    const paddedSequence = sequence.toString().padStart(4, "0");
-    const uniqueId = `${year}${month}${day}${paddedSequence}`;
+    const paddedSequence = sequence.toString().padStart(6, "0");
+    const uniqueId = `${year}${paddedSequence}`;
 
     return uniqueId;
   } catch (error) {

@@ -68,8 +68,8 @@ export default function PatientTable() {
   //   startDate: new Date(),
   // });
   const [patientAge, setPatientAge] = React.useState("");
-  const [patientPhone, setPatientPhone] = React.useState();
-  const [patientPhone2, setPatientPhone2] = React.useState();
+  const [patientPhone, setPatientPhone] = React.useState("");
+  const [patientPhone2, setPatientPhone2] = React.useState("");
   const [patientHeight, setPatientHeight] = React.useState("");
   const [patientWeight, setPatientWeight] = React.useState("");
   const [patientBloodGroup, setPatientBloodGroup] = React.useState("");
@@ -82,6 +82,15 @@ export default function PatientTable() {
   const [patientZipCode, setPatientZipCode] = React.useState("");
   const [patientImage, setPatientImage] = React.useState();
   const [patientGender, setPatientGender] = React.useState("Female");
+
+  const [sameAsLocalAddress, setSameAsLocalAddress] = React.useState(false);
+
+  React.useEffect(() => {
+    // console.log(sameAsLocalAddress);
+    if (sameAsLocalAddress === true) {
+      setPatientPermanentAddress(patientLocalAddress);
+    }
+  }, [sameAsLocalAddress, patientLocalAddress]);
 
   // Snackbar--------------------
   // ----Succcess
@@ -312,7 +321,30 @@ export default function PatientTable() {
 
   // Add Modal
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setPatientId("");
+    setPatientName("");
+    setPatientEmail("");
+    setPatientFatherName("");
+    setPatientHusbandName("");
+    // setPatientDateOfBirth(data?.patientDateOfBirth);
+    setPatientAge("");
+    setPatientPhone("");
+    setPatientPhone2("");
+    setPatientHeight("");
+    setPatientWeight("");
+    setPatientBloodGroup("");
+    setPatientLocalAddress("");
+    setPatientPermanentAddress("");
+    setPatientCity("");
+    setPatientState("");
+    setPatientCountry("");
+    setPatientZipCode("");
+    setPatientGender("Female");
+
+    setSameAsLocalAddress(false);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
 
   // Update Modal
@@ -338,6 +370,7 @@ export default function PatientTable() {
     setPatientZipCode(data?.patientZipCode);
     setPatientGender(data?.patientGender);
     setOpenUpdateModal(true);
+    setSameAsLocalAddress(false);
   };
   const handleCloseUpdateModal = () => setOpenUpdateModal(false);
 
@@ -366,6 +399,8 @@ export default function PatientTable() {
       patientPhone,
       patientPhone2,
       patientAge,
+      patientLocalAddress,
+      patientPermanentAddress,
       // patientDateOfBirth,
     };
 
@@ -418,6 +453,8 @@ export default function PatientTable() {
 
     addPatient(formData);
   };
+
+  // console.log(patientPermanentAddress);
 
   const modalADDPatient = (
     <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
@@ -659,19 +696,33 @@ export default function PatientTable() {
               className='py-[10px] outline-none border-b'
               type='text'
               placeholder='Enter patient local address'
-              {...register("patientLocalAddress")}
+              value={patientLocalAddress}
+              // {...register("patientLocalAddress")}
+              onChange={(e) => setPatientLocalAddress(e.target.value)}
             />
             {/* {errors.patientLocalAddress && (
               <span className="text-[red]">This field is required</span>
             )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Permanent Address</label>
+            <div className='flex gap-[1rem]'>
+              <label className='text-[14px]'>Permanent Address</label>
+              <div className='flex gap-[10px] items-center'>
+                <input
+                  type='checkbox'
+                  onChange={(e) => setSameAsLocalAddress(e.target.checked)}
+                />
+                <p className='text-[12px]'>Same as local address</p>
+              </div>
+            </div>
             <textarea
               className='py-[10px] outline-none border-b'
               type='text'
+              defaultValue={patientPermanentAddress}
+              disabled={sameAsLocalAddress === true ? true : false}
               placeholder='Enter patient permanent address'
-              {...register("patientPermanentAddress")}
+              // {...register("patientPermanentAddress")}
+              onChange={(e) => setPatientPermanentAddress(e.target.value)}
             />
             {/* {errors.patientPermanentAddress && (
               <span className="text-[red]">This field is required</span>
@@ -1014,6 +1065,44 @@ export default function PatientTable() {
               type='text'
               placeholder='Enter patient local address'
               value={patientLocalAddress}
+              // {...register("patientLocalAddress")}
+              onChange={(e) => setPatientLocalAddress(e.target.value)}
+            />
+            {/* {errors.patientLocalAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <div className='flex gap-[1rem]'>
+              <label className='text-[14px]'>Permanent Address</label>
+              <div className='flex gap-[10px] items-center'>
+                <input
+                  type='checkbox'
+                  onChange={(e) => setSameAsLocalAddress(e.target.checked)}
+                />
+                <p className='text-[12px]'>Same as local address</p>
+              </div>
+            </div>
+            <textarea
+              className='py-[10px] outline-none border-b'
+              type='text'
+              value={patientPermanentAddress}
+              disabled={sameAsLocalAddress === true ? true : false}
+              placeholder='Enter patient permanent address'
+              // {...register("patientPermanentAddress")}
+              onChange={(e) => setPatientPermanentAddress(e.target.value)}
+            />
+            {/* {errors.patientPermanentAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
+          </div>
+          {/* <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Local Address</label>
+            <textarea
+              className='py-[10px] outline-none border-b'
+              type='text'
+              placeholder='Enter patient local address'
+              value={patientLocalAddress}
               onChange={(e) => setPatientLocalAddress(e.target.value)}
             />
           </div>
@@ -1026,7 +1115,7 @@ export default function PatientTable() {
               value={patientPermanentAddress}
               onChange={(e) => setPatientPermanentAddress(e.target.value)}
             />
-          </div>
+          </div> */}
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>City</label>
             <input
