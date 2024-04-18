@@ -10,7 +10,7 @@ import Snackbars from "../../SnackBar";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import PaginationComponent from "../../Pagination";
-import { CiViewList } from "react-icons/ci";
+import { CiSearch, CiViewList } from "react-icons/ci";
 
 function EmployeeCompensationTable() {
   const style = {
@@ -48,6 +48,8 @@ function EmployeeCompensationTable() {
     setOpen1(false);
     setIsLoading(false);
   };
+  const [searchValue, setSearchValue] = useState();
+  const [searchResult, setSearchResult] = useState([]);
   const { adminLoggedInData } = useSelector((state) => state?.AdminState);
 
   const [allCompensationData, setAllCompensationData] = useState();
@@ -88,6 +90,14 @@ function EmployeeCompensationTable() {
     if (resuult) {
       handleClose();
       setSnackBarData({ open: true, message: resuult?.message });
+      getAllCompensitionDataHandle();
+    }
+    if (!resuult) {
+      setSnackBarData({
+        open: true,
+        message: resuult?.message,
+        severity: "warning",
+      });
     }
     console.log(resuult);
     setIsLoading(false);
@@ -112,6 +122,15 @@ function EmployeeCompensationTable() {
     formData.append("EffectiveDate", compensationData?.effectiveData);
     formData.append("Status", compensationData?.status);
     const result = await updateCompensationData(compensationId, formData);
+    if (result) {
+      setSnackBarData({
+        ...snackBarData,
+        open: true,
+        message: result?.data?.message,
+      });
+      getAllCompensitionDataHandle();
+      handleClose1();
+    }
     if (!result) {
       console.log("nothing");
       setSnackBarData({
@@ -261,17 +280,6 @@ function EmployeeCompensationTable() {
       </form>
     </div>
   );
-  const date = (dateTime) => {
-    const newdate = new Date(dateTime);
-
-    return newdate.toLocaleDateString();
-  };
-
-  const time = (dateTime) => {
-    const newDate = new Date(dateTime);
-
-    return newDate.toLocaleTimeString();
-  };
   const config = [
     {
       label: "S N",
@@ -312,12 +320,26 @@ function EmployeeCompensationTable() {
       // ),
     },
   ];
+  const getValueHandle = async () => {
+    const result = await allCompensationData?.data?.filter((item) => {
+      if (searchValue !== "") {
+        return item?.EmpolyeeID?.toLowerCase()?.includes(
+          searchValue?.toLowerCase()
+        );
+      }
+    });
+    setSearchResult(result && result);
+  };
+  useEffect(() => {
+    getValueHandle();
+  }, [searchValue]);
   useEffect(() => {
     getAllCompensitionDataHandle();
   }, []);
   useEffect(() => {
     console.log(compensationData);
   }, [compensationData]);
+
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -338,10 +360,27 @@ function EmployeeCompensationTable() {
           </button>
         </span>
       </form>
-      <div className="flex justify-start">
-        <h2 className="border-b-[4px] border-[#3497F9]">
+      <div className="flex flex-col justify-start gap-2">
+        <h2 className="border-b-[4px] border-[#3497F9] w-fit">
           Compensation Details
         </h2>
+        <span className="w-[20rem] border-[2px] rounded flex bg-[#F4F6F6] flex items-center justify-center">
+          <input
+            type="text"
+            placeholder="Search Employee By Id"
+            className="w-11/12 border-none outline-none pl-[5px] h-[2rem] bg-[#F4F6F6]"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+
+          <button
+            className="bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md "
+            onClick={() => [setSearchResult([]), setSearchValue("")]}
+            disabled={searchValue != "" ? false : true}
+          >
+            Reset
+          </button>
+        </span>
       </div>
       {/* <Table config={config} /> */}
       <div>
@@ -354,50 +393,95 @@ function EmployeeCompensationTable() {
             ))}
           </thead>
           <tbody>
-            {allCompensationData?.data
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              ?.map((item, index) => (
-                <tr key={index}>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {index + 1}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.employee?.[0]?.fullname}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.employee?.[0]?.mainId}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.employee?.[0]?.bloodgroup}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.employee?.[0]?.PAN}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.EffectiveDate}
-                  </td>
-                  <td>
-                    <div className="flex gap-[10px] justify-center">
-                      <div
-                        // onClick={() => handleOpenUpdateModal(list)}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      >
-                        <CiViewList className="text-[25px] text-[#96999C]" />
-                      </div>
+            {searchResult && searchValue != ""
+              ? searchResult
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.fullname}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.mainId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.bloodgroup}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.PAN}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.EffectiveDate}
+                      </td>
+                      <td>
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            // onClick={() => handleOpenUpdateModal(list)}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          >
+                            <CiViewList className="text-[25px] text-[#96999C]" />
+                          </div>
 
-                      <div
-                        onClick={() => [
-                          handleOpen1(),
-                          getOneCompensationDataHandle(item?._id),
-                        ]}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      >
-                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                          <div
+                            onClick={() => [
+                              handleOpen1(),
+                              getOneCompensationDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          >
+                            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              : allCompensationData?.data
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.fullname}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.mainId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.bloodgroup}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.employee?.[0]?.PAN}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.EffectiveDate}
+                      </td>
+                      <td>
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            // onClick={() => handleOpenUpdateModal(list)}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          >
+                            <CiViewList className="text-[25px] text-[#96999C]" />
+                          </div>
+
+                          <div
+                            onClick={() => [
+                              handleOpen1(),
+                              getOneCompensationDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          >
+                            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
           </tbody>
         </table>
         <PaginationComponent

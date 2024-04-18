@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { IoMdAdd, IoMdPrint } from "react-icons/io";
-import { CiViewList } from "react-icons/ci";
+import { CiSearch, CiViewList } from "react-icons/ci";
 import { FaDownload } from "react-icons/fa";
 import img from "../../../assets/20180125_001_1_.jpg";
 import img1 from "../../../assets/logo.png";
@@ -69,6 +69,7 @@ function PatientsTable() {
   const handleClose1 = () => setOpen1(false);
   const [consumables, setConsumables] = useState([]);
   const [medicines, setMedicines] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
 
   const addConsumableHandle = (e) => {
     e.preventDefault();
@@ -148,6 +149,12 @@ function PatientsTable() {
     );
     return sumWithInitial;
   }, [medicines]);
+  const getSearchValueHandle = () => {
+    console.log(searchValue);
+  };
+  useEffect(() => {
+    getSearchValueHandle();
+  }, [searchValue]);
   useEffect(() => {
     // console.log(consumables);
     getConsumableTotalAmountHandle();
@@ -160,8 +167,17 @@ function PatientsTable() {
 
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
-      <div className="flex justify-start">
-        <h2 className="border-b-[4px] border-[#3497F9]">Patients List</h2>
+      <div className="flex justify-start flex-col gap-2">
+        <h2 className="border-b-[4px] border-[#3497F9] w-fit">Patients List</h2>
+        <span className="w-[20rem] border-[2px] rounded flex bg-[#F4F6F6] flex items-center justify-center">
+          <input
+            type="text"
+            placeholder="Search Patients By Uhid"
+            className="w-11/12 border-none outline-none pl-[5px] h-[2rem] bg-[#F4F6F6]"
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <CiSearch className="text-[1rem]" />
+        </span>
       </div>
       <div>
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">

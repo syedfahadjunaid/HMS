@@ -25,6 +25,8 @@ function EmployeeBackgroundVerificationForm() {
     outline: "transparent",
     overflowY: "scroll",
   };
+  const [searchValue, setSearchValue] = useState();
+  const [searchResult, setSearchResult] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event, newPage) => {
@@ -115,12 +117,14 @@ function EmployeeBackgroundVerificationForm() {
     });
     console.log(result);
   };
+
   useEffect(() => {
     getAllBackGroundVericationDataHandle();
   }, []);
   useEffect(() => {
     console.log(getSingleBackgroundVerificationData);
   }, [getSingleBackgroundVerificationData]);
+
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">
@@ -224,6 +228,22 @@ function EmployeeBackgroundVerificationForm() {
           Submit
         </button>
       </form>
+      <div className="w-[23rem] flex items-center justify-center gap-1">
+        <input
+          type="text"
+          placeholder="Search By Appoiment Id"
+          value={searchValue}
+          className="w-11/12 border-[2px] h-[2rem] pl-[5px] outline-none rounded bg-[#F4F6F6]"
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+        <button
+          className="bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md "
+          onClick={() => [setSearchResult([]), setSearchValue("")]}
+          disabled={searchValue != "" ? false : true}
+        >
+          Reset
+        </button>
+      </div>
       <div>
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
           <thead>
@@ -246,43 +266,81 @@ function EmployeeBackgroundVerificationForm() {
             </tr>
           </thead>
           <tbody>
-            {allBackgroundVerification
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              ?.map((item, index) => (
-                <tr key={index}>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {index + 1}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.EmployeeId}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    <p>
-                      {" "}
-                      {item.isVarified === true ? "Completed" : "InProcess"}
-                    </p>
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.comments}
-                  </td>
+            {searchResult && searchValue != ""
+              ? searchResult
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.EmployeeId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        <p>
+                          {" "}
+                          {item.isVarified === true ? "Completed" : "InProcess"}
+                        </p>
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.comments}
+                      </td>
 
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
-                    <div className="flex gap-[10px] justify-center">
-                      <div
-                        onClick={() => [
-                          handleOpen(),
-                          getOneBackgroundVerificationDataHandle(
-                            item?.EmployeeId
-                          ),
-                        ]}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      >
-                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            onClick={() => [
+                              handleOpen(),
+                              getOneBackgroundVerificationDataHandle(
+                                item?.EmployeeId
+                              ),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          >
+                            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              : allBackgroundVerification
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.EmployeeId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        <p>
+                          {" "}
+                          {item.isVarified === true ? "Completed" : "InProcess"}
+                        </p>
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.comments}
+                      </td>
+
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            onClick={() => [
+                              handleOpen(),
+                              getOneBackgroundVerificationDataHandle(
+                                item?.EmployeeId
+                              ),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          >
+                            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
           </tbody>
         </table>
         <PaginationComponent
@@ -369,7 +427,7 @@ function EmployeeBackgroundVerificationForm() {
                     >
                       <option value="">Select Status</option>
                       <option value={true}>Active</option>
-                      <option value={false}>IsActive</option>
+                      <option value={false}>InActive</option>
                     </select>
                   </span>
                 </div>

@@ -52,6 +52,8 @@ function EmployeeAppoimenttable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const [searchValue, setSearchValue] = useState();
+  const [searchResult, setSearchResult] = useState([]);
   const { adminLoggedInData } = useSelector((state) => state?.AdminState);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -81,26 +83,20 @@ function EmployeeAppoimenttable() {
       [e.target.name]: e.target.value,
     });
   };
-  const date = (dateTime) => {
-    const newdate = new Date(dateTime);
-
-    return newdate.toLocaleDateString();
-  };
-
-  const time = (dateTime) => {
-    const newDate = new Date(dateTime);
-
-    return newDate.toLocaleTimeString();
-  };
   const config = [
     {
       label: "S N",
       // render: (list) => list.tableId,
     },
     {
+      label: "Appointments Id",
+      // render: (list) => list.tableId,
+    },
+    {
       label: "Appointments Name",
       // render: (list) => list.tableId,
     },
+
     {
       label: "Date Of Joining",
       // render: (list) => list.adminName,
@@ -588,6 +584,19 @@ function EmployeeAppoimenttable() {
       </div>
     </div>
   );
+  const getValueHandle = async () => {
+    const result = await allAppoimentData?.filter((item) => {
+      if (searchValue !== "") {
+        return item?.mainId
+          ?.toLowerCase()
+          ?.includes(searchValue?.toLowerCase());
+      }
+    });
+    setSearchResult(result && result);
+  };
+  useEffect(() => {
+    getValueHandle();
+  }, [searchValue]);
   useEffect(() => {
     getAllAppoimentDataHandle();
   }, []);
@@ -605,6 +614,22 @@ function EmployeeAppoimenttable() {
           Add Appointments
         </button>
       </div>
+      <div className="w-[23rem] flex items-center justify-center gap-1">
+        <input
+          type="text"
+          placeholder="Search By Appoiment Id"
+          value={searchValue}
+          className="w-11/12 border-[2px] h-[2rem] pl-[5px] outline-none rounded bg-[#F4F6F6]"
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+        <button
+          className="bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md "
+          onClick={() => [setSearchResult([]), setSearchValue("")]}
+          disabled={searchValue != "" ? false : true}
+        >
+          Reset
+        </button>
+      </div>
       <div>
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
           <thead>
@@ -615,49 +640,102 @@ function EmployeeAppoimenttable() {
             ))}
           </thead>
           <tbody>
-            {allAppoimentData
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              ?.map((item, index) => (
-                <tr key={index}>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {index + 1}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.fullName}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.dataofJoin}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.basicSalary}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.Designation}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
-                    <div className="flex gap-[10px] justify-center">
-                      <div
-                        onClick={() => [
-                          handleOpen2(),
-                          getOneAppoimentDataHandle(item?._id),
-                        ]}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      >
-                        <CiViewList className="text-[25px] text-[#96999C]" />
-                      </div>
-                      <div
-                        onClick={() => [
-                          handleOpen1(),
-                          getOneAppoimentDataHandle(item?._id),
-                        ]}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      >
-                        <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+            {searchResult && searchValue != ""
+              ? searchResult
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.mainId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.fullName}
+                      </td>
+
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.dataofJoin}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.basicSalary}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.Designation}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            onClick={() => [
+                              handleOpen2(),
+                              getOneAppoimentDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          >
+                            <CiViewList className="text-[25px] text-[#96999C]" />
+                          </div>
+                          <div
+                            onClick={() => [
+                              handleOpen1(),
+                              getOneAppoimentDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          >
+                            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              : allAppoimentData
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.mainId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.fullName}
+                      </td>
+
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.dataofJoin}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.basicSalary}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.Designation}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            onClick={() => [
+                              handleOpen2(),
+                              getOneAppoimentDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          >
+                            <CiViewList className="text-[25px] text-[#96999C]" />
+                          </div>
+                          <div
+                            onClick={() => [
+                              handleOpen1(),
+                              getOneAppoimentDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          >
+                            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+            {}
           </tbody>
         </table>
         <PaginationComponent

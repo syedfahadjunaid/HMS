@@ -19,6 +19,8 @@ function EmployeePreOnBoarding() {
     outline: "transparent",
     overflowY: "scroll",
   };
+  const [searchValue, setSearchValue] = useState();
+  const [searchResult, setSearchResult] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [allAppoimentData, setAllAppimentData] = useState();
@@ -80,6 +82,10 @@ function EmployeePreOnBoarding() {
       // render: (list) => list.tableId,
     },
     {
+      label: "Appointments Id",
+      // render: (list) => list.tableId,
+    },
+    {
       label: "Date Of Joining",
       // render: (list) => list.adminName,
     },
@@ -110,10 +116,39 @@ function EmployeePreOnBoarding() {
   useEffect(() => {
     getAllAppoimentDataHandle();
   }, []);
+  const getSearchValueHandle = async () => {
+    const result = await allAppoimentData?.filter((item) => {
+      if (searchValue !== "") {
+        return item?.mainId
+          ?.toLowerCase()
+          ?.includes(searchValue?.toLowerCase());
+      }
+    });
+    setSearchResult(result && result);
+  };
+  useEffect(() => {
+    getSearchValueHandle();
+  }, [searchValue]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">
         <h2 className="border-b-[4px] border-[#3497F9]">All Appoiment List</h2>
+      </div>
+      <div className="w-[23rem] flex items-center justify-center gap-1">
+        <input
+          type="text"
+          placeholder="Search By Appoiment Id"
+          value={searchValue}
+          className="w-11/12 border-[2px] h-[2rem] pl-[5px] outline-none rounded bg-[#F4F6F6]"
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+        <button
+          className="bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md "
+          onClick={() => [setSearchResult([]), setSearchValue("")]}
+          disabled={searchValue != "" ? false : true}
+        >
+          Reset
+        </button>
       </div>
       <div>
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -125,40 +160,81 @@ function EmployeePreOnBoarding() {
             ))}
           </thead>
           <tbody>
-            {allAppoimentData
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              ?.map((item, index) => (
-                <tr key={index}>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {index + 1}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.fullName}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.dataofJoin}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.basicSalary}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                    {item?.Designation}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
-                    <div className="flex gap-[10px] justify-center">
-                      <div
-                        onClick={() => [
-                          handleOpen(),
-                          getOneAppoimentDataHandle(item?._id),
-                        ]}
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      >
-                        <CiViewList className="text-[25px] text-[#96999C]" />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+            {searchResult && searchValue != ""
+              ? searchResult
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.fullName}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.mainId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.dataofJoin}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.basicSalary}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.Designation}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            onClick={() => [
+                              handleOpen(),
+                              getOneAppoimentDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          >
+                            <CiViewList className="text-[25px] text-[#96999C]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              : allAppoimentData
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {index + 1}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.fullName}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.mainId}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.dataofJoin}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.basicSalary}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
+                        {item?.Designation}
+                      </td>
+                      <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px] flex-row">
+                        <div className="flex gap-[10px] justify-center">
+                          <div
+                            onClick={() => [
+                              handleOpen(),
+                              getOneAppoimentDataHandle(item?._id),
+                            ]}
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          >
+                            <CiViewList className="text-[25px] text-[#96999C]" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
           </tbody>
         </table>
         <PaginationComponent

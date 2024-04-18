@@ -49,7 +49,10 @@ function EmployeeCreationForm() {
     }
     setIsLoading(false);
   };
-
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-start">
@@ -61,9 +64,10 @@ function EmployeeCreationForm() {
           className="w-full grid grid-cols-3 gap-[10px] items-start justify-start mt-[10px]"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <span className="border-[2px] border-[#C8C8C8]  rounded flex-wrap">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Title</p>
             <select
-              className="w-full h-[40px] outline-none"
+              className="w-full h-[40px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               {...register("title", {
                 required: true,
               })}
@@ -73,12 +77,15 @@ function EmployeeCreationForm() {
               <option>Mrs</option>
               <option>Miss</option>
             </select>
-            {errors?.title && <p className="errors ">This Field is Required</p>}
+            {errors?.title && (
+              <p className="errors w-fit">This Field is Required</p>
+            )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8] rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Full Name</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Full  name  *"
               {...register("fullName", {
                 required: true,
@@ -89,24 +96,29 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.fullName && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Date Of Birth</p>
             <input
               type="date"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
+              max={new Date().toISOString().split("T")[0]}
               placeholder="DOB *"
               {...register("dob", {
                 required: true,
               })}
             />
-            {errors?.dob && <p className="errors ">This Field is Required</p>}
+            {errors?.dob && (
+              <p className="errors w-fit">This Field is Required</p>
+            )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Zip Code</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Zip  code *"
               {...register("zipcode", {
                 required: true,
@@ -116,13 +128,14 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.zipcode && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">State</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="State*"
               {...register("state", {
                 required: true,
@@ -132,12 +145,15 @@ function EmployeeCreationForm() {
                 },
               })}
             />
-            {errors?.state && <p className="errors ">This Field is Required</p>}
+            {errors?.state && (
+              <p className="errors w-fit">This Field is Required</p>
+            )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">City</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="City*"
               {...register("city", {
                 required: true,
@@ -147,12 +163,15 @@ function EmployeeCreationForm() {
                 },
               })}
             />
-            {errors?.city && <p className="errors ">This Field is Required</p>}
+            {errors?.city && (
+              <p className="errors w-fit">This Field is Required</p>
+            )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Nationality</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Nationality*"
               {...register("nationality", {
                 required: true,
@@ -163,13 +182,14 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.nationality && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Country</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Country*"
               {...register("country", {
                 required: true,
@@ -180,13 +200,14 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.country && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Aadhar Number</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Aadhar Number*"
               {...register("adharnumber", {
                 required: true,
@@ -196,13 +217,14 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.adharnumber && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Blood Group</p>
             <select
               onChange={(e) => console.log(e.target.value)}
-              className="w-full h-[40px] outline-none"
+              className="w-full h-[40px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               {...register("bloodgroup", {
                 required: true,
               })}
@@ -218,14 +240,15 @@ function EmployeeCreationForm() {
               <option>AB negative</option>
             </select>
             {errors?.bloodgroup && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Offical Email Id</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
-              placeholder="Work Email ID*"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
+              placeholder="Offical Email Id*"
               {...register("workEmailId", {
                 required: true,
                 pattern:
@@ -233,12 +256,13 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.workEmailId && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Marital Status</p>
             <select
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               {...register("maritalStatus", {
                 required: true,
               })}
@@ -248,13 +272,14 @@ function EmployeeCreationForm() {
               <option>Married</option>
             </select>
             {errors?.maritalStatus && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">PanCard Number</p>
             <input
               type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="PAN Number"
               {...register("panNumber", {
                 required: true,
@@ -263,12 +288,13 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.panNumber && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Employee Status</p>
             <select
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               {...register("employeeStatus", {
                 required: true,
               })}
@@ -278,38 +304,41 @@ function EmployeeCreationForm() {
               <option>InActive</option>
             </select>
             {errors?.employeeStatus && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-
-          <div className="flex align-center gap-[10px]">
-            <span className="flex align-center gap-[5px]">
-              <input
-                type="radio"
-                name="gender"
-                value="male"
-                {...register("gender", {
-                  required: true,
-                })}
-              />
-              <p>Male</p>
-            </span>
-            <span className="flex align-center gap-[5px]">
-              <input
-                type="radio"
-                name="gender"
-                value={"female"}
-                {...register("gender", {
-                  required: true,
-                })}
-              />
-              <p>Female</p>
-            </span>
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Employee Gender</p>
+            <div className="flex align-center gap-[10px] h-[40px]">
+              <span className="flex align-center gap-[5px]">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  {...register("gender", {
+                    required: true,
+                  })}
+                />
+                <p className="flex items-center">Male</p>
+              </span>
+              <span className="flex align-center gap-[5px]">
+                <input
+                  type="radio"
+                  name="gender"
+                  value={"female"}
+                  {...register("gender", {
+                    required: true,
+                  })}
+                />
+                <p className="flex items-center">Female</p>
+              </span>
+            </div>
             {errors?.gender && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
-          </div>
-          <span>
+          </span>
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Image</p>
             <input
               type="file"
               className="w-full h-[40px] pl-[5px] outline-none"
@@ -335,7 +364,9 @@ function EmployeeCreationForm() {
               })}
               onChange={(e) => setImage(e.target.files[0])}
             />
-            {errors?.image && <p className="errors ">This Field is Required</p>}
+            {errors?.image && (
+              <p className="errors w-fit">This Field is Required</p>
+            )}
           </span>
           <span>
             <img
@@ -351,10 +382,11 @@ function EmployeeCreationForm() {
           <br />
           <span></span>
 
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Current Address</p>
             <textarea
               rows={5}
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Enter Current Address"
               {...register("currentAddress", {
                 required: true,
@@ -365,13 +397,14 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.currentAddress && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Permanent Address</p>
             <textarea
               rows={5}
-              className="w-full h-[40px] pl-[5px] outline-none"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Enter Permanent Address"
               {...register("permanentAddress", {
                 required: true,
@@ -382,7 +415,7 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.permanentAddress && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
           <span></span>
@@ -393,10 +426,11 @@ function EmployeeCreationForm() {
           <br />
           <span></span>
 
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Basic Salary</p>
             <input
-              type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              type="number"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Enter Basic Salary"
               {...register("basisSalary", {
                 required: true,
@@ -405,33 +439,35 @@ function EmployeeCreationForm() {
               })}
             />
             {errors?.basisSalary && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Special Allowance</p>
             <input
-              type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              type="number"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="Enter Special Allowance"
               {...register("specialAllowance", {
                 pattern: /^[0-9+-]+$/,
               })}
             />
             {errors?.specialAllowance && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
-          <span className="border-[2px] border-[#C8C8C8]  rounded ">
+          <span className="flex flex-col gap-1">
+            <p className="w-fit">Incentive</p>
             <input
-              type="text"
-              className="w-full h-[40px] pl-[5px] outline-none"
+              type="number"
+              className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded flex-wrap"
               placeholder="INCENTIVE"
               {...register("incentive", {
                 pattern: /^[0-9+-]+$/,
               })}
             />
             {errors?.incentive && (
-              <p className="errors ">This Field is Required</p>
+              <p className="errors w-fit">This Field is Required</p>
             )}
           </span>
           {!isLoading ? (

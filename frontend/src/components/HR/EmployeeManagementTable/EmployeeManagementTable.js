@@ -27,6 +27,8 @@ function EmployeeManagementTable() {
     outline: "transparent",
     overflowY: "scroll",
   };
+  const [searchValue, setSearchValue] = useState();
+  const [searchResult, setSearchResult] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event, newPage) => {
@@ -98,6 +100,7 @@ function EmployeeManagementTable() {
       panNumber: result?.data?.PAN,
       employeeStatus: result?.data?.empolyeeType,
       gender: result?.data?.gender,
+      image: result?.data?.image,
     });
     console.log(result);
   };
@@ -197,11 +200,40 @@ function EmployeeManagementTable() {
     return list.adminEmail;
   };
 
+  const getSearchValueHandle = async () => {
+    const result = await employeeData?.filter((item) => {
+      if (searchValue !== "") {
+        return item?.mainId
+          ?.toLowerCase()
+          ?.includes(searchValue?.toLowerCase());
+      }
+    });
+    setSearchResult(result && result);
+  };
+  useEffect(() => {
+    getSearchValueHandle();
+  }, [searchValue]);
   return (
     <Suspense fallback={<>...</>}>
       <div className="flex flex-col gap-[1rem] p-[1rem]">
         <div className="flex justify-start">
           <h2 className="border-b-[4px] border-[#3497F9]">Candidate List</h2>
+        </div>
+        <div className="w-[23rem] flex items-center justify-center gap-1">
+          <input
+            type="text"
+            placeholder="Search By Appoiment Id"
+            value={searchValue}
+            className="w-11/12 border-[2px] h-[2rem] pl-[5px] outline-none rounded bg-[#F4F6F6]"
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <button
+            className="bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md "
+            onClick={() => [setSearchResult([]), setSearchValue("")]}
+            disabled={searchValue != "" ? false : true}
+          >
+            Reset
+          </button>
         </div>
         <div>
           <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -299,16 +331,17 @@ function EmployeeManagementTable() {
               component="h2"
               className="border-b-[4px] border-[#3497F9] w-fit"
             >
-              Appointments
+              Employee Information
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <form
                 className="w-full grid grid-cols-3 gap-[10px] items-start justify-start mt-[10px]"
                 onSubmit={(e) => updateEmployeeDataHandle(e)}
               >
-                <span className="border-[2px] border-[#C8C8C8]  rounded flex-wrap">
+                <span className="flex flex-col justify-start flex-wrap">
+                  <p className="w-fit">Title</p>
                   <select
-                    className="w-full h-[40px] outline-none"
+                    className="w-full h-[40px] outline-none border-[2px] border-[#C8C8C8] rounded"
                     value={employeeEditData?.title}
                     onChange={getHandleValue}
                     name="title"
@@ -319,89 +352,98 @@ function EmployeeManagementTable() {
                     <option>Miss</option>
                   </select>
                 </span>
-                <span className="border-[2px] border-[#C8C8C8] rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Full Name</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="Full  name  *"
                     name="fullName"
                     value={employeeEditData?.fullName}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Date Of Birth</p>
                   <input
                     type="date"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="DOB *"
                     name="dob"
                     value={employeeEditData?.dob}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">zipCode</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="Zip  code *"
                     name="zipCode"
                     value={employeeEditData?.zipCode}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">State</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="State*"
                     name="State"
                     value={employeeEditData?.State}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">City</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="City*"
                     name="city"
                     value={employeeEditData?.city}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Nationality</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="Nationality*"
                     name="nationality"
                     value={employeeEditData?.nationality}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Country</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="Country*"
                     name="country"
                     value={employeeEditData?.country}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Addhar Number</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="Aadhar Number*"
                     name="addharNumber"
                     value={employeeEditData?.addharNumber}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Blood Group</p>
                   <select
-                    className="w-full h-[40px] outline-none"
+                    className="w-full h-[40px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     onChange={getHandleValue}
                     name="bloodGroup"
                     value={employeeEditData?.bloodGroup}
@@ -417,19 +459,21 @@ function EmployeeManagementTable() {
                     <option>AB negative</option>
                   </select>
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Offical EmailId</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="Work Email ID*"
                     name="workEmail"
                     value={employeeEditData?.workEmail}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Material Status</p>
                   <select
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     onChange={getHandleValue}
                     name="materialStatus"
                     value={employeeEditData?.materialStatus}
@@ -439,19 +483,21 @@ function EmployeeManagementTable() {
                     <option>Married</option>
                   </select>
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">PanCard Number</p>
                   <input
                     type="text"
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     placeholder="PAN Number"
                     name="panNumber"
                     value={employeeEditData?.panNumber}
                     onChange={getHandleValue}
                   />
                 </span>
-                <span className="border-[2px] border-[#C8C8C8]  rounded ">
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Employement Status</p>
                   <select
-                    className="w-full h-[40px] pl-[5px] outline-none"
+                    className="w-full h-[40px] pl-[5px] outline-none border-[2px] border-[#C8C8C8]  rounded"
                     onChange={getHandleValue}
                     name="employeeStatus"
                     value={employeeEditData?.employeeStatus}
@@ -461,30 +507,47 @@ function EmployeeManagementTable() {
                     <option>InActive</option>
                   </select>
                 </span>
-
-                <div className="flex align-center gap-[10px]">
-                  <span className="flex align-center gap-[5px]">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      onChange={getHandleValue}
-                      required
-                    />
-                    <p>Male</p>
-                  </span>
-                  <span className="flex align-center gap-[5px]">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value={"female"}
-                      onChange={getHandleValue}
-                      required
-                    />
-                    <p>Female</p>
-                  </span>
-                </div>
+                <span className="flex flex-col justify-start">
+                  <p className="w-fit">Gender</p>
+                  <div className="flex align-center gap-[10px]">
+                    <span className="flex align-center gap-[5px]">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="male"
+                        onChange={getHandleValue}
+                        checked={
+                          employeeEditData?.gender === "male" ? true : false
+                        }
+                        required
+                      />
+                      <p>Male</p>
+                    </span>
+                    <span className="flex align-center gap-[5px]">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value={"female"}
+                        onChange={getHandleValue}
+                        checked={
+                          employeeEditData?.gender === "female" ? true : false
+                        }
+                        required
+                      />
+                      <p>Female</p>
+                    </span>
+                  </div>
+                </span>
                 <span>
+                  <img
+                    src={`${
+                      process.env.React_App_Base_Image_Url +
+                      employeeEditData?.image
+                    }`}
+                    alt="employee "
+                  />
+                </span>
+                <span className="col-span-3">
                   <input
                     type="file"
                     className="w-full h-[40px] pl-[5px] outline-none"
@@ -505,7 +568,7 @@ function EmployeeManagementTable() {
                 <span></span>
 
                 <button className="bg-[#3497F9] text-white p-[10px] rounded-md w-[150px]">
-                  Add Employee
+                  Update Employee
                 </button>
               </form>
             </Typography>
