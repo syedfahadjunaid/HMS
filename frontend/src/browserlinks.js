@@ -56,6 +56,25 @@ const browserLinks = {
       Patientlist: "Patient List",
     },
   },
+  Accountant: {
+    category: "/Accountant",
+    internalPages: {
+      AdmissionandCharges: "Admission Charges",
+      OPDConsultationCharges: "OPD Consultation Charges",
+      AccommodationCharges: "Accommodation Charges",
+      DoctorvisitCharges: "Doctor visit Charges",
+      OTChargesSuperSpecialtyOperation:
+        "O.T Charges / Super Specialty operation",
+      OTCharges: "OT charges",
+      PhysiotheraphyOPD: "Physiotheraphy OPD",
+      BedsidePhysiotherapyIPD: "Bedside  Physiotherapy  IPD",
+      TariffsofMinorProcedures: "Tariffs of  minor procedures",
+      DayCareProcedure: "Day Care Procedure",
+      Package: "Package",
+      otherpackage: "Other Package",
+      TraumaCases: "Trauma Cases",
+    },
+  },
 };
 
 // 1 = "Super Admin"

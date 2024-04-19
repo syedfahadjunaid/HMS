@@ -42,6 +42,7 @@ import {
 import Cookies from "js-cookie";
 import { getEmployeeDataHandle } from "./Store/Slices/HrSlice";
 import PatientsList from "./pages/Pharmacist/PatientsList/PatientsList";
+import OPDConsultationCharges from "./pages/Accountent/OPDConsultationCharges/OPDConsultationCharges";
 
 const LoginPage = lazy(() => import("./Login"));
 
@@ -125,6 +126,11 @@ const NursePanelAddEmergencyPatient = lazy(() =>
 );
 const NursePanelEmergencyPatientList = lazy(() =>
   import("./pages/Nurse/EmergencyPatientList/EmergencyPatientLIst")
+);
+// AdmissionAndCharges
+
+const AccountantAdmissionAndCharges = lazy(() =>
+  import("./pages/Accountent/AdmissionAndCharges/AdmissionAndCharges")
 );
 
 function App() {
@@ -240,6 +246,13 @@ function App() {
   const nursePanelEditPatientLink =
     browserLinks?.nurse?.internalPages?.editPatient?.split(" ").join("");
   // -----------------------
+
+  // Accountant Link
+
+  const accountentAdmissionAndCharges =
+    browserLinks?.Accountant?.internalPages?.AdmissionandCharges?.split(
+      ""
+    )?.join("");
 
   console.log(adminRole);
 
@@ -752,6 +765,68 @@ function App() {
                         }
                       >
                         <PatientsList />
+                      </Suspense>
+                    }
+                  />
+                </Route>
+              ) : (
+                <Route
+                  path="*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <>
+                          <Box sx={{ width: "100%" }}>
+                            <LinearProgress />
+                          </Box>
+                        </>
+                      }
+                    >
+                      <UnauthorizedPage />
+                    </Suspense>
+                  }
+                />
+              )}
+              {/* Accountent Panel */}
+              {adminRole === "Accountant" ? (
+                <Route path={browserLinks.Accountant.category}>
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.AdmissionandCharges?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccountantAdmissionAndCharges />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.OPDConsultationCharges?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <OPDConsultationCharges />
                       </Suspense>
                     }
                   />

@@ -126,6 +126,18 @@ export default function Login() {
           ).join("")}`
         );
       }
+      if (
+        localStorage.getItem("AdminToken") &&
+        adminLoggedInData?.adminRole === "Accountant"
+      ) {
+        navigate(
+          `${
+            browserLinks.Accountant.category
+          }/${browserLinks.Accountant.internalPages.AdmissionandCharges?.split(
+            " "
+          ).join("")}`
+        );
+      }
       if (localStorage.getItem("AdminToken")) {
         navigate(1);
       }
