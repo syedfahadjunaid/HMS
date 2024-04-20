@@ -43,6 +43,7 @@ import Cookies from "js-cookie";
 import { getEmployeeDataHandle } from "./Store/Slices/HrSlice";
 import PatientsList from "./pages/Pharmacist/PatientsList/PatientsList";
 import OPDConsultationCharges from "./pages/Accountent/OPDConsultationCharges/OPDConsultationCharges";
+import AccommodationCharges from "./pages/Accountent/Accommodation Charges/AccommodationCharges";
 
 const LoginPage = lazy(() => import("./Login"));
 
@@ -827,6 +828,26 @@ function App() {
                         }
                       >
                         <OPDConsultationCharges />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.AccommodationCharges?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccommodationCharges />
                       </Suspense>
                     }
                   />
