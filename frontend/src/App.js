@@ -44,6 +44,9 @@ import { getEmployeeDataHandle } from "./Store/Slices/HrSlice";
 import PatientsList from "./pages/Pharmacist/PatientsList/PatientsList";
 import OPDConsultationCharges from "./pages/Accountent/OPDConsultationCharges/OPDConsultationCharges";
 import AccommodationCharges from "./pages/Accountent/Accommodation Charges/AccommodationCharges";
+import DoctorVisitCharges from "./pages/Accountent/DoctorVisitCharges/DoctorVisitCharges";
+import OTChargesSuperSpecialtyoperation from "./pages/Accountent/O.T Charges  Super Specialty operation/OTChargesSuperSpecialtyoperation";
+import OTCharges from "./pages/Accountent/OT charges/OTCharges";
 
 const LoginPage = lazy(() => import("./Login"));
 
@@ -848,6 +851,66 @@ function App() {
                         }
                       >
                         <AccommodationCharges />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.DoctorvisitCharges?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <DoctorVisitCharges />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.OTChargesSuperSpecialtyOperation?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <OTChargesSuperSpecialtyoperation />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.OTCharges?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <OTCharges />
                       </Suspense>
                     }
                   />
