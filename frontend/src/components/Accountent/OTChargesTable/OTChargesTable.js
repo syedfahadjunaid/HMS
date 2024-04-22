@@ -227,16 +227,16 @@ function OTChargesTable() {
                           Assistant surgeon
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          20.000 - 25.000
+                          20000 - 25000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          15.000 - 20.000
+                          15000 - 20000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          12.000 - 15.000
+                          12000 - 15000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          6000 - 10.000
+                          6000 - 10000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
                           4000- 6000
@@ -247,16 +247,16 @@ function OTChargesTable() {
                           Anaesthetist
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          20.000 - 25.000
+                          20000 - 25000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          15.000 - 20.000
+                          15000 - 20000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          12.000 - 15.000
+                          12000 - 15000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          6000 - 10.000
+                          6000 - 10000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
                           4000- 6000
@@ -267,16 +267,16 @@ function OTChargesTable() {
                           First Assistant
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          20.000 - 25.000
+                          20000 - 25000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          15.000 - 20.000
+                          15000 - 20000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          12.000 - 15.000
+                          12000 - 15000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          6000 - 10.000
+                          6000 - 10000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
                           4000- 6000
@@ -287,16 +287,16 @@ function OTChargesTable() {
                           2nd Assistant
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          20.000 - 25.000
+                          20000 - 25000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          15.000 - 20.000
+                          15000 - 20000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          12.000 - 15.000
+                          12000 - 15000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
-                          6000 - 10.000
+                          6000 - 10000
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-b-[1px]">
                           4000- 6000
