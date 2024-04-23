@@ -47,6 +47,9 @@ import AccommodationCharges from "./pages/Accountent/Accommodation Charges/Accom
 import DoctorVisitCharges from "./pages/Accountent/DoctorVisitCharges/DoctorVisitCharges";
 import OTChargesSuperSpecialtyoperation from "./pages/Accountent/O.T Charges  Super Specialty operation/OTChargesSuperSpecialtyoperation";
 import OTCharges from "./pages/Accountent/OT charges/OTCharges";
+import PhysiotheraphyOPD from "./pages/Accountent/PhysiotheraphyOPD/PhysiotheraphyOPD";
+import BedsidePhysiotherapy from "./pages/Accountent/BedsidePhysiotherapy(IPD)/BedsidePhysiotherapy(IPD)";
+import Tariffsofminorprocedures from "./pages/Accountent/Tariffsofminorprocedures/Tariffsofminorprocedures ";
 
 const LoginPage = lazy(() => import("./Login"));
 
@@ -911,6 +914,67 @@ function App() {
                         }
                       >
                         <OTCharges />
+                      </Suspense>
+                    }
+                  />
+
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.PhysiotheraphyOPD?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <PhysiotheraphyOPD />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.BedsidePhysiotherapyIPD?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <BedsidePhysiotherapy />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.TariffsofMinorProcedures?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <Tariffsofminorprocedures />
                       </Suspense>
                     }
                   />
