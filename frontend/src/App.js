@@ -139,6 +139,12 @@ const NursePanelEmergencyPatientList = lazy(() =>
 const AccountantAdmissionAndCharges = lazy(() =>
   import("./pages/Accountent/AdmissionAndCharges/AdmissionAndCharges")
 );
+const AccountantDayCareProcedure = lazy(() =>
+  import("./pages/Accountent/DayCareProcedure/DayCareProcedure")
+);
+const AccountantPackage = lazy(() =>
+  import("./pages/Accountent/Package/Package")
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -975,6 +981,46 @@ function App() {
                         }
                       >
                         <Tariffsofminorprocedures />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.DayCareProcedure?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccountantDayCareProcedure />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.Package?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccountantPackage />
                       </Suspense>
                     }
                   />
