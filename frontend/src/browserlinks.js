@@ -59,6 +59,7 @@ const browserLinks = {
   Accountant: {
     category: "/Accountant",
     internalPages: {
+      Department: "Department",
       AdmissionandCharges: "Admission Charges",
       OPDConsultationCharges: "OPD Consultation Charges",
       AccommodationCharges: "Accommodation Charges",

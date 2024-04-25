@@ -145,6 +145,15 @@ const AccountantDayCareProcedure = lazy(() =>
 const AccountantPackage = lazy(() =>
   import("./pages/Accountent/Package/Package")
 );
+const AccountantOtherPackage = lazy(() =>
+  import("./pages/Accountent/Other Package/OtherPackage")
+);
+const AccountantTraumaCases = lazy(() =>
+  import("./pages/Accountent/TraumaCases/TraumaCases")
+);
+const AccountantDepartment = lazy(() =>
+  import("./pages/Accountent/Department/Department")
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -1021,6 +1030,66 @@ function App() {
                         }
                       >
                         <AccountantPackage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.otherpackage
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccountantOtherPackage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.TraumaCases?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccountantTraumaCases />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.Department?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccountantDepartment />
                       </Suspense>
                     }
                   />
