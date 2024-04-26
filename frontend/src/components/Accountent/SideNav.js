@@ -27,6 +27,10 @@ export default function SideNav({ activePage }) {
     },
     {
       icon: <MdOutlineAssignment />,
+      name: browserLinks.Accountant.internalPages.Billing,
+    },
+    {
+      icon: <MdOutlineAssignment />,
       name: browserLinks.Accountant.internalPages.Department,
     },
     {

@@ -154,6 +154,9 @@ const AccountantTraumaCases = lazy(() =>
 const AccountantDepartment = lazy(() =>
   import("./pages/Accountent/Department/Department")
 );
+const AccountantBilling = lazy(() =>
+  import("./pages/Accountent/Billing/Billing")
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -1090,6 +1093,26 @@ function App() {
                         }
                       >
                         <AccountantDepartment />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Accountant.category
+                    }/${browserLinks?.Accountant?.internalPages?.Billing?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <AccountantBilling />
                       </Suspense>
                     }
                   />
