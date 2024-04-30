@@ -159,8 +159,8 @@ function BedsidePhysiotherapyTable() {
           </span>{" "}
           <span className="w-full h-[1px] border-[1px]"></span>
           <span className="w-full text-start flex flex-col justify-start gap-1 py-4">
-            <p className="text-[#56585A]">Pkg 3. 21 -25 Days</p>
-            <p className="text-[16px] font-semibold">
+            <p className="text-[16px] font-semibold">Pkg 3. 21 -25 Days</p>
+            <p className="text-[#56585A]">
               25% Extra Discount of the total Amount.
             </p>
           </span>{" "}
