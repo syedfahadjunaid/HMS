@@ -158,6 +158,10 @@ const AccountantBilling = lazy(() =>
   import("./pages/Accountent/Billing/Billing")
 );
 
+// Doctors
+
+const Doctors = lazy(() => import("./pages/Doctors/Doctors/Doctors"));
+
 function App() {
   const dispatch = useDispatch();
 
@@ -1113,6 +1117,48 @@ function App() {
                         }
                       >
                         <AccountantBilling />
+                      </Suspense>
+                    }
+                  />
+                </Route>
+              ) : (
+                <Route
+                  path="*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <>
+                          <Box sx={{ width: "100%" }}>
+                            <LinearProgress />
+                          </Box>
+                        </>
+                      }
+                    >
+                      <UnauthorizedPage />
+                    </Suspense>
+                  }
+                />
+              )}
+              {/* Doctor Panel */}
+              {adminRole === "Doctor" ? (
+                <Route path={browserLinks.Doctor.category}>
+                  <Route
+                    path={`${
+                      browserLinks.Doctor.category
+                    }/${browserLinks?.Doctor?.internalPages?.Doctors?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <Doctors />
                       </Suspense>
                     }
                   />

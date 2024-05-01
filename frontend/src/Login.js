@@ -138,6 +138,16 @@ export default function Login() {
           ).join("")}`
         );
       }
+      if (
+        localStorage.getItem("AdminToken") &&
+        adminLoggedInData?.adminRole === "Doctor"
+      ) {
+        navigate(
+          `${
+            browserLinks.Doctor.category
+          }/${browserLinks.Doctor.internalPages.Doctors?.split(" ").join("")}`
+        );
+      }
       if (localStorage.getItem("AdminToken")) {
         navigate(1);
       }

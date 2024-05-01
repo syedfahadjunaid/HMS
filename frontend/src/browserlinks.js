@@ -56,6 +56,12 @@ const browserLinks = {
       Patientlist: "Patient List",
     },
   },
+  Doctor: {
+    category: "/Doctor",
+    internalPages: {
+      Doctors: "Doctor",
+    },
+  },
   Accountant: {
     category: "/Accountant",
     internalPages: {
