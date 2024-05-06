@@ -145,7 +145,7 @@ export default function Login() {
         navigate(
           `${
             browserLinks.Doctor.category
-          }/${browserLinks.Doctor.internalPages.Doctors?.split(" ").join("")}`
+          }/${browserLinks.Doctor.internalPages.DashBoard?.split(" ").join("")}`
         );
       }
       if (localStorage.getItem("AdminToken")) {

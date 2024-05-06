@@ -29,7 +29,7 @@ const colourOptions = [
   { value: "Hydrocodone", label: "Hydrocodone" },
 ];
 
-function DoctorTable() {
+function DoctorIpdTable() {
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -70,7 +70,7 @@ function DoctorTable() {
         </div>
         <hr />
         <h2 className="pt-[10px] pb-[10px] font-semibold text-center">
-          OPD Patients
+          IPD Patients
         </h2>
         <hr />
         <div className="flex items-start pt-[20px] pb-[20px] gap-[10%] w-full">
@@ -124,7 +124,7 @@ function DoctorTable() {
             <h6 className="text-[18px] font-semibold">Symptoms :</h6>
             <p>Abdominal Pain ,Body Pian,Cough,FatiGue</p>
           </div>
-          <div className="w-full">
+          <div className="w-full flex flex-col gap-2">
             <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
               <thead>
                 <th className="border-[1px] p-1 font-semibold">
@@ -132,6 +132,12 @@ function DoctorTable() {
                 </th>
                 <th className="border-[1px] p-1 font-semibold">
                   <p>Medicine</p>
+                </th>
+                <th className="border-[1px] p-1 font-semibold">
+                  <p>Schedule</p>
+                </th>{" "}
+                <th className="border-[1px] p-1 font-semibold">
+                  <p>Time</p>
                 </th>
               </thead>
               <tbody>
@@ -142,6 +148,32 @@ function DoctorTable() {
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                     No of BEDS
                   </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
+              <thead>
+                <th className="border-[1px] p-1 font-semibold">
+                  <p>S_N</p>
+                </th>
+                <th className="border-[1px] p-1 font-semibold">
+                  <p>Test's</p>
+                </th>{" "}
+                <th className="border-[1px] p-1 font-semibold">
+                  <p>Time</p>
+                </th>
+              </thead>
+              <tbody>
+                <tr key={1}>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    1
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    Blood Test
+                  </td>{" "}
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
                 </tr>
               </tbody>
             </table>
@@ -166,7 +198,7 @@ function DoctorTable() {
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
         <h2 className="border-b-[4px] border-[#3497F9]">
-          OPD Patient Table Data
+          IPD Patient Table Data
         </h2>
       </div>
       <div className="w-full">
@@ -184,9 +216,7 @@ function DoctorTable() {
             <th className="border-[1px] p-1 font-semibold">
               <p>Patient Checked</p>
             </th>
-            <th className="border-[1px] p-1 font-semibold">
-              <p> Request to Transfer to IPD</p>
-            </th>
+
             <th className="border-[1px] p-1 font-semibold">
               <p>Action</p>
             </th>
@@ -205,9 +235,7 @@ function DoctorTable() {
               <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                 <Switch {...label} defaultChecked />
               </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                <Switch {...label} />
-              </td>{" "}
+
               <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
                 <div className="flex gap-[10px] justify-center">
                   <div
@@ -250,39 +278,55 @@ function DoctorTable() {
               component="h2"
               className="border-b-[4px] border-[#3497F9] w-fit"
             >
-              OPD Patient Table Data
+              IPD Patient Table Data
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <form className="w-full flex flex-col justify-start gap-2">
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Patient Uhid</p>
                   <input
                     type="text"
                     placeholder="Patient Uhid"
-                    className="border-none outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
+                    className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
                     disabled
                   />
                 </span>
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Select Medicine</p>
                   <Select
                     closeMenuOnSelect={false}
                     components={{ IndicatorSeparator }}
                     isMulti
                     options={colourOptions}
                     onChange={(e) => console.log(e)}
+                    className="border-[2px] w-full rounded"
                   />
                 </span>
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Select Test</p>
+                  <Select
+                    closeMenuOnSelect={false}
+                    components={{ IndicatorSeparator }}
+                    isMulti
+                    options={colourOptions}
+                    onChange={(e) => console.log(e)}
+                    className="border-[2px] w-full rounded"
+                  />
+                </span>
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Symptoms</p>
                   <input
                     type="text"
                     placeholder="Add Symptoms"
-                    className="border-none outline-none w-full h-[2.2rem]  pl-[5px] "
+                    className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] "
                   />
                 </span>
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Note's</p>
                   <textarea
                     rows={5}
                     placeholder="Note"
-                    className="border-none outline-none w-full   pl-[5px] pt-[5px]"
+                    className="border-[2px] w-full rounded outline-none w-full   pl-[5px] pt-[5px]"
                   />
                 </span>
                 <button className="buttonFilled">Update</button>
@@ -312,19 +356,21 @@ function DoctorTable() {
               component="h2"
               className="border-b-[4px] border-[#3497F9] w-fit"
             >
-              OPD Patient Table Data
+              IPD Patient Table Data
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <div className="w-full flex flex-col justify-start gap-2">
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Patient Uhid</p>
                   <input
                     type="text"
                     placeholder="Patient Uhid"
-                    className="border-none outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
+                    className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
                     disabled
                   />
                 </span>
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Select Medicine</p>
                   <Select
                     closeMenuOnSelect={false}
                     components={{ IndicatorSeparator }}
@@ -336,21 +382,40 @@ function DoctorTable() {
                     options={colourOptions}
                     onChange={(e) => console.log(e)}
                     isDisabled
+                    className="border-[2px] w-full rounded"
                   />
                 </span>
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Select Test</p>
+                  <Select
+                    closeMenuOnSelect={false}
+                    components={{ IndicatorSeparator }}
+                    isMulti
+                    defaultValue={{
+                      value: "Hydrocodone",
+                      label: "Hydrocodone",
+                    }}
+                    options={colourOptions}
+                    onChange={(e) => console.log(e)}
+                    isDisabled
+                    className="border-[2px] w-full rounded"
+                  />
+                </span>
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Symptoms</p>
                   <input
                     type="text"
                     placeholder="Symptoms"
-                    className="border-none outline-none w-full h-[2.2rem]  pl-[5px] "
+                    className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] "
                     disabled
                   />
                 </span>
-                <span className="border-[2px] w-full rounded">
+                <span className="flex flex-col justify-start gap-1">
+                  <p>Note's</p>
                   <textarea
                     rows={5}
                     placeholder="Note"
-                    className="border-none outline-none w-full   pl-[5px] pt-[5px]"
+                    className="border-[2px] w-full rounded outline-none w-full   pl-[5px] pt-[5px]"
                     disabled
                   />
                 </span>
@@ -366,4 +431,4 @@ function DoctorTable() {
   );
 }
 
-export default DoctorTable;
+export default DoctorIpdTable;

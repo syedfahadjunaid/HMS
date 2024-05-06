@@ -60,6 +60,10 @@ const browserLinks = {
     category: "/Doctor",
     internalPages: {
       Doctors: "Doctor",
+      DashBoard: "DashBoard",
+      IpdPatients: "IpdPatients",
+      OpdPatients: "OpdPatients",
+      EmergencyPatients: "EmergencyPatients",
     },
   },
   Accountant: {

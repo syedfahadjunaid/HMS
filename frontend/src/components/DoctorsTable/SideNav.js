@@ -5,7 +5,9 @@ import { Suspense, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import browserLinks from "../../browserlinks";
 import { FaUserDoctor } from "react-icons/fa6";
-
+import { GiMedicines } from "react-icons/gi";
+import { FaBed } from "react-icons/fa";
+import { MdEmergency } from "react-icons/md";
 export default function SideNav({ activePage }) {
   const navigate = useNavigate();
 
@@ -22,7 +24,20 @@ export default function SideNav({ activePage }) {
   const sideNavLinksData = [
     {
       icon: <FaUserDoctor />,
-      name: browserLinks.Doctor.internalPages.Doctors,
+      name: browserLinks.Doctor.internalPages.DashBoard,
+    },
+    {
+      icon: <GiMedicines />,
+      name: browserLinks.Doctor.internalPages.OpdPatients,
+    },
+    {
+      icon: <FaBed />,
+      name: browserLinks.Doctor.internalPages.IpdPatients,
+    },
+
+    {
+      icon: <MdEmergency />,
+      name: browserLinks.Doctor.internalPages.EmergencyPatients,
     },
   ];
 
@@ -33,7 +48,7 @@ export default function SideNav({ activePage }) {
         onClick={() => {
           setActive(`${browserLinks?.Doctor?.category}/${data?.name}`);
           const link = data?.name?.split(" ").join("");
-          navigate(`${browserLinks?.hr?.category}/${link}`);
+          navigate(`${browserLinks?.Doctor?.category}/${link}`);
         }}
         className={
           active === `${browserLinks?.Doctor?.category}/${data?.name}`

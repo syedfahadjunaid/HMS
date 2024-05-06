@@ -50,6 +50,9 @@ import OTCharges from "./pages/Accountent/OT charges/OTCharges";
 import PhysiotheraphyOPD from "./pages/Accountent/PhysiotheraphyOPD/PhysiotheraphyOPD";
 import BedsidePhysiotherapy from "./pages/Accountent/BedsidePhysiotherapy(IPD)/BedsidePhysiotherapy(IPD)";
 import Tariffsofminorprocedures from "./pages/Accountent/Tariffsofminorprocedures/Tariffsofminorprocedures ";
+import IpdPatientsDoctorTable from "./pages/Doctors/IpdPatientsDoctorTable/IpdPatientsDoctorTable";
+import OpdPatientsDoctorTable from "./pages/Doctors/OpdPatientsDoctorTable/OpdPatientsDoctorTable";
+import EmergencyPatientsDoctorTable from "./pages/Doctors/EmergencyPatientsDoctorTable/EmergencyPatientsDoctorTable";
 
 const LoginPage = lazy(() => import("./Login"));
 
@@ -160,7 +163,7 @@ const AccountantBilling = lazy(() =>
 
 // Doctors
 
-const Doctors = lazy(() => import("./pages/Doctors/Doctors/Doctors"));
+const Doctors = lazy(() => import("./pages/Doctors/DoctorDashboard/Doctors"));
 
 function App() {
   const dispatch = useDispatch();
@@ -224,9 +227,7 @@ function App() {
     }
   }, [responseGetProfile.isError]);
   // ------------------------------------------------------------------
-  React.useEffect(() => {
-    dispatch(getEmployeeDataHandle());
-  }, []);
+
   // Super Admin Link
   const opdPatientlink = browserLinks?.superadmin?.internalPages?.opdPatients
     ?.split(" ")
@@ -1145,7 +1146,7 @@ function App() {
                   <Route
                     path={`${
                       browserLinks.Doctor.category
-                    }/${browserLinks?.Doctor?.internalPages?.Doctors?.split(
+                    }/${browserLinks?.Doctor?.internalPages?.DashBoard?.split(
                       " "
                     ).join("")}`}
                     element={
@@ -1159,6 +1160,66 @@ function App() {
                         }
                       >
                         <Doctors />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Doctor.category
+                    }/${browserLinks?.Doctor?.internalPages?.IpdPatients?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <IpdPatientsDoctorTable />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Doctor.category
+                    }/${browserLinks?.Doctor?.internalPages?.OpdPatients?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <OpdPatientsDoctorTable />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Doctor.category
+                    }/${browserLinks?.Doctor?.internalPages?.EmergencyPatients?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <EmergencyPatientsDoctorTable />
                       </Suspense>
                     }
                   />
