@@ -6,7 +6,7 @@ import style from "../../../styling/styling";
 import Select from "react-select";
 import img1 from "../../../assets/logo.png";
 import { useReactToPrint } from "react-to-print";
-
+import { IoIosAddCircle } from "react-icons/io";
 const indicatorSeparatorStyle = {
   alignSelf: "stretch",
   backgroundColor: "",
@@ -243,6 +243,12 @@ function DoctorIpdTable() {
                     onClick={handleOpen1}
                   >
                     <CiViewList className="text-[20px] text-[#96999C]" />
+                  </div>{" "}
+                  <div
+                    className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                    onClick={handleOpen1}
+                  >
+                    <IoIosAddCircle className="text-[20px] text-[#96999C]" />
                   </div>{" "}
                   <div
                     className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"

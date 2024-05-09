@@ -1,11 +1,20 @@
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiViewList } from "react-icons/ci";
 import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
 import Select from "react-select";
 import img1 from "../../../assets/logo.png";
 import { useReactToPrint } from "react-to-print";
+import {
+  addOpdDoctorCheckData,
+  getAllOpdPatientsData,
+  getAllOpdPatientsDoctorData,
+} from "../DoctorApi";
+import PaginationComponent from "../../Pagination";
+import { IoIosAddCircle } from "react-icons/io";
+import { useSelector } from "react-redux";
+import { convertValue } from "../convertValueStructure";
 
 const indicatorSeparatorStyle = {
   alignSelf: "stretch",
@@ -16,18 +25,6 @@ const indicatorSeparatorStyle = {
   border: "transparent",
   outline: "none",
 };
-const colourOptions = [
-  { value: "Amlodipine", label: "Amlodipine" },
-  { value: "Albuterol", label: "Albuterol" },
-  { value: "Amoxicillin", label: "Amoxicillin" },
-  { value: "Atorvastatin", label: "Atorvastatin" },
-  { value: "Levothyroxine", label: "Levothyroxine" },
-  { value: "Metformin", label: "Metformin" },
-  { value: "Azithromycin", label: "Azithromycin" },
-  { value: "Cephalexin", label: "Cephalexin" },
-  { value: "Lisinopril", label: "Lisinopril" },
-  { value: "Hydrocodone", label: "Hydrocodone" },
-];
 
 function DoctorTable() {
   const label = { inputProps: { "aria-label": "Switch demo" } };
@@ -44,6 +41,7 @@ function DoctorTable() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+
   const printView = (
     <div className="print-hide">
       <div className="print-show w-full" ref={componentRef}>
@@ -193,7 +191,90 @@ function DoctorTable() {
       </div>
     </div>
   );
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [medicine, setMedicine] = useState([]);
+  const [test, setTest] = useState([]);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const { medicineData } = useSelector((state) => state.MedicineData);
+  const { testData } = useSelector((state) => state.TestData);
+  const [opdPatients, setOpdPatients] = useState();
+  const [previousPatientsList, setoldPreviousPatientsList] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState({
+    patientId: "",
+    _id: "",
+    test: [],
+    isPatientsChecked: true,
+    medicine: [],
+    Symptoms: "",
+    Note: "",
+  });
+
+  const getAllOpdPatientsDataHandle = async () => {
+    const data = await getAllOpdPatientsData();
+
+    setOpdPatients(data?.data);
+  };
+
+  const getAllOpdPatientsDoctorDataHandle = async () => {
+    const data = await getAllOpdPatientsDoctorData();
+    setoldPreviousPatientsList(data?.data?.data);
+  };
+  const addOpdDoctorCheckDataHandle = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("Note", selectedPatient?.Note);
+    formData.append("Symptoms", selectedPatient?.Symptoms);
+    formData.append("isPatientsChecked", true);
+    formData.append("OpdPatientData", selectedPatient?._id);
+    selectedPatient?.test?.[0]?.forEach((testData) => {
+      formData.append("test", testData?.value);
+    });
+    selectedPatient?.medicine?.[0]?.forEach((medicineData) => {
+      formData.append("medicine", medicineData?.value);
+    });
+    const result = await addOpdDoctorCheckData(formData);
+    {
+      result && getAllOpdPatientsDoctorDataHandle();
+    }
+    console.log(result);
+  };
+  const updateOpdDoctorCheckDataHandle = async () => {
+    const formData = new FormData();
+    formData.append("Note", selectedPatient?.Note);
+    formData.append("Symptoms", selectedPatient?.Symptoms);
+    formData.append("isPatientsChecked", true);
+    selectedPatient?.test?.[0]?.forEach((testData) => {
+      formData.append("test", testData?.value);
+    });
+    selectedPatient?.medicine?.[0]?.forEach((medicineData) => {
+      formData.append("medicine", medicineData?.value);
+    });
+  };
+  useEffect(() => {
+    getAllOpdPatientsDataHandle();
+    getAllOpdPatientsDoctorDataHandle();
+  }, []);
+  useEffect(() => {
+    const result = convertValue(medicineData?.data);
+    setMedicine(result);
+  }, [medicineData]);
+  useEffect(() => {
+    const result = convertValue(testData?.data);
+    console.log(result, "result");
+    setTest(result);
+  }, [testData]);
+  useEffect(() => {
+    console.log(selectedPatient);
+  }, [selectedPatient]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -222,39 +303,54 @@ function DoctorTable() {
             </th>
           </thead>
           <tbody>
-            <tr key={1}>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                1
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                uhid014110200
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                Arman
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                <Switch {...label} defaultChecked />
-              </td>
+            {opdPatients?.map((item) => (
+              <tr key={1}>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  1
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  uhid014110200
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  Arman
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  <Switch {...label} defaultChecked />
+                </td>
 
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
-                <div className="flex gap-[10px] justify-center">
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen1}
-                  >
-                    <CiViewList className="text-[20px] text-[#96999C]" />
-                  </div>{" "}
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen}
-                  >
-                    <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
+                  <div className="flex gap-[10px] justify-center">
+                    <div
+                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                      onClick={handleOpen1}
+                    >
+                      <CiViewList className="text-[20px] text-[#96999C]" />
+                    </div>{" "}
+                    <div
+                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                      onClick={() => [
+                        handleOpen(),
+                        setSelectedPatient({
+                          _id: item?._id,
+                          patientId: item?.opdPatientId,
+                        }),
+                      ]}
+                    >
+                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
+        <PaginationComponent
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          data={opdPatients}
+        />
       </div>
       {printView}
       <Modal
@@ -287,6 +383,7 @@ function DoctorTable() {
                   <input
                     type="text"
                     placeholder="Patient Uhid"
+                    value={"UHID" + selectedPatient?.patientId}
                     className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
                     disabled
                   />
@@ -297,8 +394,10 @@ function DoctorTable() {
                     closeMenuOnSelect={false}
                     components={{ IndicatorSeparator }}
                     isMulti
-                    options={colourOptions}
-                    onChange={(e) => console.log(e)}
+                    options={medicine}
+                    onChange={(e) =>
+                      setSelectedPatient({ ...selectedPatient, medicine: [e] })
+                    }
                     className="border-[2px] w-full rounded"
                   />
                 </span>
@@ -308,8 +407,10 @@ function DoctorTable() {
                     closeMenuOnSelect={false}
                     components={{ IndicatorSeparator }}
                     isMulti
-                    options={colourOptions}
-                    onChange={(e) => console.log(e)}
+                    options={test}
+                    onChange={(e) =>
+                      setSelectedPatient({ ...selectedPatient, test: [e] })
+                    }
                     className="border-[2px] w-full rounded"
                   />
                 </span>
@@ -318,6 +419,12 @@ function DoctorTable() {
                   <input
                     type="text"
                     placeholder="Add Symptoms"
+                    onChange={(e) =>
+                      setSelectedPatient({
+                        ...selectedPatient,
+                        Symptoms: e.target.value,
+                      })
+                    }
                     className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] "
                   />
                 </span>
@@ -326,10 +433,27 @@ function DoctorTable() {
                   <textarea
                     rows={5}
                     placeholder="Note"
+                    onChange={(e) =>
+                      setSelectedPatient({
+                        ...selectedPatient,
+                        Note: e.target.value,
+                      })
+                    }
                     className="border-[2px] w-full rounded outline-none w-full   pl-[5px] pt-[5px]"
                   />
                 </span>
-                <button className="buttonFilled">Update</button>
+                {previousPatientsList?.find(
+                  (item) => item?.OpdPatientData == selectedPatient?._id
+                ) ? (
+                  <button className="buttonFilled">Update</button>
+                ) : (
+                  <button
+                    className="buttonFilled"
+                    onClick={(e) => addOpdDoctorCheckDataHandle(e)}
+                  >
+                    Add
+                  </button>
+                )}
               </form>
             </Typography>
           </Box>
@@ -379,7 +503,7 @@ function DoctorTable() {
                       value: "Hydrocodone",
                       label: "Hydrocodone",
                     }}
-                    options={colourOptions}
+                    options={"colourOptions"}
                     onChange={(e) => console.log(e)}
                     isDisabled
                     className="border-[2px] w-full rounded"
@@ -395,7 +519,7 @@ function DoctorTable() {
                       value: "Hydrocodone",
                       label: "Hydrocodone",
                     }}
-                    options={colourOptions}
+                    options={"colourOptions"}
                     onChange={(e) => console.log(e)}
                     isDisabled
                     className="border-[2px] w-full rounded"
