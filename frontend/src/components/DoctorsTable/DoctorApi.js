@@ -26,9 +26,9 @@ export const addOpdDoctorCheckData = async (formData) => {
     console.log(error);
   }
 };
-export const getOneOpdDoctorCheckData = async (Id, formData) => {
+export const getOneOpdDoctorCheckData = async (Id) => {
   try {
-    const response = await axios.post(`/api/get-one-opd-data/${Id}`, formData);
+    const response = await axios.get(`/api/get-one-opd-data/${Id}`);
     return response;
   } catch (error) {
     console.log(error);
@@ -37,7 +37,7 @@ export const getOneOpdDoctorCheckData = async (Id, formData) => {
 };
 export const updateOpdDoctorCheckData = async (Id, formData) => {
   try {
-    const response = await axios.post(`/api/update-one-Opd/${Id}`, formData);
+    const response = await axios.put(`/api/update-one-Opd/${Id}`, formData);
     return response;
   } catch (error) {
     console.log(error);
