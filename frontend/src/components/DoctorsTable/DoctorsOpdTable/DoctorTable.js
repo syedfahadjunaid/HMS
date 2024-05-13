@@ -14,10 +14,9 @@ import {
   updateOpdDoctorCheckData,
 } from "../DoctorApi";
 import PaginationComponent from "../../Pagination";
-import { IoIosAddCircle } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { convertValue } from "../convertValueStructure";
-import { prepareAutoBatched } from "@reduxjs/toolkit";
+import Snackbars from "../../SnackBar";
 
 const indicatorSeparatorStyle = {
   alignSelf: "stretch",
@@ -30,16 +29,65 @@ const indicatorSeparatorStyle = {
 };
 
 function DoctorTable() {
+  // Snackbar--------------------
+  // ----Succcess
+  const [openSnackbarSuccess, setOpenSnackBarSuccess] = React.useState(false);
+  const [snackBarMessageSuccess, setSnackBarSuccessMessage] =
+    React.useState("");
+
+  // ----Warning
+  const [openSnackbarWarning, setOpenSnackBarWarning] = React.useState(false);
+  const [snackBarMessageWarning, setSnackBarSuccessWarning] =
+    React.useState("");
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedPatient([]);
+  };
   const [open1, setOpen1] = React.useState(false);
   const handleOpen1 = () => setOpen1(true);
-  const handleClose1 = () => setOpen1(false);
+  const handleClose1 = () => {
+    setOpen1(false);
+    setSelectedPatient([]);
+  };
   const IndicatorSeparator = ({ innerProps }) => {
     return <span style={indicatorSeparatorStyle} {...innerProps} />;
   };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [medicine, setMedicine] = useState([]);
+  const [test, setTest] = useState([]);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const { medicineData } = useSelector((state) => state.MedicineData);
+  const { testData } = useSelector((state) => state.TestData);
+  const [patientData, setPatientData] = useState([]);
+  const [previousMedicine, setPreviousMedicine] = useState([]);
+  const [previousTest, setPreviousTest] = useState([]);
+  const [opdPatients, setOpdPatients] = useState();
+  const [previousPatientsList, setoldPreviousPatientsList] = useState([]);
+  const [isMedicineLoading, setIsMedicineLoading] = useState(false);
+  const [isTestLoading, setIsTestLoading] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState({
+    patientId: "",
+    _id: "",
+    opdPatientId: "",
+    test: [],
+    isPatientsChecked: true,
+    medicine: [],
+    Symptoms: "",
+    Note: "",
+    appoiment: "",
+  });
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -74,48 +122,72 @@ function DoctorTable() {
           OPD Patients
         </h2>
         <hr />
-        <div className="flex items-start pt-[20px] pb-[20px] gap-[10%] w-full">
-          <div class="grid grid-cols-2 gap-4 pl-[20px] pr-[20px] w-7/12">
+        <div className="flex items-start pt-[20px] pb-[20px] gap-[1%] w-full">
+          <div class="grid grid-cols-2 gap-4 pl-[20px] pr-[20px] w-8/12">
             <div className="flex gap-[10px]">
-              <span>UHID</span>:<p>19</p>
+              <span>UHID</span>:<p>{patientData?.patientId}</p>
             </div>
             <div className="flex gap-[10px]">
-              <span>Phone number</span>:<p>--------</p>
+              <span>Phone number</span>:
+              <p>
+                {patientData?.patientPhone
+                  ? patientData?.patientPhone
+                  : "-------"}
+              </p>
             </div>
             <div className="flex gap-[10px]">
-              <span>Name</span>:<p>Arman Ali</p>
+              <span>Name</span>:
+              <p className="text-start w-full text-wrap">
+                {patientData?.patientName}
+              </p>
+            </div>
+
+            <div className="flex gap-[10px]">
+              <span>Gender</span>:<p>{patientData?.patientGender}</p>
             </div>
             <div className="flex gap-[10px]">
-              <span>Phone Number of Attendent:</span>:<p>19</p>
+              <span>H/ W</span>:
+              <p>
+                {patientData?.patientHeight}/{patientData?.patientWeight}
+              </p>
             </div>
             <div className="flex gap-[10px]">
-              <span>Gender</span>:<p>19</p>
+              <span>Father's Name</span>:
+              <p>
+                {patientData?.patientFatherName
+                  ? patientData?.patientFatherName
+                  : "------"}
+              </p>
             </div>
             <div className="flex gap-[10px]">
-              <span>H/ W</span>:<p>19</p>
+              <span>Blood Group</span>:
+              <p>
+                {patientData?.patientBloodGroup
+                  ? patientData?.patientBloodGroup
+                  : "------"}
+              </p>
             </div>
             <div className="flex gap-[10px]">
-              <span>Father's Name</span>:<p>19</p>
+              <span>Husband Name:</span>:
+              <p>
+                {patientData?.patientHusbandName
+                  ? patientData?.patientHusbandName
+                  : "-----"}
+              </p>
             </div>
             <div className="flex gap-[10px]">
-              <span>Blood Group</span>:<p>19</p>
-            </div>
-            <div className="flex gap-[10px]">
-              <span>Husband Name:</span>:<p>19</p>
-            </div>
-            <div className="flex gap-[10px]">
-              <span>Room and Bed NO</span>:<p>19</p>
-            </div>
-            <div className="flex gap-[10px]">
-              <span>Email</span>:<p>19</p>
+              <span>Email</span>:
+              <p>
+                {patientData?.patientEmail
+                  ? patientData?.patientEmail
+                  : "-------"}
+              </p>
             </div>
           </div>
           <div>
-            <div className="flex gap-[10px]">
-              <span>Appointment Date:</span>:<p>12/04/24</p>
-            </div>
-            <div className="flex gap-[10px]">
-              <span>ID:</span>:<p>4565235</p>
+            <div className="flex gap-1 flex-col">
+              <span>Appointment Date:</span>
+              <p>{selectedPatient?.appoiment?.split("T", 1)}</p>
             </div>
           </div>
         </div>
@@ -123,7 +195,7 @@ function DoctorTable() {
         <div className="flex items-start pt-[20px] pb-[20px] gap-4 w-full px-[1rem] flex-col">
           <div className="flex items-center justify-start w-full gap-1">
             <h6 className="text-[18px] font-semibold">Symptoms :</h6>
-            <p>Abdominal Pain ,Body Pian,Cough,FatiGue</p>
+            <p>{selectedPatient?.Symptoms}</p>
           </div>
           <div className="w-full flex flex-col gap-2">
             <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -142,16 +214,18 @@ function DoctorTable() {
                 </th>
               </thead>
               <tbody>
-                <tr key={1}>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                    1
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                    No of BEDS
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
-                </tr>
+                {selectedPatient?.medicine?.map((item, index) => (
+                  <tr key={index + 1}>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                      {index + 1}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                      {item?.Name}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -167,69 +241,33 @@ function DoctorTable() {
                 </th>
               </thead>
               <tbody>
-                <tr key={1}>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                    1
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                    Blood Test
-                  </td>{" "}
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
-                </tr>
+                {selectedPatient?.test?.map((item, index) => (
+                  <tr key={index}>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                      {index + 1}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                      {item?.Name}
+                    </td>{" "}
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
           <div className="flex items-start justify-start w-full gap-1">
             <h6 className="text-[18px] font-semibold">Note :</h6>
-            <p className="w-11/12 text-start">
-              Pain is a complex protective mechanism. It is an essential part of
-              evolution that protects the body from danger and harm. The body
-              has pain receptors that are attached to 2 main types of nerves
-              that detect danger. One nerve type relays messages quickly,
-              causing a sharp, sudden pain. The other relays messages slowly,
-              causing a dull, throbbing pain.
-            </p>
+            <p className="w-11/12 text-start">{selectedPatient?.Note}</p>
           </div>
         </div>
       </div>
     </div>
   );
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [medicine, setMedicine] = useState([]);
-  const [test, setTest] = useState([]);
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const { medicineData } = useSelector((state) => state.MedicineData);
-  const { testData } = useSelector((state) => state.TestData);
-  const [previousMedicine, setPreviousMedicine] = useState([]);
-  const [previousTest, setPreviousTest] = useState([]);
-  const [opdPatients, setOpdPatients] = useState();
-  const [previousPatientsList, setoldPreviousPatientsList] = useState([]);
-  const [isMedicineLoading, setIsMedicineLoading] = useState(false);
-  const [isTestLoading, setIsTestLoading] = useState(false);
-  const [selectedPatient, setSelectedPatient] = useState({
-    patientId: "",
-    _id: "",
-    opdPatientId: "",
-    test: [],
-    isPatientsChecked: true,
-    medicine: [],
-    Symptoms: "",
-    Note: "",
-  });
 
   const getAllOpdPatientsDataHandle = async () => {
     const data = await getAllOpdPatientsData();
 
-    setOpdPatients(data?.data);
+    setOpdPatients(data?.data?.reverse());
   };
 
   const getAllOpdPatientsDoctorDataHandle = async () => {
@@ -243,20 +281,26 @@ function DoctorTable() {
     formData.append("Symptoms", selectedPatient?.Symptoms);
     formData.append("isPatientsChecked", true);
     formData.append("OpdPatientData", selectedPatient?.opdPatientId);
-    selectedPatient?.test?.[0]?.forEach((testData) => {
+    selectedPatient?.test?.forEach((testData) => {
       formData.append("test", testData?.value);
     });
-    selectedPatient?.medicine?.[0]?.forEach((medicineData) => {
+    selectedPatient?.medicine?.forEach((medicineData) => {
       formData.append("medicine", medicineData?.value);
     });
     const result = await addOpdDoctorCheckData(formData);
-    {
-      result && getAllOpdPatientsDoctorDataHandle();
+    if (result) {
+      getAllOpdPatientsDoctorDataHandle();
+      handleClose();
+      setSnackBarSuccessMessage(result?.data?.message);
+      setOpenSnackBarSuccess(true);
     }
-    console.log(result);
+
+    console.log(result, result?.data?.message);
   };
   const getOneOpdDoctorCheckDataHandle = async (Id) => {
     const result = await getOneOpdDoctorCheckData(Id?.[0]?._id);
+
+    setPatientData(result?.data?.[0]?.PatientData?.[0]);
     setSelectedPatient({
       ...selectedPatient,
       Note: result?.data?.[0]?.Note,
@@ -264,8 +308,9 @@ function DoctorTable() {
       medicine: result?.data?.[0]?.medicineData,
       test: result?.data?.[0]?.testData,
       _id: result?.data?.[0]?._id,
-      opdPatientId: result?.data?.[0]?.OpdPatientData1?.[0]?._id,
-      patientId: result?.data?.[0]?.OpdPatientData1?.[0]?.opdPatientId,
+      opdPatientId: result?.data?.[0]?.OpdPatientData?.[0]?._id,
+      appoiment: result?.data?.[0]?.OpdPatientData?.[0]?.opdDoctorVisitDate,
+      patientId: result?.data?.[0]?.OpdPatientData?.[0]?.opdPatientId,
     });
   };
   const updateOpdDoctorCheckDataHandle = async (e, Id) => {
@@ -274,23 +319,24 @@ function DoctorTable() {
     formData.append("Note", selectedPatient?.Note);
     formData.append("Symptoms", selectedPatient?.Symptoms);
     formData.append("isPatientsChecked", true);
-    // selectedPatient?.test
-    //   ? selectedPatient?.test?.forEach((testData) => {
-    //       formData.append("test", testData?.value);
-    //     })
-    //   : selectedPatient?.test?.[0]?.forEach((testData) => {
-    //       formData.append("test", testData?.value);
-    //     });
-    // selectedPatient?.medicine
-    //   ? selectedPatient?.medicine?.forEach((medicineData) => {
-    //       formData.append("medicine", medicineData?.value);
-    //     })
-    //   : selectedPatient?.medicine?.[0]?.forEach((medicineData) => {
-    //       formData.append("medicine", medicineData?.value);
-    //     });
-    const result = await updateOpdDoctorCheckData(Id, formData);
+    selectedPatient?.test?.forEach((testData) => {
+      formData.append("test", testData?._id ? testData?._id : testData?.value);
+    });
 
-    console.log(result);
+    selectedPatient?.medicine?.forEach((medicineData) => {
+      formData.append(
+        "medicine",
+        medicineData?._id ? medicineData?._id : medicineData?.value
+      );
+    });
+
+    const result = await updateOpdDoctorCheckData(Id, formData);
+    if (result) {
+      getAllOpdPatientsDoctorDataHandle();
+      handleClose();
+      setSnackBarSuccessMessage(result?.data?.message);
+      setOpenSnackBarSuccess(true);
+    }
   };
   useEffect(() => {
     getAllOpdPatientsDataHandle();
@@ -307,7 +353,6 @@ function DoctorTable() {
         const result = await convertValue(selectedPatient?.medicine);
         setPreviousMedicine(result);
         // setSelectedPatient({ ...selectedPatient, test: result });
-        console.log(result);
       } catch (error) {
         console.error("Error converting value:", error);
       }
@@ -334,8 +379,6 @@ function DoctorTable() {
     const result = convertValue(testData?.data);
     setTest(result);
   }, [testData]);
-  console.log(previousTest, selectedPatient);
-
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -376,17 +419,41 @@ function DoctorTable() {
                   Arman
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  <Switch {...label} defaultChecked />
+                  <Switch
+                    {...label}
+                    checked={
+                      previousPatientsList?.find(
+                        (value) => value?.OpdPatientData === item?._id
+                      )
+                        ? true
+                        : false
+                    }
+                  />
                 </td>
 
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
                   <div className="flex gap-[10px] justify-center">
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      onClick={handleOpen1}
-                    >
-                      <CiViewList className="text-[20px] text-[#96999C]" />
-                    </div>{" "}
+                    {previousPatientsList?.find(
+                      (value) => value?.OpdPatientData === item?._id
+                    ) ? (
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        onClick={() => [
+                          handleOpen1(),
+                          getOneOpdDoctorCheckDataHandle(
+                            previousPatientsList?.filter(
+                              (val) => val?.OpdPatientData == item?._id
+                            )
+                          ),
+                        ]}
+                      >
+                        <CiViewList className="text-[20px] text-[#96999C]" />
+                      </div>
+                    ) : (
+                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px]  cursor-not-allowed">
+                        <CiViewList className="text-[20px] text-[#96999C]" />
+                      </div>
+                    )}
                     {previousPatientsList?.find(
                       (value) => value?.OpdPatientData === item?._id
                     ) ? (
@@ -420,7 +487,7 @@ function DoctorTable() {
                           }),
                         ]}
                       >
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />1
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
                       </div>
                     )}
                   </div>
@@ -485,7 +552,7 @@ function DoctorTable() {
                       onChange={(e) =>
                         setSelectedPatient({
                           ...selectedPatient,
-                          medicine: [e],
+                          medicine: e,
                         })
                       }
                       className="border-[2px] w-full rounded"
@@ -502,7 +569,7 @@ function DoctorTable() {
                       defaultValue={previousTest}
                       options={test}
                       onChange={(e) =>
-                        setSelectedPatient({ ...selectedPatient, test: [e] })
+                        setSelectedPatient({ ...selectedPatient, test: e })
                       }
                       className="border-[2px] w-full rounded"
                     />
@@ -593,47 +660,55 @@ function DoctorTable() {
                   <input
                     type="text"
                     placeholder="Patient Uhid"
+                    value={"UHID" + selectedPatient?.patientId}
                     className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
                     disabled
                   />
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p>Select Medicine</p>
-                  <Select
-                    closeMenuOnSelect={false}
-                    components={{ IndicatorSeparator }}
-                    isMulti
-                    defaultValue={{
-                      value: "Hydrocodone",
-                      label: "Hydrocodone",
-                    }}
-                    options={"colourOptions"}
-                    onChange={(e) => console.log(e)}
-                    isDisabled
-                    className="border-[2px] w-full rounded"
-                  />
+
+                  {!isMedicineLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ IndicatorSeparator }}
+                      isMulti
+                      defaultValue={previousMedicine}
+                      options={medicine}
+                      onChange={(e) =>
+                        setSelectedPatient({
+                          ...selectedPatient,
+                          medicine: e,
+                        })
+                      }
+                      isDisabled
+                      className="border-[2px] w-full rounded"
+                    />
+                  )}
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p>Select Test</p>
-                  <Select
-                    closeMenuOnSelect={false}
-                    components={{ IndicatorSeparator }}
-                    isMulti
-                    defaultValue={{
-                      value: "Hydrocodone",
-                      label: "Hydrocodone",
-                    }}
-                    options={"colourOptions"}
-                    onChange={(e) => console.log(e)}
-                    isDisabled
-                    className="border-[2px] w-full rounded"
-                  />
+                  {!isTestLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ IndicatorSeparator }}
+                      isMulti
+                      defaultValue={previousTest}
+                      options={test}
+                      onChange={(e) =>
+                        setSelectedPatient({ ...selectedPatient, test: e })
+                      }
+                      isDisabled
+                      className="border-[2px] w-full rounded"
+                    />
+                  )}
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p>Symptoms</p>
                   <input
                     type="text"
                     placeholder="Symptoms"
+                    value={selectedPatient?.Symptoms}
                     className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] "
                     disabled
                   />
@@ -643,6 +718,7 @@ function DoctorTable() {
                   <textarea
                     rows={5}
                     placeholder="Note"
+                    value={selectedPatient?.Note}
                     className="border-[2px] w-full rounded outline-none w-full   pl-[5px] pt-[5px]"
                     disabled
                   />
@@ -655,6 +731,20 @@ function DoctorTable() {
           </Box>
         </Fade>
       </Modal>
+      {/* Success Snackbar */}
+      <Snackbars
+        open={openSnackbarSuccess}
+        setOpen={setOpenSnackBarSuccess}
+        severity="success"
+        message={snackBarMessageSuccess}
+      />
+      {/* Warning Snackbar */}
+      <Snackbars
+        open={openSnackbarWarning}
+        setOpen={setOpenSnackBarWarning}
+        severity="warning"
+        message={snackBarMessageWarning}
+      />
     </div>
   );
 }

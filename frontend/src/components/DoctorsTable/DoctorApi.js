@@ -44,3 +44,19 @@ export const updateOpdDoctorCheckData = async (Id, formData) => {
     throw new Error();
   }
 };
+export const getAllIPDPatientsDataByDoctorId = async (Id) => {
+  try {
+    const response = await axios.get(`/api/ipd-patients/${Id}`);
+    return response;
+  } catch (error) {
+    throw new Error();
+  }
+};
+export const getAllIPDPatientsDoctorVisitData = async () => {
+  try {
+    const response = await axios.get("/api/All-Ipd-Routes");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

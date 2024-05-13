@@ -1,5 +1,5 @@
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiViewList } from "react-icons/ci";
 import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
@@ -7,6 +7,10 @@ import Select from "react-select";
 import img1 from "../../../assets/logo.png";
 import { useReactToPrint } from "react-to-print";
 import { IoIosAddCircle } from "react-icons/io";
+import {
+  getAllIPDPatientsDataByDoctorId,
+  getAllIPDPatientsDoctorVisitData,
+} from "../DoctorApi";
 const indicatorSeparatorStyle = {
   alignSelf: "stretch",
   backgroundColor: "",
@@ -44,6 +48,21 @@ function DoctorIpdTable() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  const [selectedPatient, setSelectedPatient] = useState({
+    patientId: "",
+    _id: "",
+    ipdPatientId: "",
+    test: [],
+    isPatientsChecked: true,
+    medicine: [],
+    Symptoms: "",
+    Note: "",
+    appoiment: "",
+  });
+  const [ipdPatientsListByDoctorId, setIpdPatientsListByDoctorId] = useState(
+    []
+  );
+  const [previouePatientsData, setPreviouePatientsData] = useState([]);
   const printView = (
     <div className="print-hide">
       <div className="print-show w-full" ref={componentRef}>
@@ -194,6 +213,20 @@ function DoctorIpdTable() {
     </div>
   );
 
+  const getAllIPDPatientsDataByDoctorIdHandle = async (Id) => {
+    const response = await getAllIPDPatientsDataByDoctorId(Id);
+    setIpdPatientsListByDoctorId(response?.data?.data?.reverse());
+  };
+  const getAllIPDPatientsDoctorVisitDataHandle = async () => {
+    const response = await getAllIPDPatientsDoctorVisitData();
+    setPreviouePatientsData(response?.data?.data?.reverse());
+    console.log(response);
+  };
+  useEffect(() => {
+    getAllIPDPatientsDataByDoctorIdHandle("202405070001");
+    getAllIPDPatientsDoctorVisitDataHandle();
+  }, []);
+
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -222,43 +255,39 @@ function DoctorIpdTable() {
             </th>
           </thead>
           <tbody>
-            <tr key={1}>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                1
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                uhid014110200
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                Arman
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                <Switch {...label} defaultChecked />
-              </td>
+            {ipdPatientsListByDoctorId?.map((item) => (
+              <tr key={1}>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  1
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  uhid014110200
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  Arman
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  <Switch {...label} defaultChecked />
+                </td>
 
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
-                <div className="flex gap-[10px] justify-center">
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen1}
-                  >
-                    <CiViewList className="text-[20px] text-[#96999C]" />
-                  </div>{" "}
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen1}
-                  >
-                    <IoIosAddCircle className="text-[20px] text-[#96999C]" />
-                  </div>{" "}
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen}
-                  >
-                    <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
+                  <div className="flex gap-[10px] justify-center">
+                    <div
+                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                      onClick={handleOpen1}
+                    >
+                      <CiViewList className="text-[20px] text-[#96999C]" />
+                    </div>{" "}
+                    <div
+                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                      onClick={handleOpen}
+                    >
+                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -335,7 +364,14 @@ function DoctorIpdTable() {
                     className="border-[2px] w-full rounded outline-none w-full   pl-[5px] pt-[5px]"
                   />
                 </span>
-                <button className="buttonFilled">Update</button>
+                {previouePatientsData?.find(
+                  (value) =>
+                    value?.ipdPatientData === selectedPatient?.ipdPatientData
+                ) ? (
+                  <button className="buttonFilled">Update</button>
+                ) : (
+                  <button className="buttonFilled">Add</button>
+                )}
               </form>
             </Typography>
           </Box>
