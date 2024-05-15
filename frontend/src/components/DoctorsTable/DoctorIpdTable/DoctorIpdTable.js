@@ -1,16 +1,20 @@
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+import img from "../../../assets/20180125_001_1_.jpg";
 import { CiViewList } from "react-icons/ci";
 import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
 import Select from "react-select";
 import img1 from "../../../assets/logo.png";
 import { useReactToPrint } from "react-to-print";
-import { IoIosAddCircle } from "react-icons/io";
 import {
+  addIpdDoctorCheckData,
   getAllIPDPatientsDataByDoctorId,
   getAllIPDPatientsDoctorVisitData,
+  getOneIpdDoctorCheckData,
 } from "../DoctorApi";
+import { useSelector } from "react-redux";
+import { convertValue } from "../convertValueStructure";
 const indicatorSeparatorStyle = {
   alignSelf: "stretch",
   backgroundColor: "",
@@ -37,10 +41,16 @@ function DoctorIpdTable() {
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedPatient([]);
+  };
   const [open1, setOpen1] = React.useState(false);
   const handleOpen1 = () => setOpen1(true);
-  const handleClose1 = () => setOpen1(false);
+  const handleClose1 = () => {
+    setOpen1(false);
+    setSelectedPatient([]);
+  };
   const IndicatorSeparator = ({ innerProps }) => {
     return <span style={indicatorSeparatorStyle} {...innerProps} />;
   };
@@ -48,6 +58,14 @@ function DoctorIpdTable() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  const { medicineData } = useSelector((state) => state.MedicineData);
+  const { testData } = useSelector((state) => state.TestData);
+  const [medicine, setMedicine] = useState([]);
+  const [test, setTest] = useState([]);
+  const [previousMedicine, setPreviousMedicine] = useState([]);
+  const [previousTest, setPreviousTest] = useState([]);
+  const [isMedicineLoading, setIsMedicineLoading] = useState(false);
+  const [isTestLoading, setIsTestLoading] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState({
     patientId: "",
     _id: "",
@@ -216,17 +234,89 @@ function DoctorIpdTable() {
   const getAllIPDPatientsDataByDoctorIdHandle = async (Id) => {
     const response = await getAllIPDPatientsDataByDoctorId(Id);
     setIpdPatientsListByDoctorId(response?.data?.data?.reverse());
+    console.log(response);
   };
   const getAllIPDPatientsDoctorVisitDataHandle = async () => {
     const response = await getAllIPDPatientsDoctorVisitData();
     setPreviouePatientsData(response?.data?.data?.reverse());
-    console.log(response);
+  };
+  const addIpdDoctorCheckDataHandle = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("ipdPatientData", selectedPatient?.ipdPatientId);
+    formData.append("Symptoms", selectedPatient?.Symptoms);
+    formData.append("Note", selectedPatient?.Note);
+    formData.append("isPatientsChecked", true);
+    selectedPatient?.test?.forEach((testData) => {
+      formData.append("test", testData?.value);
+    });
+    selectedPatient?.medicine?.forEach((medicineData) => {
+      formData.append("medicine", medicineData?.value);
+    });
+    const result = addIpdDoctorCheckData(formData);
+    if (result) {
+      getAllIPDPatientsDoctorVisitDataHandle();
+      handleClose();
+    }
+  };
+  const getOneIpdDoctorCheckDataHandle = async (Id) => {
+    const result = await getOneIpdDoctorCheckData(Id?._id);
+    setSelectedPatient({
+      ...selectedPatient,
+      Symptoms: result?.data?.[0]?.Symptoms,
+      Note: result?.data?.[0]?.Note,
+      medicine: result?.data?.[0]?.medicineData,
+      test: result?.data?.[0]?.testData,
+      _id: result?.data?.[0]?._id,
+      ipdPatientId: result?.data?.[0]?.IpdPatientData?.[0]?._id,
+      appoiment: result?.data?.[0]?.IpdPatientData?.[0]?.opdDoctorVisitDate,
+      patientId: result?.data?.[0]?.IpdPatientData?.[0]?.ipdPatientId,
+    });
+    console.log(result);
   };
   useEffect(() => {
     getAllIPDPatientsDataByDoctorIdHandle("202405070001");
     getAllIPDPatientsDoctorVisitDataHandle();
   }, []);
+  useEffect(() => {
+    const result = convertValue(medicineData?.data);
+    setMedicine(result);
+  }, [medicineData]);
+  useEffect(() => {
+    const result = convertValue(testData?.data);
+    setTest(result);
+  }, [testData]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsMedicineLoading(true);
+      try {
+        const result = await convertValue(selectedPatient?.medicine);
+        setPreviousMedicine(result);
+      } catch (error) {
+        console.error("Error converting value:", error);
+      }
+      setIsMedicineLoading(false);
+    };
 
+    fetchData();
+  }, [selectedPatient]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsTestLoading(true);
+      try {
+        const result = await convertValue(selectedPatient?.test);
+        setPreviousTest(result);
+      } catch (error) {
+        console.error("Error converting value:", error);
+      }
+      setIsTestLoading(false);
+    };
+
+    fetchData();
+  }, [selectedPatient]);
+  useEffect(() => {
+    console.log(selectedPatient, previouePatientsData);
+  }, [selectedPatient]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -247,6 +337,12 @@ function DoctorIpdTable() {
               <p>Patient Name</p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
+              <p>Bed No</p>
+            </th>
+            <th className="border-[1px] p-1 font-semibold">
+              <p>Patient Notes</p>
+            </th>
+            <th className="border-[1px] p-1 font-semibold">
               <p>Patient Checked</p>
             </th>
 
@@ -255,21 +351,33 @@ function DoctorIpdTable() {
             </th>
           </thead>
           <tbody>
-            {ipdPatientsListByDoctorId?.map((item) => (
-              <tr key={1}>
+            {ipdPatientsListByDoctorId?.map((item, index) => (
+              <tr key={index}>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  1
+                  {index + 1}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                   uhid014110200
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                   Arman
+                </td>{" "}
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  {item?.ipdPatientNotes}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  <Switch {...label} defaultChecked />
+                  <Switch
+                    {...label}
+                    checked={
+                      previouePatientsData?.find(
+                        (value) => value?.ipdPatientData === item?._id
+                      )
+                        ? true
+                        : false
+                    }
+                  />
                 </td>
-
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
                   <div className="flex gap-[10px] justify-center">
                     <div
@@ -278,12 +386,43 @@ function DoctorIpdTable() {
                     >
                       <CiViewList className="text-[20px] text-[#96999C]" />
                     </div>{" "}
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      onClick={handleOpen}
-                    >
-                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                    </div>
+                    {previouePatientsData?.find(
+                      (value) => value?.ipdPatientData == item?._id
+                    ) ? (
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        onClick={() => [
+                          handleOpen(),
+                          setSelectedPatient({
+                            ...selectedPatient,
+                            ipdPatientId: item?._id,
+                            patientId: item?.ipdPatientId,
+                          }),
+
+                          getOneIpdDoctorCheckDataHandle(
+                            previouePatientsData?.find(
+                              (val) => val?.ipdPatientData == item?._id
+                            )
+                          ),
+                        ]}
+                      >
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                      </div>
+                    ) : (
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        onClick={() => [
+                          handleOpen(),
+                          setSelectedPatient({
+                            ...selectedPatient,
+                            ipdPatientId: item?._id,
+                            patientId: item?.ipdPatientId,
+                          }),
+                        ]}
+                      >
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -316,43 +455,116 @@ function DoctorIpdTable() {
               IPD Patient Table Data
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <div className="flex pt-[10px] pb-[10px] gap-[10%]">
+                <span>
+                  <img src={img} alt="patients " className="w-[15rem] " />
+                </span>
+                <div class="grid grid-cols-2 gap-4">
+                  <div className="flex gap-[10px]">
+                    <span>Patients Reg ID</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admission Date / Time</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Name</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Discharge Date / Time</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Gender</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Patient Categ</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Age</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Tarilt Catrg</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>IPD NO</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>MR and IP No</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Bill Bed Catrg</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admitting Doctor</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>OCC bed categ</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Room and bed NO</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Bill Date and Time</span>:<p>19</p>
+                  </div>
+                </div>
+              </div>
               <form className="w-full flex flex-col justify-start gap-2">
                 <span className="flex flex-col justify-start gap-1">
                   <p>Patient Uhid</p>
                   <input
                     type="text"
                     placeholder="Patient Uhid"
+                    value={"Uhid" + selectedPatient?.patientId}
                     className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
                     disabled
                   />
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p>Select Medicine</p>
-                  <Select
-                    closeMenuOnSelect={false}
-                    components={{ IndicatorSeparator }}
-                    isMulti
-                    options={colourOptions}
-                    onChange={(e) => console.log(e)}
-                    className="border-[2px] w-full rounded"
-                  />
+                  {!isMedicineLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ IndicatorSeparator }}
+                      isMulti
+                      defaultValue={previousMedicine}
+                      options={medicine}
+                      onChange={(e) =>
+                        setSelectedPatient({
+                          ...selectedPatient,
+                          medicine: e,
+                        })
+                      }
+                      className="border-[2px] w-full rounded"
+                    />
+                  )}
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p>Select Test</p>
-                  <Select
-                    closeMenuOnSelect={false}
-                    components={{ IndicatorSeparator }}
-                    isMulti
-                    options={colourOptions}
-                    onChange={(e) => console.log(e)}
-                    className="border-[2px] w-full rounded"
-                  />
+                  {!isTestLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ IndicatorSeparator }}
+                      isMulti
+                      defaultValue={previousTest}
+                      options={test}
+                      onChange={(e) =>
+                        setSelectedPatient({ ...selectedPatient, test: e })
+                      }
+                      className="border-[2px] w-full rounded"
+                    />
+                  )}
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p>Symptoms</p>
                   <input
                     type="text"
                     placeholder="Add Symptoms"
+                    value={selectedPatient?.Symptoms}
+                    onChange={(e) =>
+                      setSelectedPatient({
+                        ...selectedPatient,
+                        Symptoms: e.target.value,
+                      })
+                    }
                     className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] "
                   />
                 </span>
@@ -360,17 +572,29 @@ function DoctorIpdTable() {
                   <p>Note's</p>
                   <textarea
                     rows={5}
+                    value={selectedPatient?.Note}
                     placeholder="Note"
+                    onChange={(e) =>
+                      setSelectedPatient({
+                        ...selectedPatient,
+                        Note: e.target.value,
+                      })
+                    }
                     className="border-[2px] w-full rounded outline-none w-full   pl-[5px] pt-[5px]"
                   />
                 </span>
                 {previouePatientsData?.find(
                   (value) =>
-                    value?.ipdPatientData === selectedPatient?.ipdPatientData
+                    value?.ipdPatientData === selectedPatient?.ipdPatientId
                 ) ? (
                   <button className="buttonFilled">Update</button>
                 ) : (
-                  <button className="buttonFilled">Add</button>
+                  <button
+                    className="buttonFilled"
+                    onClick={(e) => addIpdDoctorCheckDataHandle(e)}
+                  >
+                    Add
+                  </button>
                 )}
               </form>
             </Typography>
@@ -400,12 +624,65 @@ function DoctorIpdTable() {
             >
               IPD Patient Table Data
             </Typography>
+            <div className="flex pt-[10px] pb-[10px] gap-[10%]">
+              <span>
+                <img src={img} alt="patients " className="w-[15rem] " />
+              </span>
+              <div class="grid grid-cols-2 gap-4">
+                <div className="flex gap-[10px]">
+                  <span>Patients Reg ID</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Admission Date / Time</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Name</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Discharge Date / Time</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Gender</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Patient Categ</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Age</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Tarilt Catrg</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>IPD NO</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>MR and IP No</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Bill Bed Catrg</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Admitting Doctor</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>OCC bed categ</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Room and bed NO</span>:<p>19</p>
+                </div>
+                <div className="flex gap-[10px]">
+                  <span>Bill Date and Time</span>:<p>19</p>
+                </div>
+              </div>
+            </div>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <div className="w-full flex flex-col justify-start gap-2">
                 <span className="flex flex-col justify-start gap-1">
                   <p>Patient Uhid</p>
                   <input
                     type="text"
+                    value={"Uhid" + selectedPatient?.patientId}
                     placeholder="Patient Uhid"
                     className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] cursor-not-allowed"
                     disabled

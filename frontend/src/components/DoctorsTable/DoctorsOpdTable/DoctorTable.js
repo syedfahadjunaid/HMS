@@ -1,11 +1,14 @@
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+import img from "../../../assets/20180125_001_1_.jpg";
 import { CiViewList } from "react-icons/ci";
 import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
 import Select from "react-select";
 import img1 from "../../../assets/logo.png";
 import { useReactToPrint } from "react-to-print";
+import { getMedicineDataHandle } from "../../../Store/Slices/Medicine";
+import { getTestDataHandle } from "../../../Store/Slices/Test";
 import {
   addOpdDoctorCheckData,
   getAllOpdPatientsData,
@@ -14,7 +17,7 @@ import {
   updateOpdDoctorCheckData,
 } from "../DoctorApi";
 import PaginationComponent from "../../Pagination";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { convertValue } from "../convertValueStructure";
 import Snackbars from "../../SnackBar";
 
@@ -67,7 +70,11 @@ function DoctorTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getMedicineDataHandle());
+    dispatch(getTestDataHandle());
+  }, []);
   const { medicineData } = useSelector((state) => state.MedicineData);
   const { testData } = useSelector((state) => state.TestData);
   const [patientData, setPatientData] = useState([]);
@@ -352,7 +359,6 @@ function DoctorTable() {
       try {
         const result = await convertValue(selectedPatient?.medicine);
         setPreviousMedicine(result);
-        // setSelectedPatient({ ...selectedPatient, test: result });
       } catch (error) {
         console.error("Error converting value:", error);
       }
@@ -529,6 +535,58 @@ function DoctorTable() {
               OPD Patient Table Data
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <div className="flex pt-[10px] pb-[10px] gap-[10%]">
+                <span>
+                  <img src={img} alt="patients " className="w-[15rem] " />
+                </span>
+                <div class="grid grid-cols-2 gap-4">
+                  <div className="flex gap-[10px]">
+                    <span>Patients Reg ID</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admission Date / Time</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Name</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Discharge Date / Time</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Gender</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Patient Categ</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Age</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Tarilt Catrg</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>IPD NO</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>MR and IP No</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Bill Bed Catrg</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admitting Doctor</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>OCC bed categ</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Room and bed NO</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Bill Date and Time</span>:<p>19</p>
+                  </div>
+                </div>
+              </div>
               <form className="w-full flex flex-col justify-start gap-2">
                 <span className="flex flex-col justify-start gap-1">
                   <p>Patient Uhid</p>
@@ -654,6 +712,7 @@ function DoctorTable() {
               OPD Patient Table Data
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              import img from "../../../assets/20180125_001_1_.jpg";
               <div className="w-full flex flex-col justify-start gap-2">
                 <span className="flex flex-col justify-start gap-1">
                   <p>Patient Uhid</p>

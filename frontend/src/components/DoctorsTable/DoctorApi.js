@@ -60,3 +60,19 @@ export const getAllIPDPatientsDoctorVisitData = async () => {
     console.log(error);
   }
 };
+export const addIpdDoctorCheckData = async (formData) => {
+  try {
+    const response = await axios.post("/api/IPD-Create", formData);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getOneIpdDoctorCheckData = async (Id) => {
+  try {
+    const response = await axios.get(`/api/get-one-ipd-data/${Id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

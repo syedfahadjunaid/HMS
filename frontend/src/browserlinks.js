@@ -53,7 +53,7 @@ const browserLinks = {
   Pharmacist: {
     category: "/Pharmacist",
     internalPages: {
-      Patientlist: "Patient List",
+      Patientlist: "Ipd Patient List",
     },
   },
   Doctor: {
