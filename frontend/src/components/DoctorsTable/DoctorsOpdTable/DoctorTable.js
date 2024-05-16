@@ -144,7 +144,10 @@ function DoctorTable() {
             </div>
             <div className="flex gap-[10px]">
               <span>Name</span>:
-              <p className="text-start w-full text-wrap">
+              <p
+                className="text-start w-full text-wrap"
+                style={{ display: "flex", flexWrap: "wrap" }}
+              >
                 {patientData?.patientName}
               </p>
             </div>
@@ -226,7 +229,7 @@ function DoctorTable() {
                     <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                       {index + 1}
                     </td>
-                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] text-start">
                       {item?.Name}
                     </td>
                     <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
@@ -253,7 +256,7 @@ function DoctorTable() {
                     <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                       {index + 1}
                     </td>
-                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] text-start">
                       {item?.Name}
                     </td>{" "}
                     <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
@@ -301,13 +304,11 @@ function DoctorTable() {
       setSnackBarSuccessMessage(result?.data?.message);
       setOpenSnackBarSuccess(true);
     }
-
-    console.log(result, result?.data?.message);
   };
   const getOneOpdDoctorCheckDataHandle = async (Id) => {
     const result = await getOneOpdDoctorCheckData(Id?.[0]?._id);
 
-    setPatientData(result?.data?.[0]?.PatientData?.[0]);
+    setPatientData(result?.data?.[0]?.patientsData?.[0]);
     setSelectedPatient({
       ...selectedPatient,
       Note: result?.data?.[0]?.Note,
@@ -315,10 +316,11 @@ function DoctorTable() {
       medicine: result?.data?.[0]?.medicineData,
       test: result?.data?.[0]?.testData,
       _id: result?.data?.[0]?._id,
-      opdPatientId: result?.data?.[0]?.OpdPatientData?.[0]?._id,
-      appoiment: result?.data?.[0]?.OpdPatientData?.[0]?.opdDoctorVisitDate,
-      patientId: result?.data?.[0]?.OpdPatientData?.[0]?.opdPatientId,
+      opdPatientId: result?.data?.[0]?.OpdPatientData?._id,
+      appoiment: result?.data?.[0]?.OpdPatientData?.opdDoctorVisitDate,
+      patientId: result?.data?.[0]?.OpdPatientData?.opdPatientId,
     });
+    console.log(result);
   };
   const updateOpdDoctorCheckDataHandle = async (e, Id) => {
     e.preventDefault();
@@ -385,6 +387,9 @@ function DoctorTable() {
     const result = convertValue(testData?.data);
     setTest(result);
   }, [testData]);
+  useEffect(() => {
+    console.log(opdPatients);
+  }, [opdPatients]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -413,10 +418,10 @@ function DoctorTable() {
             </th>
           </thead>
           <tbody>
-            {opdPatients?.map((item) => (
-              <tr key={1}>
+            {opdPatients?.map((item, index) => (
+              <tr key={index}>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  1
+                  {index + 1}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                   {"uhid" + item?.opdPatientId}
@@ -541,19 +546,19 @@ function DoctorTable() {
                 </span>
                 <div class="grid grid-cols-2 gap-4">
                   <div className="flex gap-[10px]">
-                    <span>Patients Reg ID</span>:<p>19</p>
+                    <span>Patients Reg ID</span>:<p>{patientData?.patientId}</p>
                   </div>
                   <div className="flex gap-[10px]">
                     <span>Admission Date / Time</span>:<p>19</p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Name</span>:<p>19</p>
+                    <span>Name</span>:<p>{patientData?.patientName}</p>
                   </div>
                   <div className="flex gap-[10px]">
                     <span>Discharge Date / Time</span>:<p>19</p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Gender</span>:<p>19</p>
+                    <span>Gender</span>:<p>{patientData?.patientGender}</p>
                   </div>
                   <div className="flex gap-[10px]">
                     <span>Patient Categ</span>:<p>19</p>
@@ -712,7 +717,58 @@ function DoctorTable() {
               OPD Patient Table Data
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              import img from "../../../assets/20180125_001_1_.jpg";
+              <div className="flex pt-[10px] pb-[10px] gap-[10%]">
+                <span>
+                  <img src={img} alt="patients " className="w-[15rem] " />
+                </span>
+                <div class="grid grid-cols-2 gap-4">
+                  <div className="flex gap-[10px]">
+                    <span>Patients Reg ID</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admission Date / Time</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Name</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Discharge Date / Time</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Gender</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Patient Categ</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Age</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Tarilt Catrg</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>IPD NO</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>MR and IP No</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Bill Bed Catrg</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admitting Doctor</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>OCC bed categ</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Room and bed NO</span>:<p>19</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Bill Date and Time</span>:<p>19</p>
+                  </div>
+                </div>
+              </div>
               <div className="w-full flex flex-col justify-start gap-2">
                 <span className="flex flex-col justify-start gap-1">
                   <p>Patient Uhid</p>

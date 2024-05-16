@@ -13,7 +13,7 @@ function DoctorDashboard() {
   useEffect(() => {
     dispatch(getMedicineDataHandle());
     dispatch(getTestDataHandle());
-  });
+  }, []);
   return (
     <div className="superadmin-main-right_dashboard flex flex-col w-full p-[1rem] overflow-y-scroll gap-[2rem]">
       <div className="superadmin-main-right_dashboard_firstSection w-full flex flex-col gap-[1rem] pb-[2rem] border-b-[1px] ">
