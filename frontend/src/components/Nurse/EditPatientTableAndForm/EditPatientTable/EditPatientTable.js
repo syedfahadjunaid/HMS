@@ -12,6 +12,8 @@ import { LuHardDriveDownload } from "react-icons/lu";
 
 import Checkbox from "@mui/material/Checkbox";
 
+import { Link } from "react-router-dom";
+
 export default function EditPatientTable({ setViewEditForm, setPatientId }) {
   const { patients } = useSelector((state) => state.PatientState);
   const date = (dateTime) => {
@@ -38,52 +40,58 @@ export default function EditPatientTable({ setViewEditForm, setPatientId }) {
     return data;
   });
 
-  const mappedPatientData = filteredArray?.map((patient, index) => {
-    return {
-      tableId: index + 1,
-      data: patient,
-    };
-  });
+  // const mappedPatientData = filteredArray?.map((patient, index) => {
+  //   return {
+  //     tableId: index + 1,
+  //     data: patient,
+  //   };
+  // });
 
   const config = [
     {
-      label: "S No.",
-      render: (list) => list.tableId,
+      label: "UHID",
+      render: (list) => list.patientId,
     },
     {
-      label: "Reg No.",
-      render: (list) => list.data.patientId,
+      label: "Patient Name",
+      render: (list) => list.patientName,
     },
     {
-      label: "Name",
-      render: (list) => list.data.patientName,
+      label: "Patient Email",
+      render: (list) => list.patientEmail,
     },
     {
-      label: "Date",
-      render: (list) =>
-        `${date(list.data.createdAt)} - ${time(list.data.createdAt)}`,
+      label: "Patient Phone",
+      render: (list) => list.patientPhone,
     },
     {
-      label: "Mobile No.",
-      render: (list) => list.data.patientPhone,
+      label: "Date Created",
+      render: (list) => `${date(list.createdAt)} - ${time(list.createdAt)}`,
     },
-    // {
-    //   label: "Doctor Visit",
-    //   render: (list) => <Checkbox checked />,
-    // },
     {
-      label: "Action",
+      label: "Blood Group",
+      render: (list) => list.patientBloodGroup,
+    },
+    {
+      label: "User Action",
       render: (list) => (
         <div className='flex gap-[10px] justify-center'>
           <div
             // onClick={() => handleOpenViewModal(list)}
             className='p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer'>
-            <MdViewKanban className='text-[25px] text-[#96999C]' />
+            <Link
+              // onClick={handleGeneratePdf}
+              target='_blank'
+              to={list?.patientId}
+              // to={`${browserLinks.superadmin.category}/${browserLinks.superadmin.internalPages.opdPatients}/${opdPatientData?.data?.mainId}`}
+            >
+              <MdViewKanban className='text-[25px] text-[#96999C]' />
+            </Link>
           </div>
           <div
             // onClick={() => handleOpenUpdateModal(list)}
             onClick={() => {
-              setPatientId(list?.data?.patientId);
+              setPatientId(list?.patientId);
               setViewEditForm(true);
             }}
             className='p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer'>
@@ -101,7 +109,7 @@ export default function EditPatientTable({ setViewEditForm, setPatientId }) {
   ];
 
   const keyFn = (list) => {
-    return list.data.patientName;
+    return list.patientName;
   };
   return (
     <Suspense fallback={<>...</>}>
@@ -114,7 +122,7 @@ export default function EditPatientTable({ setViewEditForm, setPatientId }) {
             <FaSearch className='text-[#56585A]' />
             <input
               className='bg-transparent outline-none'
-              placeholder='Search by patient id'
+              placeholder='Search by UHID'
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
@@ -122,7 +130,7 @@ export default function EditPatientTable({ setViewEditForm, setPatientId }) {
             <input type='date' className='bg-transparent outline-none' />
           </div> */}
         </div>
-        <Table data={mappedPatientData} config={config} keyFn={keyFn} />
+        <Table data={filteredArray} config={config} keyFn={keyFn} />
       </div>
     </Suspense>
   );

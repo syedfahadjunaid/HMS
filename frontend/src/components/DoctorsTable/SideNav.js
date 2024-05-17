@@ -5,9 +5,10 @@ import { Suspense, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import browserLinks from "../../browserlinks";
 import { FaUserDoctor } from "react-icons/fa6";
-import { GiMedicines } from "react-icons/gi";
+import { GiBed, GiMedicines } from "react-icons/gi";
 import { FaBed } from "react-icons/fa";
 import { MdEmergency } from "react-icons/md";
+import { VscReferences } from "react-icons/vsc";
 export default function SideNav({ activePage }) {
   const navigate = useNavigate();
 
@@ -38,6 +39,14 @@ export default function SideNav({ activePage }) {
     {
       icon: <MdEmergency />,
       name: browserLinks.Doctor.internalPages.EmergencyPatients,
+    },
+    {
+      icon: <GiBed />,
+      name: browserLinks.Doctor.internalPages.DischargePatients,
+    },
+    {
+      icon: <VscReferences />,
+      name: browserLinks.Doctor.internalPages.ReferralPatients,
     },
   ];
 

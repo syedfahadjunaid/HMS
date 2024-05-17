@@ -658,19 +658,29 @@ export default function BillingTable() {
     submitButton,
   ]);
 
-  const renderedPatientForDropdownBilling = patients?.map((data) => {
-    return {
-      value: data.patientId,
-      label: `${data.patientId} / ${data.patientName}`,
-    };
-  });
+  const filteredArrayGetAllPatients = patients?.filter(
+    (data) => data.isDeleted === false && data
+  );
+  const renderedPatientForDropdownBilling = filteredArrayGetAllPatients?.map(
+    (data) => {
+      return {
+        value: data.patientId,
+        label: `${data.patientId} / ${data.patientName}`,
+      };
+    }
+  );
 
-  const renderedDoctorsForDropdownBilling = doctors?.map((data) => {
-    return {
-      value: data.doctorId,
-      label: `${data.doctorId} / ${data.doctorName} (${data.doctorSpecialization})`,
-    };
-  });
+  const filteredArrayGetAllDoctors = doctors?.filter(
+    (data) => data.isDeleted === false && data
+  );
+  const renderedDoctorsForDropdownBilling = filteredArrayGetAllDoctors?.map(
+    (data) => {
+      return {
+        value: data.doctorId,
+        label: `${data.doctorId} / ${data.doctorName} (${data.doctorSpecialization})`,
+      };
+    }
+  );
 
   const handleAddBill = (e) => {
     e.preventDefault();
@@ -727,7 +737,7 @@ export default function BillingTable() {
       <form className='flex flex-col gap-[1rem] ' onSubmit={handleAddBill}>
         <div className='grid grid-cols-4 gap-[2rem] border-b pb-[3rem]'>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patient Registration No</label>
+            <label className='text-[14px]'>UHID</label>
             <Select
               className='text-[12px]'
               required
@@ -1607,9 +1617,9 @@ export default function BillingTable() {
             type='submit'
             className='buttonFilled'
             onClick={() => setSubmitButton("update")}>{`Save >`}</button>
-          <button
+          {/* <button
             onClick={() => setSubmitButton("updateprint")}
-            className='buttonOutlined'>{`Save & Print >`}</button>
+            className='buttonOutlined'>{`Save & Print >`}</button> */}
         </div>
       </form>
     </div>
@@ -1628,6 +1638,7 @@ export default function BillingTable() {
     }
     return data;
   });
+  // console.log(doctors);
 
   const mappedBillData = filteredArray?.map((data, index) => {
     const filteredPatientData = patients?.find(
@@ -1639,7 +1650,9 @@ export default function BillingTable() {
     return {
       data,
       patientData: filteredPatientData,
-      doctorData: filteredDoctorData,
+      doctorData: filteredDoctorData
+        ? filteredDoctorData
+        : { doctorName: "Doctor" },
     };
   });
   // console.log(mappedBillData);
@@ -1687,11 +1700,12 @@ export default function BillingTable() {
             className='p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer'>
             <RiEdit2Fill className='text-[25px] text-[#3497F9]' />
           </div>
-          <div
+          {/* <div
             onClick={() => handleClickOpenDialogBox(list)}
-            className='p-[4px] h-fit w-fit border-[2px] border-[#EB5757] rounded-[12px] cursor-pointer'>
-            <RiDeleteBin6Fill className='text-[25px] text-[#EB5757]' />
-          </div>
+            className="p-[4px] h-fit w-fit border-[2px] border-[#EB5757] rounded-[12px] cursor-pointer"
+          >
+            <RiDeleteBin6Fill className="text-[25px] text-[#EB5757]" />
+          </div> */}
         </div>
       ),
     },

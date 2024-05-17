@@ -239,122 +239,122 @@ export default function DoctorTable() {
   // console.log(doctorData);
 
   const modalViewDoctorDetails = (
-    <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
-      <div className='border-b flex gap-[1rem] py-[1rem] w-full'>
-        <h3 className='font-[500]'>Doctor ID: </h3>
+    <div className="flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]">
+      <div className="border-b flex gap-[1rem] py-[1rem] w-full">
+        <h3 className="font-[500]">Doctor ID: </h3>
         <h3>{doctorData?.DoctorDetails?.doctorId}</h3>
       </div>
-      <div className='flex w-full'>
-        <div className='w-[25%] flex flex-col items-center'>
+      <div className="flex w-full">
+        <div className="w-[25%] flex flex-col items-center">
           <img
-            className='w-[200px] h-[200px] object-contain'
+            className="w-[200px] h-[200px] object-contain"
             src={
               doctorData?.DoctorDetails?.doctorImage
                 ? process.env.React_App_Base_Image_Url +
                   doctorData?.DoctorDetails?.doctorImage
                 : placeholder
             }
-            alt='patientImage'
+            alt="patientImage"
           />
-          <button className='buttonFilled w-fit'>Button</button>
+          <button className="buttonFilled w-fit">Button</button>
         </div>
-        <div className='w-[75%] flex flex-col gap-[10px] text-[14px]'>
-          <div className='grid grid-cols-2 gap-[10px]'>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Name: </p>
+        <div className="w-[75%] flex flex-col gap-[10px] text-[14px]">
+          <div className="grid grid-cols-2 gap-[10px]">
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Name: </p>
               <p>{doctorData?.DoctorDetails?.doctorName}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Gender: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Gender: </p>
               <p>{doctorData?.DoctorDetails?.doctorGender}</p>
             </div>
 
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Date Of Birth: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Date Of Birth: </p>
               <p>{doctorData?.DoctorDetails?.doctorDOB}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Phone: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Phone: </p>
               <p>{doctorData?.DoctorDetails?.doctorPhone}</p>
             </div>
 
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Blood Group: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Blood Group: </p>
               <p>{doctorData?.DoctorDetails?.doctorBloodGroup}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Qualification: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Qualification: </p>
               <p>{doctorData?.DoctorDetails?.doctorQualification}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Specialization: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Specialization: </p>
               <p>{doctorData?.DoctorDetails?.doctorSpecialization}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>City: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">City: </p>
               <p>{doctorData?.DoctorDetails?.doctorCity}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>State: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">State: </p>
               <p>{doctorData?.DoctorDetails?.doctorState}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Country: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Country: </p>
               <p>{doctorData?.DoctorDetails?.doctorCountry}</p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Zipcode: </p>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Zipcode: </p>
               <p>{doctorData?.DoctorDetails?.doctorZipCode}</p>
             </div>
           </div>
-          <div className='flex flex-col gap-[10px]'>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Email Id: </p>
-              <p className='text-[14px]'>
+          <div className="flex flex-col gap-[10px]">
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Email Id: </p>
+              <p className="text-[14px]">
                 {doctorData?.DoctorDetails?.doctorEmail}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Local Address: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Local Address: </p>
+              <p className="break-word text-[14px]">
                 {doctorData?.DoctorDetails?.doctorLocalAddress}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Permanent Address: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Permanent Address: </p>
+              <p className="break-word text-[14px]">
                 {doctorData?.DoctorDetails?.doctorPermanentAddress}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Department: </p>
-              <p className='text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Department: </p>
+              <p className="text-[14px]">
                 {doctorData?.DoctorProfessionalDetails?.doctorDepartment}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Designation: </p>
-              <p className='text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Designation: </p>
+              <p className="text-[14px]">
                 {doctorData?.DoctorProfessionalDetails?.doctorDesignation}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Fees: </p>
-              <p className='text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Fees: </p>
+              <p className="text-[14px]">
                 {doctorData?.DoctorProfessionalDetails?.doctorFee}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Created On: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Created On: </p>
+              <p className="break-word text-[14px]">
                 {`${date(doctorData?.DoctorDetails?.createdAt)} ${time(
                   doctorData?.DoctorDetails?.createdAt
                 )}`}
               </p>
             </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Updated On: </p>
-              <p className='break-word text-[14px]'>
+            <div className="flex">
+              <p className="font-[600] w-[150px]">Updated On: </p>
+              <p className="break-word text-[14px]">
                 {`${date(doctorData?.DoctorDetails?.updatedAt)} ${time(
                   doctorData?.DoctorDetails?.updatedAt
                 )}`}
@@ -451,152 +451,155 @@ export default function DoctorTable() {
   };
 
   const modalADDDoctor = (
-    <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
-      <h2 className='border-b py-[1rem]'>Add Doctor Information</h2>
+    <div className="flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]">
+      <h2 className="border-b py-[1rem]">Add Doctor Information</h2>
       <form
-        className='flex flex-col gap-[1rem]'
-        onSubmit={handleSubmit(handleAddDoctor)}>
-        <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Name *</label>
+        className="flex flex-col gap-[1rem]"
+        onSubmit={handleSubmit(handleAddDoctor)}
+      >
+        <div className="grid grid-cols-3 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Name *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor name'
+              placeholder="Enter doctor name"
               {...register("doctorName", { required: true })}
             />
             {errors.doctorName && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Email *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Email *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='email'
+              className="py-[10px] outline-none border-b"
+              type="email"
               required
-              placeholder='Enter doctor email'
+              placeholder="Enter doctor email"
               {...register("doctorEmail", { required: true })}
             />
             {errors.doctorEmail && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Qualification *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Qualification *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor qualification'
+              placeholder="Enter doctor qualification"
               {...register("doctorQualification", { required: true })}
             />
             {errors.doctorQualification && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Specialization *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Specialization *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor specialization'
+              placeholder="Enter doctor specialization"
               {...register("doctorSpecialization", { required: true })}
             />
             {errors.doctorSpecialization && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Phone *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Phone *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               required
               minLength={10}
-              placeholder='Enter doctor phone number'
+              placeholder="Enter doctor phone number"
               {...register("doctorPhone", { required: true })}
             />
             {errors.doctorPhone && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Date Of Birth *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Date Of Birth *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='date'
+              className="py-[10px] outline-none border-b"
+              type="date"
               required
               {...register("doctorDOB", { required: true })}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Fees *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Fees *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               required
-              placeholder='Enter doctor fees'
+              placeholder="Enter doctor fees"
               {...register("doctorFee", { required: true })}
             />
             {errors.doctorFee && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Department *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Department *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor department'
+              placeholder="Enter doctor department"
               {...register("doctorDepartment", { required: true })}
             />
             {errors.doctorDepartment && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Designation *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Designation *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor designation'
+              placeholder="Enter doctor designation"
               {...register("doctorDesignation", { required: true })}
             />
             {errors.doctorDesignation && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Gender *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Gender *</label>
             <RadioGroup
-              aria-labelledby='demo-radio-buttons-group-label'
+              aria-labelledby="demo-radio-buttons-group-label"
               value={doctorGender}
-              name='radio-buttons-group'
+              name="radio-buttons-group"
               onChange={(e) => setDoctorGender(e.target.value)}
-              sx={{ display: "flex", flexDirection: "row" }}>
+              sx={{ display: "flex", flexDirection: "row" }}
+            >
               <FormControlLabel
-                value='Female'
+                value="Female"
                 control={<Radio />}
-                label='Female'
+                label="Female"
               />
-              <FormControlLabel value='Male' control={<Radio />} label='Male' />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
               <FormControlLabel
-                value='Other'
+                value="Other"
                 control={<Radio />}
-                label='Other'
+                label="Other"
               />
             </RadioGroup>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Blood Group *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Blood Group *</label>
             <select
-              className='py-[11.5px] outline-none border-b bg-transparent'
-              {...register("doctorBloodGroup", { required: true })}>
+              className="py-[11.5px] outline-none border-b bg-transparent"
+              {...register("doctorBloodGroup", { required: true })}
+            >
               <option>O positive</option>
               <option>O negative</option>
               <option>A positive</option>
@@ -607,113 +610,113 @@ export default function DoctorTable() {
               <option>AB negative</option>
             </select>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Photo *</label>
-            <div className='flex flex-col gap-[1rem]'>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Photo *</label>
+            <div className="flex flex-col gap-[1rem]">
               <input
-                type='file'
-                required
-                accept='image/png, image/gif, image/jpeg'
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => setDoctorImage(e.target.files[0])}
               />
 
               <img
-                className='object-contain w-[100px] h-[100px]'
+                className="object-contain w-[100px] h-[100px]"
                 src={
                   doctorImage ? URL.createObjectURL(doctorImage) : placeholder
                 }
-                alt='placeholderimg'
+                alt="placeholderimg"
               />
             </div>
           </div>
         </div>
 
-        <h3 className='border-b py-[1rem]'>Doctor Address Details</h3>
-        <div className='grid grid-cols-2 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Local Address *</label>
+        <h3 className="border-b py-[1rem]">Doctor Address Details</h3>
+        <div className="grid grid-cols-2 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Local Address *</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor local address'
+              placeholder="Enter doctor local address"
               {...register("doctorLocalAddress", { required: true })}
             />
             {errors.doctorLocalAddress && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Permanent Address *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Permanent Address *</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor permanent address'
+              placeholder="Enter doctor permanent address"
               {...register("doctorPermanentAddress", { required: true })}
             />
             {errors.doctorPermanentAddress && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>City *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">City *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor city'
+              placeholder="Enter doctor city"
               {...register("doctorCity", { required: true })}
             />
             {errors.doctorCity && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>State *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">State *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor state'
+              placeholder="Enter doctor state"
               {...register("doctorState", { required: true })}
             />
             {errors.doctorState && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Country *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Country *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor country'
+              placeholder="Enter doctor country"
               {...register("doctorCountry", { required: true })}
             />
             {errors.doctorCountry && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Zipcode *</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Zipcode *</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               required
-              placeholder='Enter doctor zipcode'
+              placeholder="Enter doctor zipcode"
               {...register("doctorZipCode", { required: true })}
             />
             {errors.doctorZipCode && (
-              <span className='text-[red]'>This field is required</span>
+              <span className="text-[red]">This field is required</span>
             )}
           </div>
         </div>
-        <div className='flex gap-[1rem] items-center'>
+        <div className="flex gap-[1rem] items-center">
           <button
-            type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            type="submit"
+            className="buttonFilled"
+          >{`Save & Print >`}</button>
+          <button className="buttonOutlined">{`Save >`}</button>
         </div>
       </form>
     </div>
@@ -772,136 +775,138 @@ export default function DoctorTable() {
   };
 
   const modalUpdateDoctor = (
-    <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
-      <h2 className='border-b py-[1rem]'>Update Doctor Information</h2>
-      <form className='flex flex-col gap-[1rem]' onSubmit={handleUpdateDoctor}>
-        <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Name</label>
+    <div className="flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]">
+      <h2 className="border-b py-[1rem]">Update Doctor Information</h2>
+      <form className="flex flex-col gap-[1rem]" onSubmit={handleUpdateDoctor}>
+        <div className="grid grid-cols-3 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Name</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
               value={doctorName}
-              placeholder='Enter doctor name'
+              placeholder="Enter doctor name"
               onChange={(e) => setDoctorName(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Email</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Email</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='email'
+              className="py-[10px] outline-none border-b"
+              type="email"
               required
               value={doctorEmail}
-              placeholder='Enter doctor email'
+              placeholder="Enter doctor email"
               onChange={(e) => setDoctorEmail(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Qualification</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Qualification</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
               value={doctorQualification}
-              placeholder='Enter doctor qualification'
+              placeholder="Enter doctor qualification"
               onChange={(e) => setDoctorQualification(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Specialization</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Specialization</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor specialization'
+              placeholder="Enter doctor specialization"
               value={doctorSpecialization}
               onChange={(e) => setDoctorSpecialization(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Phone</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Phone</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               required
               minLength={10}
-              placeholder='Enter doctor phone number'
+              placeholder="Enter doctor phone number"
               value={doctorPhone}
               onChange={(e) => setDoctorPhone(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Date Of Birth</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Date Of Birth</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='date'
+              className="py-[10px] outline-none border-b"
+              type="date"
               required
               value={doctorDOB}
               onChange={(e) => setDoctorDOB(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Fees</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Fees</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               required
-              placeholder='Enter doctor fees'
+              placeholder="Enter doctor fees"
               value={doctorFee}
               onChange={(e) => setDoctorFee(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Department</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Department</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor department'
+              placeholder="Enter doctor department"
               value={doctorDepartment}
               onChange={(e) => setDoctorDepartment(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Designation</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Designation</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor designation'
+              placeholder="Enter doctor designation"
               value={doctorDesignation}
               onChange={(e) => setDoctorDesignation(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Gender</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Gender</label>
             <RadioGroup
-              aria-labelledby='demo-radio-buttons-group-label'
+              aria-labelledby="demo-radio-buttons-group-label"
               value={doctorGender}
-              name='radio-buttons-group'
+              name="radio-buttons-group"
               onChange={(e) => setDoctorGender(e.target.value)}
-              sx={{ display: "flex", flexDirection: "row" }}>
+              sx={{ display: "flex", flexDirection: "row" }}
+            >
               <FormControlLabel
-                value='Female'
+                value="Female"
                 control={<Radio />}
-                label='Female'
+                label="Female"
               />
-              <FormControlLabel value='Male' control={<Radio />} label='Male' />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
               <FormControlLabel
-                value='Other'
+                value="Other"
                 control={<Radio />}
-                label='Other'
+                label="Other"
               />
             </RadioGroup>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Blood Group</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Blood Group</label>
             <select
-              className='py-[11.5px] outline-none border-b bg-transparent'
+              className="py-[11.5px] outline-none border-b bg-transparent"
               value={doctorBloodGroup}
-              onChange={(e) => setDoctorBloodGroup(e.target.value)}>
+              onChange={(e) => setDoctorBloodGroup(e.target.value)}
+            >
               <option>O positive</option>
               <option>O negative</option>
               <option>A positive</option>
@@ -912,100 +917,101 @@ export default function DoctorTable() {
               <option>AB negative</option>
             </select>
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Doctor Photo</label>
-            <div className='flex flex-col gap-[1rem]'>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Doctor Photo</label>
+            <div className="flex flex-col gap-[1rem]">
               <input
-                type='file'
-                accept='image/png, image/gif, image/jpeg'
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => setDoctorImage(e.target.files[0])}
               />
 
               <img
-                className='object-contain w-[100px] h-[100px]'
+                className="object-contain w-[100px] h-[100px]"
                 src={
                   doctorImage ? URL.createObjectURL(doctorImage) : placeholder
                 }
-                alt='placeholderimg'
+                alt="placeholderimg"
               />
             </div>
           </div>
         </div>
 
-        <h3 className='border-b py-[1rem]'>Doctor Address Details</h3>
-        <div className='grid grid-cols-2 gap-[2rem] border-b pb-[3rem]'>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Local Address</label>
+        <h3 className="border-b py-[1rem]">Doctor Address Details</h3>
+        <div className="grid grid-cols-2 gap-[2rem] border-b pb-[3rem]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Local Address</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor local address'
+              placeholder="Enter doctor local address"
               value={doctorLocalAddress}
               onChange={(e) => setDoctorLocalAddress(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Permanent Address</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Permanent Address</label>
             <textarea
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor permanent address'
+              placeholder="Enter doctor permanent address"
               value={doctorPermanentAddress}
               onChange={(e) => setDoctorPermanentAddress(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>City</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">City</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor city'
+              placeholder="Enter doctor city"
               value={doctorCity}
               onChange={(e) => setDoctorCity(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>State</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">State</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor state'
+              placeholder="Enter doctor state"
               value={doctorState}
               onChange={(e) => setDoctorState(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Country</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Country</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+              className="py-[10px] outline-none border-b"
+              type="text"
               required
-              placeholder='Enter doctor country'
+              placeholder="Enter doctor country"
               value={doctorCountry}
               onChange={(e) => setDoctorCountry(e.target.value)}
             />
           </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Zipcode</label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[14px]">Zipcode</label>
             <input
-              className='py-[10px] outline-none border-b'
-              type='number'
+              className="py-[10px] outline-none border-b"
+              type="number"
               required
-              placeholder='Enter doctor zipcode'
+              placeholder="Enter doctor zipcode"
               value={doctorZipCode}
               onChange={(e) => setDoctorZipCode(e.target.value)}
             />
           </div>
         </div>
-        <div className='flex gap-[1rem] items-center'>
+        <div className="flex gap-[1rem] items-center">
           <button
-            type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            type="submit"
+            className="buttonFilled"
+          >{`Save & Print >`}</button>
+          <button className="buttonOutlined">{`Save >`}</button>
         </div>
       </form>
     </div>
@@ -1016,7 +1022,7 @@ export default function DoctorTable() {
   const filteredArray = doctors?.filter((data) => {
     if (search !== "") {
       const userSearch = search.toLowerCase();
-      const searchInData = data?.doctorId?.toLowerCase();
+      const searchInData = data?.doctorName?.toLowerCase();
 
       return searchInData?.startsWith(userSearch);
     }
@@ -1053,22 +1059,24 @@ export default function DoctorTable() {
     {
       label: "Action",
       render: (list) => (
-        <div className='flex gap-[10px] justify-center'>
+        <div className="flex gap-[10px] justify-center">
           <div
             onClick={() => handleOpenViewModal(list)}
-            className='p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer'>
-            <MdViewKanban className='text-[25px] text-[#96999C]' />
+            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+          >
+            <MdViewKanban className="text-[25px] text-[#96999C]" />
           </div>
           <div
             onClick={() => handleOpenUpdateModal(list)}
-            className='p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer'>
-            <RiEdit2Fill className='text-[25px] text-[#3497F9]' />
+            className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+          >
+            <RiEdit2Fill className="text-[25px] text-[#3497F9]" />
           </div>
-          <div
+          {/* <div
             onClick={() => handleClickOpenDialogBox(list)}
             className='p-[4px] h-fit w-fit border-[2px] border-[#EB5757] rounded-[12px] cursor-pointer'>
             <RiDeleteBin6Fill className='text-[25px] text-[#EB5757]' />
-          </div>
+          </div> */}
         </div>
       ),
     },
@@ -1079,21 +1087,22 @@ export default function DoctorTable() {
   };
   return (
     <Suspense fallback={<>...</>}>
-      <div className='flex flex-col gap-[1rem] p-[1rem]'>
-        <div className='flex justify-between'>
-          <h2 className='border-b-[4px] border-[#3497F9]'>Doctors</h2>
+      <div className="flex flex-col gap-[1rem] p-[1rem]">
+        <div className="flex justify-between">
+          <h2 className="border-b-[4px] border-[#3497F9]">Doctors</h2>
           <button
             onClick={handleOpen}
-            className='bg-[#3497F9] text-white p-[10px] rounded-md'>
+            className="bg-[#3497F9] text-white p-[10px] rounded-md"
+          >
             + Add Doctor
           </button>
         </div>
-        <div className='flex justify-between'>
-          <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
-            <FaSearch className='text-[#56585A]' />
+        <div className="flex justify-between">
+          <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+            <FaSearch className="text-[#56585A]" />
             <input
-              className='bg-transparent outline-none'
-              placeholder='Search by doctor id'
+              className="bg-transparent outline-none"
+              placeholder="Search by doctor name"
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
@@ -1106,15 +1115,16 @@ export default function DoctorTable() {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'>
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box sx={style}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            <h1 className='headingBottomUnderline w-fit pb-[10px]'>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            <h1 className="headingBottomUnderline w-fit pb-[10px]">
               Add Doctor
             </h1>
           </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {modalADDDoctor}
           </Typography>
         </Box>
@@ -1122,15 +1132,16 @@ export default function DoctorTable() {
       <Modal
         open={openUpdateModal}
         onClose={handleCloseUpdateModal}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'>
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box sx={style}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            <h1 className='headingBottomUnderline w-fit pb-[10px]'>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            <h1 className="headingBottomUnderline w-fit pb-[10px]">
               Update Doctor
             </h1>
           </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {modalUpdateDoctor}
           </Typography>
         </Box>
@@ -1138,21 +1149,22 @@ export default function DoctorTable() {
       <Modal
         open={openViewModal}
         onClose={handleCloseViewModal}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'>
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box sx={style}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            <div className='flex justify-between items-center'>
-              <h1 className='headingBottomUnderline w-fit pb-[10px]'>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            <div className="flex justify-between items-center">
+              <h1 className="headingBottomUnderline w-fit pb-[10px]">
                 Doctor Details
               </h1>
-              <button className='buttonFilled flex items-center gap-[10px]'>
+              <button className="buttonFilled flex items-center gap-[10px]">
                 <LuHardDriveDownload />
                 <p>Download</p>
               </button>
             </div>
           </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {modalViewDoctorDetails}
           </Typography>
         </Box>
@@ -1161,14 +1173,14 @@ export default function DoctorTable() {
       <Snackbars
         open={openSnackbarSuccess}
         setOpen={setOpenSnackBarSuccess}
-        severity='success'
+        severity="success"
         message={snackBarMessageSuccess}
       />
       {/* Warning Snackbar */}
       <Snackbars
         open={openSnackbarWarning}
         setOpen={setOpenSnackBarWarning}
-        severity='warning'
+        severity="warning"
         message={snackBarMessageWarning}
       />
       <DialogBoxToDelete

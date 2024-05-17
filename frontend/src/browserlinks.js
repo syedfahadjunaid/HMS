@@ -38,22 +38,34 @@ const browserLinks = {
     pageCategories: {
       patientRegistration: "Patients",
       opdPatients: "OPD Patients",
+      ipdPatients: "IPD Patients",
       emergency: "Emergency",
+      tests: "Tests",
     },
     internalPages: {
       dashboard: "Dashboard",
       addPatient: "Add Patient",
       editPatient: "Patient List",
-      addOPDPatient: "Add OPD Patient",
-      editOPDPatient: "OPD Patient List",
-      addEmergencyPatient: "Add Emergency Patient",
-      editEmergencyPatient: "Emergency Patient List",
+      opdPatientList: "OPD Patient List",
+      ipdPatientList: "IPD Patient List",
+      emergencyPatientList: "Emergency Patient List",
+      testPatient: "Patient Tests",
     },
   },
-  Pharmacist: {
-    category: "/Pharmacist",
+  receptionist: {
+    category: "/Nurse",
+    pageCategories: {
+      opdPatient: "OPD Patient",
+      ipdPatient: "IPD Patient",
+    },
     internalPages: {
-      Patientlist: "Ipd Patient List",
+      dashboard: "Dashboard",
+      addOPDPatientPrescription: "Add Prescription OPD",
+      opdPatientList: "Patient List OPD",
+      addIPDPatientPrescription: "Add Prescription IPD",
+      ipdPatientList: "Patient List IPD",
+      ipdPatientViewPage: "View Patient IPD",
+      doctorVisitListIPD: "Doctor Visit List IPD",
     },
   },
   Doctor: {
@@ -63,7 +75,9 @@ const browserLinks = {
       DashBoard: "DashBoard",
       IpdPatients: "IpdPatients",
       OpdPatients: "OpdPatients",
-      EmergencyPatients: "EmergencyPatients",
+      EmergencyPatients: "Emergenc Patients",
+      DischargePatients: "Discharge Patients",
+      ReferralPatients: "Referral Patients",
     },
   },
   Accountant: {

@@ -29,25 +29,30 @@ export default function DashboardTable() {
 
   const config = [
     {
-      label: "S No.",
-      render: (list) => list.tableId,
-    },
-    {
-      label: "Reg No.",
+      label: "UHID",
       render: (list) => list.data.patientId,
     },
     {
-      label: "Name",
+      label: "Patient Name",
       render: (list) => list.data.patientName,
     },
     {
-      label: "Date",
+      label: "Patient Email",
+      render: (list) => list.data.patientEmail,
+    },
+
+    {
+      label: "Patient Phone",
+      render: (list) => list.data.patientPhone,
+    },
+    {
+      label: "Date Created",
       render: (list) =>
         `${date(list.data.createdAt)} - ${time(list.data.createdAt)}`,
     },
     {
-      label: "Mobile No.",
-      render: (list) => list.data.patientPhone,
+      label: "Blood Group",
+      render: (list) => list.data.patientBloodGroup,
     },
     // {
     //   label: "Doctor Visit",

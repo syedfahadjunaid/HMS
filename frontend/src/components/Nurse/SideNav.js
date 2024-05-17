@@ -58,15 +58,20 @@ export default function SideNav({ activePage }) {
       ],
     },
     {
+      category: browserLinks?.nurse?.pageCategories?.ipdPatients,
+      pages: [
+        {
+          icon: <FaUser />,
+          name: browserLinks.nurse.internalPages.ipdPatientList,
+        },
+      ],
+    },
+    {
       category: browserLinks?.nurse?.pageCategories?.opdPatients,
       pages: [
         {
           icon: <FaUser />,
-          name: browserLinks.nurse.internalPages.addOPDPatient,
-        },
-        {
-          icon: <FaEdit />,
-          name: browserLinks.nurse.internalPages.editOPDPatient,
+          name: browserLinks.nurse.internalPages.opdPatientList,
         },
       ],
     },
@@ -75,11 +80,16 @@ export default function SideNav({ activePage }) {
       pages: [
         {
           icon: <FaUser />,
-          name: browserLinks.nurse.internalPages.addEmergencyPatient,
+          name: browserLinks.nurse.internalPages.emergencyPatientList,
         },
+      ],
+    },
+    {
+      category: browserLinks?.nurse?.pageCategories?.tests,
+      pages: [
         {
-          icon: <FaEdit />,
-          name: browserLinks.nurse.internalPages.editEmergencyPatient,
+          icon: <FaUser />,
+          name: browserLinks.nurse.internalPages.testPatient,
         },
       ],
     },
@@ -120,12 +130,10 @@ export default function SideNav({ activePage }) {
       );
     });
     return (
-      <div
-        key={`${category?.category}-${index}`}
-        className='w-full sideNavLinks'>
+      <div key={`${category?.category}-${index}`} className='w-full'>
         {category?.category !== "Dashboard" && (
           <div className='flex justify-between px-[1rem] items-center'>
-            <h2 className=''>{category?.category}</h2>
+            <h3 className=''>{category?.category}</h3>
             <IoIosArrowDown />
           </div>
         )}

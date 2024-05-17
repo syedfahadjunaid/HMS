@@ -96,7 +96,11 @@ const SuperAdminOPDPage = lazy(() => import("./pages/superadmin/OPD/OPD"));
 const BillDownloadPage = lazy(() =>
   import("./components/superadmin/BillingTable/BillDownload/BillDownload")
 );
-
+const OPDPatientRecieptDownloadPage = lazy(() =>
+  import(
+    "./components/superadmin/OPD_PatientTable/OPD_PatientReciept/OPD_PatientReciept"
+  )
+);
 // HR Panel
 const HRPanelDashboard = lazy(() => import("./pages/HR/Dashboard"));
 const HRPanelEmployeeManagement = lazy(() =>
@@ -123,7 +127,7 @@ const HRPanelEmployeeAppoiment = lazy(() =>
   import("./pages/HR/EmployeeAppoiment/EmployeeAppoiment")
 );
 
-// Nurse Panel
+// Receptionist Panel
 const NursePanelDashboard = lazy(() => import("./pages/Nurse/Dashboard"));
 const NursePanelAddPatient = lazy(() =>
   import("./pages/Nurse/AddPatient/AddPatient")
@@ -131,12 +135,59 @@ const NursePanelAddPatient = lazy(() =>
 const NursePanelEditPatient = lazy(() =>
   import("./pages/Nurse/EditPatient/EditPatient")
 );
-const NursePanelAddEmergencyPatient = lazy(() =>
-  import("./pages/Nurse/AddEmergencyPatient/AddEmergencyPatient")
+const NursePanelIPDPatientList = lazy(() =>
+  import("./pages/Nurse/IPDPatientList/IPDPatientList")
+);
+const NursePanelOPDPatientList = lazy(() =>
+  import("./pages/Nurse/OPDPatientList/OPDPatientList")
 );
 const NursePanelEmergencyPatientList = lazy(() =>
   import("./pages/Nurse/EmergencyPatientList/EmergencyPatientLIst")
 );
+const NursePanelTestPatient = lazy(() =>
+  import("./pages/Nurse/TestPatient/TestPatient")
+);
+
+const PatientViewPageToPrint = lazy(() =>
+  import(
+    "./components/Nurse/EditPatientTableAndForm/PatientViewPage/PatientViewPage"
+  )
+);
+
+const EmergencyPatientReciept = lazy(() =>
+  import(
+    "./components/Nurse/EmergencyPatientTable/EmergencyPatientReciept/EmergencyPatientReciept"
+  )
+);
+const IPDPatientReciept = lazy(() =>
+  import(
+    "./components/Nurse/IPDPatientTableAndForm/IPD_PatientReciept/IPD_PatientReciept"
+  )
+);
+const TestPatientReceipt = lazy(() =>
+  import(
+    "./components/Nurse/TestPatientTable/TestPatientReceipt/TestPatientReceipt"
+  )
+);
+// Nurse Panel
+const ReceptionistPanelDashboard = lazy(() =>
+  import("./pages/Receptionist/Dashboard")
+);
+const ReceptionistPanelIPDPatientList = lazy(() =>
+  import("./pages/Receptionist/IPDPatientList/IPDPatientList")
+);
+const ReceptionistPanelIPDPrescriptionAdd = lazy(() =>
+  import("./pages/Receptionist/IPDPrescriptionAdd/IPDPrescriptionAdd")
+);
+const ReceptionistPanelIPDDoctorVisitList = lazy(() =>
+  import("./pages/Receptionist/IPDDoctorVisitList/IPDDoctorVisitList")
+);
+const ReceptionistPanelIPDPatientViewPage = lazy(() =>
+  import(
+    "./components/Receptionist/IPDPatientListTable/IPDPatientViewPage/IPDPatientViewPage"
+  )
+);
+
 // AdmissionAndCharges
 
 const AccountantAdmissionAndCharges = lazy(() =>
@@ -161,9 +212,25 @@ const AccountantBilling = lazy(() =>
   import("./pages/Accountent/Billing/Billing")
 );
 
+// Emergency Panel
+const EmergencyPanelDashboard = lazy(() =>
+  import("./pages/Emergency/Dashboard")
+);
+const EmergencyPanelEmergencyPrescription = lazy(() =>
+  import(
+    "./pages/Emergency/EmergencyPatientPrescription/EmergencyPatientPrescription"
+  )
+);
+
 // Doctors
 
 const Doctors = lazy(() => import("./pages/Doctors/DoctorDashboard/Doctors"));
+const DoctorsDischarge = lazy(() =>
+  import("./pages/Doctors/DoctorDischargePatients/DoctorDischargePatients")
+);
+const DoctorsRefer = lazy(() =>
+  import("./pages/Doctors/DoctorReferPatients/DoctorReferPatients")
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -664,7 +731,263 @@ function App() {
                   }
                 />
               )}
-
+              {adminRole === "Receptionist" ? (
+                <Route path={browserLinks.nurse.category}>
+                  <Route
+                    path={browserLinks.nurse.internalPages.dashboard}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelDashboard />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks?.nurse?.internalPages?.addPatient
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelAddPatient />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks?.nurse?.internalPages?.editPatient
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelEditPatient />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks.nurse.internalPages.editPatient
+                      .split(" ")
+                      .join("")}/:patientId`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <PatientViewPageToPrint />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks?.nurse?.internalPages?.emergencyPatientList
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelEmergencyPatientList />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks.nurse.internalPages.emergencyPatientList
+                      .split(" ")
+                      .join("")}/:emergencyPatientId`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <EmergencyPatientReciept />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks?.nurse?.internalPages?.ipdPatientList
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelIPDPatientList />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks.nurse.internalPages.ipdPatientList
+                      .split(" ")
+                      .join("")}/:ipdPatientId`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <IPDPatientReciept />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks?.nurse?.internalPages?.opdPatientList
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelOPDPatientList />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks.nurse.internalPages.opdPatientList
+                      .split(" ")
+                      .join("")}/:opdPatientId`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <OPDPatientRecieptDownloadPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks?.nurse?.internalPages?.testPatient
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelTestPatient />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks.nurse.internalPages.testPatient
+                      .split(" ")
+                      .join("")}/:testPatientId`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <TestPatientReceipt />
+                      </Suspense>
+                    }
+                  />
+                </Route>
+              ) : (
+                <Route
+                  path="*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <>
+                          <Box sx={{ width: "100%" }}>
+                            <LinearProgress />
+                          </Box>
+                        </>
+                      }
+                    >
+                      <UnauthorizedPage />
+                    </Suspense>
+                  }
+                />
+              )}
               {/* Nurse Panel */}
               {adminRole === "Receptionist" ? (
                 <Route path={browserLinks.nurse.category}>
@@ -716,7 +1039,7 @@ function App() {
                       </Suspense>
                     }
                   />
-                  <Route
+                  {/* <Route
                     path={`${
                       browserLinks.nurse.category
                     }/${browserLinks?.nurse?.internalPages?.addEmergencyPatient
@@ -735,7 +1058,7 @@ function App() {
                         <NursePanelAddEmergencyPatient />
                       </Suspense>
                     }
-                  />
+                  /> */}
                   <Route
                     path={`${
                       browserLinks.nurse.category
@@ -1220,6 +1543,218 @@ function App() {
                         }
                       >
                         <EmergencyPatientsDoctorTable />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Doctor.category
+                    }/${browserLinks?.Doctor?.internalPages?.ReferralPatients?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <DoctorsRefer />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.Doctor.category
+                    }/${browserLinks?.Doctor?.internalPages?.DischargePatients?.split(
+                      " "
+                    ).join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <DoctorsDischarge />
+                      </Suspense>
+                    }
+                  />
+                </Route>
+              ) : (
+                <Route
+                  path="*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <>
+                          <Box sx={{ width: "100%" }}>
+                            <LinearProgress />
+                          </Box>
+                        </>
+                      }
+                    >
+                      <UnauthorizedPage />
+                    </Suspense>
+                  }
+                />
+              )}
+              {adminRole === "Emergency" ? (
+                <Route path={browserLinks.emergency.category}>
+                  <Route
+                    path={browserLinks.emergency.internalPages.dashboard}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <EmergencyPanelDashboard />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={browserLinks?.emergency?.internalPages?.addEmergencyPatientPrescription
+                      ?.split(" ")
+                      .join("")}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <EmergencyPanelEmergencyPrescription />
+                      </Suspense>
+                    }
+                  />
+                </Route>
+              ) : (
+                <Route
+                  path="*"
+                  element={
+                    <Suspense
+                      fallback={
+                        <>
+                          <Box sx={{ width: "100%" }}>
+                            <LinearProgress />
+                          </Box>
+                        </>
+                      }
+                    >
+                      <UnauthorizedPage />
+                    </Suspense>
+                  }
+                />
+              )}
+              {adminRole === "Nurse" ? (
+                <Route path={browserLinks.receptionist.category}>
+                  <Route
+                    path={browserLinks.receptionist.internalPages.dashboard}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <ReceptionistPanelDashboard />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.receptionist.category
+                    }/${browserLinks?.receptionist?.internalPages?.ipdPatientList
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <ReceptionistPanelIPDPatientList />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.receptionist.category
+                    }/${browserLinks?.receptionist?.internalPages?.ipdPatientViewPage
+                      ?.split(" ")
+                      .join("")}/:ipdPatientViewPageID`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <ReceptionistPanelIPDPatientViewPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.receptionist.category
+                    }/${browserLinks?.receptionist?.internalPages?.addIPDPatientPrescription
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <ReceptionistPanelIPDPrescriptionAdd />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.receptionist.category
+                    }/${browserLinks?.receptionist?.internalPages?.doctorVisitListIPD
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <ReceptionistPanelIPDDoctorVisitList />
                       </Suspense>
                     }
                   />

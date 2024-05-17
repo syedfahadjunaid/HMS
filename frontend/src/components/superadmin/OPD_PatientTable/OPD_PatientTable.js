@@ -15,6 +15,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
+import browserLinks from "../../../browserlinks";
+
 import Select from "react-select";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -39,7 +41,11 @@ import {
   deleteOPDPatientChange,
 } from "../../../Store/Slices/OPDPatientSlice";
 
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 export default function OPD_PatientTable() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { doctors } = useSelector((state) => state.DoctorState);
   const { patients } = useSelector((state) => state.PatientState);
@@ -53,6 +59,8 @@ export default function OPD_PatientTable() {
 
   const [deleteOPDPatientById, responseDeleteOPDPatientById] =
     useDeleteOPDPatientByIdMutation();
+
+  const [submitButton, setSubmitButton] = React.useState("");
 
   // Snackbar--------------------
   // ----Succcess
@@ -121,7 +129,9 @@ export default function OPD_PatientTable() {
   });
   const [opdPatientStandardCharges, setOpdPatientStandardCharges] =
     React.useState("");
-  const [opdPatientPaymentMode, setOpdPatientPaymentMode] = React.useState("");
+  const [opdPatientPaymentMode, setOpdPatientPaymentMode] =
+    React.useState("UPI");
+  const [opdDoctorVisitDate, setOpdDoctorVisitDate] = React.useState();
   const [opdPatientNotes, setOpdPatientNotes] = React.useState("");
 
   const [mainId, setMainId] = React.useState("");
@@ -196,20 +206,31 @@ export default function OPD_PatientTable() {
   });
 
   React.useEffect(() => {
-    if (responseCreateOPDPatient.isSuccess) {
-      dispatch(createOPDPatientChange(Math.random()));
-      setSnackBarSuccessMessage(responseCreateOPDPatient?.data?.message);
-      handleClickSnackbarSuccess();
-      handleClose();
-      setOpdPatientId({ value: "", label: "" });
-      setOpdCaseId({ value: "", label: "" });
-      setOpdId({ value: "", label: "" });
-      setOpdDoctorId({ value: "", label: "" });
-      setOpdPatientBloodPressure("");
-      setOpdPatientStandardCharges("");
-      setOpdPatientPaymentMode("");
-      setOpdPatientNotes("");
-      reset();
+    if (submitButton === "add") {
+      if (responseCreateOPDPatient.isSuccess) {
+        dispatch(createOPDPatientChange(Math.random()));
+        setSnackBarSuccessMessage(responseCreateOPDPatient?.data?.message);
+        handleClickSnackbarSuccess();
+        handleClose();
+        setOpdPatientId({ value: "", label: "" });
+        setOpdCaseId({ value: "", label: "" });
+        setOpdId({ value: "", label: "" });
+        setOpdDoctorId({ value: "", label: "" });
+        setOpdPatientBloodPressure("");
+        setOpdPatientStandardCharges("");
+        setOpdPatientPaymentMode("");
+        setOpdPatientNotes("");
+        reset();
+      }
+    }
+    if (submitButton === "addPrint") {
+      navigate(
+        `${
+          browserLinks.superadmin.category
+        }/${browserLinks.superadmin.internalPages.opdPatients
+          .split(" ")
+          .join("")}/${responseCreateOPDPatient?.data?.data?.mainId}`
+      );
     } else if (responseCreateOPDPatient.isError) {
       setSnackBarSuccessWarning(responseCreateOPDPatient?.error?.data);
       handleClickSnackbarWarning();
@@ -226,6 +247,7 @@ export default function OPD_PatientTable() {
       opdPatientBloodPressure: opdPatientBloodPressure,
       opdPatientStandardCharges: opdPatientStandardCharges,
       opdPatientPaymentMode: opdPatientPaymentMode,
+      opdDoctorVisitDate: opdDoctorVisitDate,
       opdPatientNotes: opdPatientNotes,
     };
     // console.log(submitData);
@@ -241,7 +263,7 @@ export default function OPD_PatientTable() {
       <form className='flex flex-col gap-[1rem]' onSubmit={handleAddOPDPatient}>
         <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
           <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>Patient Registration Id *</label>
+            <label className='text-[14px]'>UHID *</label>
             <Select
               required
               options={renderedPatientIDForDropdown}
@@ -249,26 +271,26 @@ export default function OPD_PatientTable() {
             />
           </div>
 
-          <div className='flex flex-col gap-[6px] relative w-full'>
+          {/* <div className='flex flex-col gap-[6px] relative w-full'>
             <label className='text-[14px]'>Case Id *</label>
             <Select
               required
               options={renderedCaseIDForDropdown}
               onChange={setOpdCaseId}
             />
-          </div>
+          </div> */}
 
-          <div className='flex flex-col gap-[6px] relative w-full'>
+          {/* <div className='flex flex-col gap-[6px] relative w-full'>
             <label className='text-[14px]'>OPD Id *</label>
             <Select
               required
               options={renderedOPDIDForDropdown}
               onChange={setOpdId}
             />
-          </div>
+          </div> */}
 
           <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>OPD Id *</label>
+            <label className='text-[14px]'>Doctor Id *</label>
             <Select
               required
               options={renderedDoctorIDForDropdown}
@@ -276,7 +298,7 @@ export default function OPD_PatientTable() {
             />
           </div>
 
-          <div className='flex flex-col gap-[6px]'>
+          {/* <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Blood Pressure *</label>
             <input
               className='py-[10px] outline-none border-b'
@@ -286,31 +308,56 @@ export default function OPD_PatientTable() {
               value={opdPatientBloodPressure}
               onChange={(e) => setOpdPatientBloodPressure(e.target.value)}
             />
-          </div>
+          </div> */}
 
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Standard Charges *</label>
             <input
               className='py-[10px] outline-none border-b'
-              type='number'
+              // type='number'
               required
               placeholder='Enter standard charges'
+              // value={opdPatientStandardCharges}
+              // onChange={(e) => setOpdPatientStandardCharges(e.target.value)}
               value={opdPatientStandardCharges}
-              onChange={(e) => setOpdPatientStandardCharges(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setOpdPatientStandardCharges(value);
+              }}
             />
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Payment Mode *</label>
-            <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+            <select
               required
-              placeholder='Enter payment mode'
+              className='py-[10px] outline-none border-b bg-transparent'
+              value={opdPatientPaymentMode}
+              onChange={(e) => setOpdPatientPaymentMode(e.target.value)}>
+              <option>UPI</option>
+              <option>Cash</option>
+              <option>Cheque</option>
+              <option>Card</option>
+            </select>
+            {/* <input
+              className="py-[10px] outline-none border-b"
+              type="text"
+              required
+              placeholder="Enter payment mode"
               value={opdPatientPaymentMode}
               onChange={(e) => setOpdPatientPaymentMode(e.target.value)}
+            /> */}
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Visit Date</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              type='datetime-local'
+              required
+              onChange={(e) => setOpdDoctorVisitDate(e.target.value)}
             />
           </div>
         </div>
+
         <div className='flex flex-col gap-[6px]'>
           <label className='text-[14px]'>Notes</label>
           <textarea
@@ -324,8 +371,13 @@ export default function OPD_PatientTable() {
         <div className='flex gap-[1rem] items-center'>
           <button
             type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            className='buttonFilled'
+            onClick={() => setSubmitButton("add")}>{`Save >`}</button>
+          <button
+            className='buttonOutlined'
+            onClick={() =>
+              setSubmitButton("addPrint")
+            }>{`Save & Print >`}</button>
         </div>
       </form>
     </div>
@@ -353,6 +405,7 @@ export default function OPD_PatientTable() {
     setOpdPatientBloodPressure(data?.data?.opdPatientBloodPressure);
     setOpdPatientStandardCharges(data?.data?.opdPatientStandardCharges);
     setOpdPatientPaymentMode(data?.data?.opdPatientPaymentMode);
+    setOpdDoctorVisitDate(data?.data?.opdDoctorVisitDate);
     setOpdPatientNotes(data?.data?.opdPatientNotes);
     setOpenUpdateModal(true);
   };
@@ -364,17 +417,33 @@ export default function OPD_PatientTable() {
     setOpdDoctorId({ value: "", label: "" });
     setOpdPatientBloodPressure("");
     setOpdPatientStandardCharges("");
-    setOpdPatientPaymentMode("");
+    setOpdPatientPaymentMode("UPI");
+    setOpdDoctorVisitDate("");
     setOpdPatientNotes("");
     setOpenUpdateModal(false);
   };
 
   React.useEffect(() => {
-    if (responseUpdateOPDPatientById.isSuccess) {
-      dispatch(updateOPDPatientChange(Math.random()));
+    if (submitButton === "update") {
+      if (responseUpdateOPDPatientById.isSuccess) {
+        dispatch(updateOPDPatientChange(Math.random()));
+        setSnackBarSuccessMessage(responseUpdateOPDPatientById?.data?.message);
+        handleClickSnackbarSuccess();
+        handleCloseUpdateModal();
+      }
+    }
+    if (submitButton === "updatePrint") {
+      // dispatch(updateOPDPatientChange(Math.random()));
       setSnackBarSuccessMessage(responseUpdateOPDPatientById?.data?.message);
       handleClickSnackbarSuccess();
       handleCloseUpdateModal();
+      navigate(
+        `${
+          browserLinks.superadmin.category
+        }/${browserLinks.superadmin.internalPages.opdPatients
+          .split(" ")
+          .join("")}/${responseUpdateOPDPatientById?.data?.data?.mainId}`
+      );
     } else if (responseUpdateOPDPatientById.isError) {
       setSnackBarSuccessWarning(responseUpdateOPDPatientById?.error?.data);
       handleClickSnackbarWarning();
@@ -390,12 +459,13 @@ export default function OPD_PatientTable() {
     e.preventDefault();
     const submitData = {
       opdPatientId: opdPatientId?.value,
-      opdCaseId: opdCaseId?.value,
-      opdId: opdId?.value,
+      // opdCaseId: opdCaseId?.value,
+      // opdId: opdId?.value,
       opdDoctorId: opdDoctorId?.value,
-      opdPatientBloodPressure: opdPatientBloodPressure,
+      // opdPatientBloodPressure: opdPatientBloodPressure,
       opdPatientStandardCharges: opdPatientStandardCharges,
       opdPatientPaymentMode: opdPatientPaymentMode,
+      opdDoctorVisitDate: opdDoctorVisitDate,
       opdPatientNotes: opdPatientNotes,
     };
 
@@ -410,10 +480,7 @@ export default function OPD_PatientTable() {
   const modalUpdatePatient = (
     <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
       <h2 className='border-b py-[1rem]'>Update Patient</h2>
-      <form
-        className='flex flex-col gap-[1rem]'
-        // onSubmit={handleUpdateDoctor}
-      >
+      <form className='flex flex-col gap-[1rem]' onSubmit={handleUpdateDoctor}>
         <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
           <div className='flex flex-col gap-[6px] relative w-full'>
             <label className='text-[14px]'>Patient Registration Id *</label>
@@ -424,23 +491,23 @@ export default function OPD_PatientTable() {
             />
           </div>
 
-          <div className='flex flex-col gap-[6px] relative w-full'>
+          {/* <div className='flex flex-col gap-[6px] relative w-full'>
             <label className='text-[14px]'>Case Id *</label>
             <Select
               options={renderedCaseIDForDropdown}
               onChange={setOpdCaseId}
               defaultValue={opdCaseId}
             />
-          </div>
+          </div> */}
 
-          <div className='flex flex-col gap-[6px] relative w-full'>
+          {/* <div className='flex flex-col gap-[6px] relative w-full'>
             <label className='text-[14px]'>OPD Id *</label>
             <Select
               options={renderedOPDIDForDropdown}
               onChange={setOpdId}
               defaultValue={opdId}
             />
-          </div>
+          </div> */}
 
           <div className='flex flex-col gap-[6px] relative w-full'>
             <label className='text-[14px]'>OPD Id *</label>
@@ -451,7 +518,7 @@ export default function OPD_PatientTable() {
             />
           </div>
 
-          <div className='flex flex-col gap-[6px]'>
+          {/* <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Blood Pressure *</label>
             <input
               className='py-[10px] outline-none border-b'
@@ -461,28 +528,53 @@ export default function OPD_PatientTable() {
               value={opdPatientBloodPressure}
               onChange={(e) => setOpdPatientBloodPressure(e.target.value)}
             />
-          </div>
+          </div> */}
 
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Standard Charges *</label>
             <input
               className='py-[10px] outline-none border-b'
-              type='number'
+              // type='number'
               required
               placeholder='Enter standard charges'
+              // value={opdPatientStandardCharges}
+              // onChange={(e) => setOpdPatientStandardCharges(e.target.value)}
               value={opdPatientStandardCharges}
-              onChange={(e) => setOpdPatientStandardCharges(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setOpdPatientStandardCharges(value);
+              }}
             />
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Payment Mode *</label>
-            <input
-              className='py-[10px] outline-none border-b'
-              type='text'
+            <select
               required
-              placeholder='Enter payment mode'
+              className='py-[10px] outline-none border-b bg-transparent'
+              value={opdPatientPaymentMode}
+              onChange={(e) => setOpdPatientPaymentMode(e.target.value)}>
+              <option>UPI</option>
+              <option>Cash</option>
+              <option>Cheque</option>
+              <option>Card</option>
+            </select>
+            {/* <input
+              className="py-[10px] outline-none border-b"
+              type="text"
+              required
+              placeholder="Enter payment mode"
               value={opdPatientPaymentMode}
               onChange={(e) => setOpdPatientPaymentMode(e.target.value)}
+            /> */}
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Visit Date</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              type='datetime-local'
+              required
+              value={opdDoctorVisitDate}
+              onChange={(e) => setOpdDoctorVisitDate(e.target.value)}
             />
           </div>
         </div>
@@ -499,9 +591,13 @@ export default function OPD_PatientTable() {
         <div className='flex gap-[1rem] items-center'>
           <button
             type='submit'
-            onClick={handleUpdateDoctor}
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            onClick={() => setSubmitButton("update")}
+            className='buttonFilled'>{`Save >`}</button>
+          {/* <button
+            className='buttonOutlined'
+            onClick={() =>
+              setSubmitButton("updatePrint")
+            }>{`Save & Print >`}</button> */}
         </div>
       </form>
     </div>
@@ -515,7 +611,7 @@ export default function OPD_PatientTable() {
     setOpdPatientData(data);
     setOpenViewModal(true);
   };
-  // console.log(opdPatientData);
+  console.log(opdPatientData);
   const handleCloseViewModal = () => setOpenViewModal(false);
 
   const modalViewPatientDetails = (
@@ -536,7 +632,7 @@ export default function OPD_PatientTable() {
             }
             alt='patientImage'
           />
-          <button className='buttonFilled w-fit'>Button</button>
+          {/* <button className='buttonFilled w-fit'>Button</button> */}
         </div>
         <div className='w-[75%] flex flex-col gap-[10px] text-[14px]'>
           <div className='grid grid-cols-2 gap-[10px]'>
@@ -569,26 +665,26 @@ export default function OPD_PatientTable() {
               <p className='font-[600] w-[150px]'>Patient Gender: </p>
               <p>{opdPatientData?.patientData?.patientGender}</p>
             </div>
-            <div className='flex'>
+            {/* <div className='flex'>
               <p className='font-[600] w-[150px]'>Case No: </p>
               <p>{opdPatientData?.data?.opdCaseId}</p>
-            </div>
-            <div className='flex'>
-              <p className='font-[600] w-[150px]'>Patient DOB: </p>
-              <p>{opdPatientData?.patientData?.patientDateOfBirth}</p>
-            </div>
-            <div className='flex'>
+            </div> */}
+            {/* <div className="flex">
+              <p className="font-[600] w-[150px]">Patient DOB: </p>
+              <p>{date(opdPatientData?.patientData?.patientDateOfBirth)}</p>
+            </div> */}
+            {/* <div className='flex'>
               <p className='font-[600] w-[150px]'>OPD No: </p>
               <p>{opdPatientData?.data?.opdId}</p>
-            </div>
+            </div> */}
             <div className='flex'>
               <p className='font-[600] w-[150px]'>Patient Phone: </p>
               <p>{opdPatientData?.patientData?.patientPhone}</p>
             </div>
-            <div className='flex'>
+            {/* <div className='flex'>
               <p className='font-[600] w-[150px]'>Blood Pressure: </p>
               <p>{opdPatientData?.data?.opdPatientBloodPressure}</p>
-            </div>
+            </div> */}
             <div className='flex'>
               <p className='font-[600] w-[150px]'>Patient Height: </p>
               <p>{opdPatientData?.patientData?.patientHeight}</p>
@@ -604,6 +700,12 @@ export default function OPD_PatientTable() {
             <div className='flex'>
               <p className='font-[600] w-[150px]'>Payment Mode: </p>
               <p>{opdPatientData?.data?.opdPatientPaymentMode}</p>
+            </div>
+            <div className='flex'>
+              <p className='font-[600] w-[150px]'>Visit Date: </p>
+              <p>{`${date(opdPatientData?.data?.opdDoctorVisitDate)} / ${time(
+                opdPatientData?.data?.opdDoctorVisitDate
+              )}`}</p>
             </div>
           </div>
           <div className='flex flex-col gap-[10px]'>
@@ -641,7 +743,7 @@ export default function OPD_PatientTable() {
   const filteredArray = OPDPatients?.filter((data) => {
     if (search !== "") {
       const userSearch = search.toLowerCase();
-      const searchInData = data?.mainId?.toLowerCase();
+      const searchInData = data?.opdPatientId?.toLowerCase();
 
       return searchInData?.startsWith(userSearch);
     }
@@ -664,7 +766,7 @@ export default function OPD_PatientTable() {
 
   const config = [
     {
-      label: "Reg No.",
+      label: "OPD Bill No",
       render: (list) => list?.data?.mainId,
     },
     {
@@ -705,11 +807,11 @@ export default function OPD_PatientTable() {
             className='p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer'>
             <RiEdit2Fill className='text-[25px] text-[#3497F9]' />
           </div>
-          <div
+          {/* <div
             onClick={() => handleClickOpenDialogBox(list)}
             className='p-[4px] h-fit w-fit border-[2px] border-[#EB5757] rounded-[12px] cursor-pointer'>
             <RiDeleteBin6Fill className='text-[25px] text-[#EB5757]' />
-          </div>
+          </div> */}
         </div>
       ),
     },
@@ -734,7 +836,7 @@ export default function OPD_PatientTable() {
             <FaSearch className='text-[#56585A]' />
             <input
               className='bg-transparent outline-none'
-              placeholder='Search by id'
+              placeholder='Search by uhid'
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
@@ -787,10 +889,15 @@ export default function OPD_PatientTable() {
               <h1 className='headingBottomUnderline w-fit pb-[10px]'>
                 OPD Patient Details
               </h1>
-              <button className='buttonFilled flex items-center gap-[10px]'>
+              <Link
+                // onClick={handleGeneratePdf}
+                target='_blank'
+                to={opdPatientData?.data?.mainId}
+                // to={`${browserLinks.superadmin.category}/${browserLinks.superadmin.internalPages.opdPatients}/${opdPatientData?.data?.mainId}`}
+                className='buttonFilled flex items-center gap-[10px]'>
                 <LuHardDriveDownload />
                 <p>Download</p>
-              </button>
+              </Link>
             </div>
           </Typography>
           <Typography id='modal-modal-description' sx={{ mt: 2 }}>

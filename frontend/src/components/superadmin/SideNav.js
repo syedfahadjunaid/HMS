@@ -49,16 +49,8 @@ export default function SideNav({ activePage }) {
       name: browserLinks.superadmin.internalPages.patients,
     },
     {
-      icon: <FaFileLines />,
-      name: browserLinks.superadmin.internalPages.appointments,
-    },
-    {
       icon: <FaUserDoctor />,
       name: browserLinks.superadmin.internalPages.doctors,
-    },
-    {
-      icon: <FaFileAlt />,
-      name: browserLinks.superadmin.internalPages.opd,
     },
     {
       icon: <FaFileAlt />,
@@ -66,11 +58,31 @@ export default function SideNav({ activePage }) {
     },
     {
       icon: <FaFileAlt />,
-      name: browserLinks.superadmin.internalPages.ipd,
+      name: browserLinks.superadmin.internalPages.ipdPatients,
     },
     {
       icon: <FaFileAlt />,
-      name: browserLinks.superadmin.internalPages.ipdPatients,
+      name: browserLinks.superadmin.internalPages.emergencyPatient,
+    },
+    {
+      icon: <FaFileAlt />,
+      name: browserLinks.superadmin.internalPages.testPatient,
+    },
+    {
+      icon: <FaFileAlt />,
+      name: browserLinks.superadmin.internalPages.opd,
+    },
+    {
+      icon: <FaFileAlt />,
+      name: browserLinks.superadmin.internalPages.ipd,
+    },
+    {
+      icon: <FaFileLines />,
+      name: browserLinks.superadmin.internalPages.department,
+    },
+    {
+      icon: <FaFileLines />,
+      name: browserLinks.superadmin.internalPages.appointments,
     },
     {
       icon: <RiMessage2Fill />,

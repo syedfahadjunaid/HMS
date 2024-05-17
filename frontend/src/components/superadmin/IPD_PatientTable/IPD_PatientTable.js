@@ -28,6 +28,9 @@ import DialogBoxToDelete from "../../DialogBoxToDelete";
 
 import Select from "react-select";
 
+import browserLinks from "../../../browserlinks";
+import { useNavigate } from "react-router-dom";
+
 import {
   useCreateIPDPatientMutation,
   useUpdateIPDPatientByIdMutation,
@@ -40,8 +43,11 @@ import {
   deleteIpdPatientChange,
 } from "../../../Store/Slices/IPDPatientSlice";
 
+import { Link } from "react-router-dom";
+
 export default function IPD_PatientTable() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { doctors } = useSelector((state) => state.DoctorState);
   const { patients } = useSelector((state) => state.PatientState);
   const { ipdPatients } = useSelector((state) => state.IPDPatientState);
@@ -107,27 +113,20 @@ export default function IPD_PatientTable() {
     value: "",
     label: "",
   });
-  const [ipdCaseId, setIpdCaseId] = React.useState({ value: "", label: "" });
+
   const [ipdDoctorId, setIpdDoctorId] = React.useState({
     value: "",
     label: "",
   });
-  const [ipdId, setIpdId] = React.useState({ value: "", label: "" });
-  const [ipdPatientBloodPressure, setIpdPatientBloodPressure] =
-    React.useState("");
-  const [ipdPatientBedType, setIpdPatientBedType] = React.useState({
-    value: "",
-    label: "",
-  });
-  const [ipdPatientBed, setIpdPatientBed] = React.useState({
-    value: "",
-    label: "",
-  });
+
+  const [ipdDepositAmount, setIpdDespositAmount] = React.useState();
+  const [ipdPaymentMode, setIpdPaymentMode] = React.useState("UPI");
+  const [ipdWardNo, setIpdWardNo] = React.useState();
+  const [ipdFloorNo, setIpdFloorNo] = React.useState();
+  const [ipdRoomNo, setIpdRoomNo] = React.useState();
+  const [ipdBedNo, setIpdBedNo] = React.useState();
   const [ipdPatientNotes, setIpdPatientNotes] = React.useState("");
-  const [ipdBillStatus, setIpdBillStatus] = React.useState({
-    value: "",
-    label: "",
-  });
+  const [submitButton, setSubmitButton] = React.useState();
 
   const [mainId, setMainId] = React.useState("");
   const [ipdPatientData, setIpdPatientData] = React.useState("");
@@ -208,20 +207,33 @@ export default function IPD_PatientTable() {
   });
 
   React.useEffect(() => {
-    if (responseCreateIPDPatient.isSuccess) {
-      dispatch(createIpdPatientChange(Math.random()));
-      setSnackBarSuccessMessage(responseCreateIPDPatient?.data?.message);
-      handleClickSnackbarSuccess();
-      setIpdPatientId({ value: "", label: "" });
-      setIpdCaseId({ value: "", label: "" });
-      setIpdId({ value: "", label: "" });
-      setIpdDoctorId({ value: "", label: "" });
-      setIpdPatientBedType({ value: "", label: "" });
-      setIpdPatientBed({ value: "", label: "" });
-      setIpdBillStatus({ value: "", label: "" });
-      setIpdPatientBloodPressure("");
-      setIpdPatientNotes("");
-      handleClose();
+    if (submitButton === "add") {
+      if (responseCreateIPDPatient.isSuccess) {
+        dispatch(createIpdPatientChange(Math.random()));
+        setSnackBarSuccessMessage(responseCreateIPDPatient?.data?.message);
+        handleClickSnackbarSuccess();
+        setIpdPatientId({ value: "", label: "" });
+
+        setIpdDoctorId({ value: "", label: "" });
+        setIpdDespositAmount();
+        setIpdPaymentMode("UPI");
+        setIpdWardNo();
+        setIpdFloorNo();
+
+        setIpdRoomNo();
+        setIpdBedNo();
+        setIpdPatientNotes();
+        handleClose();
+      }
+      if (submitButton === "addPrint") {
+        navigate(
+          `${
+            browserLinks.nurse.category
+          }/${browserLinks.nurse.internalPages.ipdPatientList
+            .split(" ")
+            .join("")}/${responseCreateIPDPatient?.data?.data?.mainId}`
+        );
+      }
     } else if (responseCreateIPDPatient.isError) {
       setSnackBarSuccessWarning(responseCreateIPDPatient?.error?.data);
       handleClickSnackbarWarning();
@@ -231,19 +243,32 @@ export default function IPD_PatientTable() {
   const handleAddIPDPatient = (e) => {
     e.preventDefault();
 
+    // const submitData = {
+    //   ipdPatientId: ipdPatientId?.value,
+    //   ipdCaseId: ipdCaseId?.value,
+    //   ipdDoctorId: ipdDoctorId?.value,
+    //   ipdId: ipdId?.value,
+    //   ipdPatientBedType: ipdPatientBedType?.value,
+    //   ipdPatientBed: ipdPatientBed?.value,
+    //   ipdBillStatus: ipdBillStatus?.value,
+    //   ipdPatientBloodPressure: ipdPatientBloodPressure,
+    //   ipdPatientNotes: ipdPatientNotes,
+    // };
     const submitData = {
       ipdPatientId: ipdPatientId?.value,
-      ipdCaseId: ipdCaseId?.value,
       ipdDoctorId: ipdDoctorId?.value,
-      ipdId: ipdId?.value,
-      ipdPatientBedType: ipdPatientBedType?.value,
-      ipdPatientBed: ipdPatientBed?.value,
-      ipdBillStatus: ipdBillStatus?.value,
-      ipdPatientBloodPressure: ipdPatientBloodPressure,
+      ipdDepositAmount: ipdDepositAmount,
+      ipdPaymentMode: ipdPaymentMode,
+      ipdWardNo: ipdWardNo,
+      ipdFloorNo: ipdFloorNo,
+      ipdRoomNo: ipdRoomNo,
+      ipdBedNo: ipdBedNo,
       ipdPatientNotes: ipdPatientNotes,
     };
 
-    createIPDPatient(submitData);
+    console.log(submitData);
+
+    // createIPDPatient(submitData);
   };
 
   const modalAddIPDPatient = (
@@ -252,7 +277,7 @@ export default function IPD_PatientTable() {
       <form className='flex flex-col gap-[1rem]' onSubmit={handleAddIPDPatient}>
         <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
           <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>Patient Reg No.</label>
+            <label className='text-[14px]'>UHID *</label>
             <Select
               required
               options={renderedPatientIDForDropdown}
@@ -261,25 +286,7 @@ export default function IPD_PatientTable() {
           </div>
 
           <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>Case No.</label>
-            <Select
-              required
-              options={renderedCaseIDForDropdown}
-              onChange={setIpdCaseId}
-            />
-          </div>
-
-          <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>IPD No.</label>
-            <Select
-              required
-              options={renderedIPDIDForDropdown}
-              onChange={setIpdId}
-            />
-          </div>
-
-          <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>Doctor Reg No.</label>
+            <label className='text-[14px]'>Doctor Id *</label>
             <Select
               required
               options={renderedDoctorIDForDropdown}
@@ -288,41 +295,82 @@ export default function IPD_PatientTable() {
           </div>
 
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Bed Type</label>
-            <Select
-              required
-              options={renderedBedTypeForDropdown}
-              onChange={setIpdPatientBedType}
-            />
-          </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Bed</label>
-            <Select
-              required
-              options={renderedBedForDropdown}
-              onChange={setIpdPatientBed}
-            />
-          </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Bill Status</label>
-            <Select
-              required
-              options={[
-                { value: true, label: "Paid" },
-                { value: false, label: "Unpaid" },
-              ]}
-              onChange={setIpdBillStatus}
-            />
-          </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Blood Pressure</label>
+            <label className='text-[14px]'>Deposit Amount *</label>
+
             <input
               className='py-[10px] outline-none border-b'
-              type='text'
               required
-              placeholder='Enter blood pressure'
-              value={ipdPatientBloodPressure}
-              onChange={(e) => setIpdPatientBloodPressure(e.target.value)}
+              placeholder='Enter deposit amount'
+              value={ipdDepositAmount}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdDespositAmount(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Payment Mode *</label>
+            <select
+              required
+              className='py-[10px] outline-none border-b bg-transparent'
+              value={ipdPaymentMode}
+              onChange={(e) => setIpdPaymentMode(e.target.value)}>
+              <option>UPI</option>
+              <option>Cash</option>
+              <option>Cheque</option>
+              <option>Card</option>
+            </select>
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Ward No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter ward no'
+              value={ipdWardNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdWardNo(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Floor No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter floor no'
+              value={ipdFloorNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdFloorNo(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Room No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter room no'
+              value={ipdRoomNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdRoomNo(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Bed No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter bed no'
+              value={ipdBedNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdBedNo(value);
+              }}
             />
           </div>
         </div>
@@ -340,8 +388,13 @@ export default function IPD_PatientTable() {
         <div className='flex gap-[1rem] items-center'>
           <button
             type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            className='buttonFilled'
+            onClick={() => setSubmitButton("add")}>{`Save >`}</button>
+          <button
+            className='buttonOutlined'
+            onClick={() =>
+              setSubmitButton("addPrint")
+            }>{`Save & Print >`}</button>
         </div>
       </form>
     </div>
@@ -357,42 +410,45 @@ export default function IPD_PatientTable() {
       value: data?.data?.ipdPatientId,
       label: data?.data?.ipdPatientId,
     });
-    setIpdCaseId({
-      value: data?.data?.ipdCaseId,
-      label: data?.data?.ipdCaseId,
-    });
-    setIpdId({ value: data?.data?.ipdId, label: data?.data?.ipdId });
+
     setIpdDoctorId({
       value: data?.data?.ipdDoctorId,
       label: data?.data?.ipdDoctorId,
     });
-    setIpdPatientBedType({
-      value: data?.data?.ipdPatientBedType,
-      label: data?.data?.ipdPatientBedType,
-    });
-    setIpdPatientBed({
-      value: data?.data?.ipdPatientBed,
-      label: data?.data?.ipdPatientBed,
-    });
-    setIpdBillStatus({
-      value: data?.data?.ipdBillStatus,
-      label: data?.data?.ipdBillStatus,
-    });
-    setIpdPatientBloodPressure(data?.data?.ipdPatientBloodPressure);
+    setIpdDespositAmount(data?.data?.ipdDepositAmount);
+    setIpdPaymentMode(data?.data?.ipdPaymentMode);
+    setIpdWardNo(data?.data?.ipdWardNo);
+    setIpdFloorNo(data?.data?.ipdFloorNo);
+
+    setIpdRoomNo(data?.data?.ipdBedNo);
+    setIpdBedNo(data?.data?.ipdBedNo);
     setIpdPatientNotes(data?.data?.ipdPatientNotes);
     setOpenUpdateModal(true);
   };
   const handleCloseUpdateModal = () => {
+    // setMainId("");
+    // setIpdPatientId({ value: "", label: "" });
+    // setIpdCaseId({ value: "", label: "" });
+    // setIpdId({ value: "", label: "" });
+    // setIpdDoctorId({ value: "", label: "" });
+    // setIpdPatientBedType({ value: "", label: "" });
+    // setIpdPatientBed({ value: "", label: "" });
+    // setIpdBillStatus({ value: "", label: "" });
+    // setIpdPatientBloodPressure("");
+    // setIpdPatientNotes("");
+    // setOpenUpdateModal(false);
     setMainId("");
     setIpdPatientId({ value: "", label: "" });
-    setIpdCaseId({ value: "", label: "" });
-    setIpdId({ value: "", label: "" });
+
     setIpdDoctorId({ value: "", label: "" });
-    setIpdPatientBedType({ value: "", label: "" });
-    setIpdPatientBed({ value: "", label: "" });
-    setIpdBillStatus({ value: "", label: "" });
-    setIpdPatientBloodPressure("");
-    setIpdPatientNotes("");
+    setIpdDespositAmount();
+    setIpdPaymentMode("UPI");
+    setIpdWardNo();
+    setIpdFloorNo();
+
+    setIpdRoomNo();
+    setIpdBedNo();
+    setIpdPatientNotes();
     setOpenUpdateModal(false);
   };
 
@@ -416,13 +472,13 @@ export default function IPD_PatientTable() {
 
     const submitData = {
       ipdPatientId: ipdPatientId?.value,
-      ipdCaseId: ipdCaseId?.value,
       ipdDoctorId: ipdDoctorId?.value,
-      ipdId: ipdId?.value,
-      ipdPatientBedType: ipdPatientBedType?.value,
-      ipdPatientBed: ipdPatientBed?.value,
-      ipdBillStatus: ipdBillStatus?.value,
-      ipdPatientBloodPressure: ipdPatientBloodPressure,
+      ipdDepositAmount: ipdDepositAmount,
+      ipdPaymentMode: ipdPaymentMode,
+      ipdWardNo: ipdWardNo,
+      ipdFloorNo: ipdFloorNo,
+      ipdRoomNo: ipdRoomNo,
+      ipdBedNo: ipdBedNo,
       ipdPatientNotes: ipdPatientNotes,
     };
 
@@ -431,7 +487,9 @@ export default function IPD_PatientTable() {
       data: submitData,
     };
 
-    updateIPDPatientById(updateData);
+    // updateIPDPatientById(updateData);
+
+    console.log(updateData);
   };
 
   const modalUpdateIPDPatient = (
@@ -442,7 +500,7 @@ export default function IPD_PatientTable() {
         onSubmit={handleUpdateIPDPatient}>
         <div className='grid grid-cols-3 gap-[2rem] border-b pb-[3rem]'>
           <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>Patient Reg No.</label>
+            <label className='text-[14px]'>UHID *</label>
             <Select
               options={renderedPatientIDForDropdown}
               onChange={setIpdPatientId}
@@ -451,25 +509,7 @@ export default function IPD_PatientTable() {
           </div>
 
           <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>Case No.</label>
-            <Select
-              options={renderedCaseIDForDropdown}
-              onChange={setIpdCaseId}
-              defaultValue={ipdCaseId}
-            />
-          </div>
-
-          <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>OPD No.</label>
-            <Select
-              options={renderedIPDIDForDropdown}
-              onChange={setIpdId}
-              defaultValue={ipdId}
-            />
-          </div>
-
-          <div className='flex flex-col gap-[6px] relative w-full'>
-            <label className='text-[14px]'>Doctor Reg No.</label>
+            <label className='text-[14px]'>Doctor ID *</label>
             <Select
               options={renderedDoctorIDForDropdown}
               onChange={setIpdDoctorId}
@@ -478,45 +518,82 @@ export default function IPD_PatientTable() {
           </div>
 
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Bed Type</label>
-            <Select
-              options={renderedBedTypeForDropdown}
-              onChange={setIpdPatientBedType}
-              defaultValue={ipdPatientBedType}
-            />
-          </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Bed</label>
-            <Select
-              options={renderedBedForDropdown}
-              onChange={setIpdPatientBed}
-              defaultValue={ipdPatientBed}
-            />
-          </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Bill Status</label>
-            <Select
-              options={[
-                { value: true, label: "Paid" },
-                { value: false, label: "Unpaid" },
-              ]}
-              onChange={setIpdBillStatus}
-              defaultValue={
-                ipdBillStatus.value === true
-                  ? { value: true, label: "Paid" }
-                  : { value: false, label: "Unpaid" }
-              }
-            />
-          </div>
-          <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Blood Pressure</label>
+            <label className='text-[14px]'>Deposit Amount *</label>
+
             <input
               className='py-[10px] outline-none border-b'
-              type='text'
               required
-              placeholder='Enter blood pressure'
-              value={ipdPatientBloodPressure}
-              onChange={(e) => setIpdPatientBloodPressure(e.target.value)}
+              placeholder='Enter deposit amount'
+              value={ipdDepositAmount}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdDespositAmount(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Payment Mode *</label>
+            <select
+              required
+              className='py-[10px] outline-none border-b bg-transparent'
+              value={ipdPaymentMode}
+              onChange={(e) => setIpdPaymentMode(e.target.value)}>
+              <option>UPI</option>
+              <option>Cash</option>
+              <option>Cheque</option>
+              <option>Card</option>
+            </select>
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Ward No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter ward no'
+              value={ipdWardNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdWardNo(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Floor No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter floor no'
+              value={ipdFloorNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdFloorNo(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Room No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter room no'
+              value={ipdRoomNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdRoomNo(value);
+              }}
+            />
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Bed No. *</label>
+            <input
+              className='py-[10px] outline-none border-b'
+              required
+              placeholder='Enter bed no'
+              value={ipdBedNo}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setIpdBedNo(value);
+              }}
             />
           </div>
         </div>
@@ -534,8 +611,8 @@ export default function IPD_PatientTable() {
         <div className='flex gap-[1rem] items-center'>
           <button
             type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+            className='buttonFilled'
+            onClick={() => setSubmitButton("add")}>{`Save >`}</button>
         </div>
       </form>
     </div>
@@ -603,25 +680,29 @@ export default function IPD_PatientTable() {
               <p className='font-[600] w-[150px]'>Patient Gender: </p>
               <p>{ipdPatientData?.patientData?.patientGender}</p>
             </div>
-            <div className='flex'>
+            {/* <div className='flex'>
               <p className='font-[600] w-[150px]'>Case No: </p>
               <p>{ipdPatientData?.data?.ipdCaseId}</p>
-            </div>
+            </div> */}
             <div className='flex'>
               <p className='font-[600] w-[150px]'>Patient DOB: </p>
               <p>{ipdPatientData?.patientData?.patientDateOfBirth}</p>
             </div>
-            <div className='flex'>
+            {/* <div className='flex'>
               <p className='font-[600] w-[150px]'>OPD No: </p>
               <p>{ipdPatientData?.data?.ipdId}</p>
-            </div>
+            </div> */}
             <div className='flex'>
               <p className='font-[600] w-[150px]'>Patient Phone: </p>
               <p>{ipdPatientData?.patientData?.patientPhone}</p>
             </div>
-            <div className='flex'>
+            {/* <div className='flex'>
               <p className='font-[600] w-[150px]'>Blood Pressure: </p>
               <p>{ipdPatientData?.data?.ipdPatientBloodPressure}</p>
+            </div> */}
+            <div className='flex'>
+              <p className='font-[600] w-[150px]'>Bed Type: </p>
+              <p>{ipdPatientData?.data?.ipdPatientBedType}</p>
             </div>
             <div className='flex'>
               <p className='font-[600] w-[150px]'>Patient Height: </p>
@@ -747,11 +828,11 @@ export default function IPD_PatientTable() {
             className='p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer'>
             <RiEdit2Fill className='text-[25px] text-[#3497F9]' />
           </div>
-          <div
+          {/* <div
             onClick={() => handleClickOpenDialogBox(list)}
             className='p-[4px] h-fit w-fit border-[2px] border-[#EB5757] rounded-[12px] cursor-pointer'>
             <RiDeleteBin6Fill className='text-[25px] text-[#EB5757]' />
-          </div>
+          </div> */}
         </div>
       ),
     },
@@ -829,10 +910,15 @@ export default function IPD_PatientTable() {
               <h1 className='headingBottomUnderline w-fit pb-[10px]'>
                 IPD Patient Details
               </h1>
-              <button className='buttonFilled flex items-center gap-[10px]'>
+              <Link
+                // onClick={handleGeneratePdf}
+                target='_blank'
+                to={ipdPatientData?.data?.mainId}
+                // to={`${browserLinks.superadmin.category}/${browserLinks.superadmin.internalPages.opdPatients}/${opdPatientData?.data?.mainId}`}
+                className='buttonFilled flex items-center gap-[10px]'>
                 <LuHardDriveDownload />
                 <p>Download</p>
-              </button>
+              </Link>
             </div>
           </Typography>
           <Typography id='modal-modal-description' sx={{ mt: 2 }}>

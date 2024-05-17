@@ -166,6 +166,7 @@ export default function AuthenticatedUsersTable() {
               <option>Super Admin</option>
               <option>Doctor</option>
               <option>HR</option>
+              <option>Emergency</option>
               <option>Receptionist</option>
               <option>Pharmacist</option>
               <option>Accountant</option>
@@ -274,6 +275,7 @@ export default function AuthenticatedUsersTable() {
               <option>Super Admin</option>
               <option>Doctor</option>
               <option>HR</option>
+              <option>Emergency</option>
               <option>Receptionist</option>
               <option>Pharmacist</option>
               <option>Accountant</option>

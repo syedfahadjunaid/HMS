@@ -39,6 +39,10 @@ import {
   deletePatientChange,
 } from "../../../Store/Slices/PatientSlice";
 
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
+import { Link } from "react-router-dom";
+
 export default function PatientTable() {
   const dispatch = useDispatch();
 
@@ -61,7 +65,10 @@ export default function PatientTable() {
   const [patientEmail, setPatientEmail] = React.useState("");
   const [patientFatherName, setPatientFatherName] = React.useState("");
   const [patientHusbandName, setPatientHusbandName] = React.useState("");
-  const [patientDateOfBirth, setPatientDateOfBirth] = React.useState("");
+  // const [patientDateOfBirth, setPatientDateOfBirth] = React.useState({
+  //   startDate: new Date(),
+  // });
+  const [patientAge, setPatientAge] = React.useState("");
   const [patientPhone, setPatientPhone] = React.useState("");
   const [patientPhone2, setPatientPhone2] = React.useState("");
   const [patientHeight, setPatientHeight] = React.useState("");
@@ -76,6 +83,15 @@ export default function PatientTable() {
   const [patientZipCode, setPatientZipCode] = React.useState("");
   const [patientImage, setPatientImage] = React.useState();
   const [patientGender, setPatientGender] = React.useState("Female");
+
+  const [sameAsLocalAddress, setSameAsLocalAddress] = React.useState(false);
+
+  React.useEffect(() => {
+    // console.log(sameAsLocalAddress);
+    if (sameAsLocalAddress === true) {
+      setPatientPermanentAddress(patientLocalAddress);
+    }
+  }, [sameAsLocalAddress, patientLocalAddress]);
 
   // Snackbar--------------------
   // ----Succcess
@@ -127,6 +143,8 @@ export default function PatientTable() {
   }, [responseDeletePatientById.isSuccess, responseDeletePatientById.isError]);
 
   // ----------------------------------
+
+  // console.log(patientDateOfBirth);
 
   const date = (dateTime) => {
     const newdate = new Date(dateTime);
@@ -213,9 +231,13 @@ export default function PatientTable() {
                 <p>{patientData.patientHusbandName}</p>
               </div>
             )}
-            <div className='flex'>
+            {/* <div className='flex'>
               <p className='font-[600] w-[150px]'>Date Of Birth: </p>
-              <p>{patientData.patientDateOfBirth}</p>
+              <p>{date(patientData.patientDateOfBirth)}</p>
+            </div> */}
+            <div className='flex'>
+              <p className='font-[600] w-[150px]'>Age: </p>
+              <p>{patientData.patientAge}</p>
             </div>
             <div className='flex'>
               <p className='font-[600] w-[150px]'>Phone: </p>
@@ -300,7 +322,30 @@ export default function PatientTable() {
 
   // Add Modal
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setPatientId("");
+    setPatientName("");
+    setPatientEmail("");
+    setPatientFatherName("");
+    setPatientHusbandName("");
+    // setPatientDateOfBirth(data?.patientDateOfBirth);
+    setPatientAge("");
+    setPatientPhone("");
+    setPatientPhone2("");
+    setPatientHeight("");
+    setPatientWeight("");
+    setPatientBloodGroup("");
+    setPatientLocalAddress("");
+    setPatientPermanentAddress("");
+    setPatientCity("");
+    setPatientState("");
+    setPatientCountry("");
+    setPatientZipCode("");
+    setPatientGender("Female");
+
+    setSameAsLocalAddress(false);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
 
   // Update Modal
@@ -311,7 +356,8 @@ export default function PatientTable() {
     setPatientEmail(data?.patientEmail);
     setPatientFatherName(data?.patientFatherName);
     setPatientHusbandName(data?.patientHusbandName);
-    setPatientDateOfBirth(data?.patientDateOfBirth);
+    // setPatientDateOfBirth(data?.patientDateOfBirth);
+    setPatientAge(data?.patientAge);
     setPatientPhone(data?.patientPhone);
     setPatientPhone2(data?.patientPhone2);
     setPatientHeight(data?.patientHeight);
@@ -325,6 +371,7 @@ export default function PatientTable() {
     setPatientZipCode(data?.patientZipCode);
     setPatientGender(data?.patientGender);
     setOpenUpdateModal(true);
+    setSameAsLocalAddress(false);
   };
   const handleCloseUpdateModal = () => setOpenUpdateModal(false);
 
@@ -346,7 +393,17 @@ export default function PatientTable() {
   }, [responseAddPatient.isSuccess, responseAddPatient.isError]);
 
   const handleAddPatient = (data) => {
-    const patientData = { ...data, patientGender, patientImage };
+    const patientData = {
+      ...data,
+      patientGender,
+      patientImage,
+      patientPhone,
+      patientPhone2,
+      patientAge,
+      patientLocalAddress,
+      patientPermanentAddress,
+      // patientDateOfBirth,
+    };
 
     const formData = new FormData();
 
@@ -354,7 +411,12 @@ export default function PatientTable() {
     formData.append("patientEmail", patientData?.patientEmail);
     formData.append("patientFatherName", patientData?.patientFatherName);
     formData.append("patientHusbandName", patientData?.patientHusbandName);
-    formData.append("patientDateOfBirth", patientData?.patientDateOfBirth);
+    // formData.append(
+    //   "patientDateOfBirth",
+    //   patientData?.patientDateOfBirth?.startDate
+    // );
+    formData.append("patientDateOfBirth", "NODATA");
+    formData.append("patientAge", patientData?.patientAge);
     formData.append("patientPhone", patientData?.patientPhone);
     formData.append("patientPhone2", patientData?.patientPhone2);
     formData.append("patientHeight", patientData?.patientHeight);
@@ -393,6 +455,8 @@ export default function PatientTable() {
     addPatient(formData);
   };
 
+  // console.log(patientPermanentAddress);
+
   const modalADDPatient = (
     <div className='flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]'>
       <h2 className='border-b py-[1rem]'>Add Patient Information</h2>
@@ -414,17 +478,16 @@ export default function PatientTable() {
             )}
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Email *</label>
+            <label className='text-[14px]'>Email</label>
             <input
               className='py-[10px] outline-none border-b'
               type='email'
-              required
               placeholder='Enter patient email'
-              {...register("patientEmail", { required: true })}
+              {...register("patientEmail")}
             />
-            {errors.patientEmail && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientEmail && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Father Name</label>
@@ -450,43 +513,107 @@ export default function PatientTable() {
               <span className='text-[red]'>This field is required</span>
             )}
           </div>
-          <div className='flex flex-col gap-[6px]'>
+          {/* <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Date Of Birth *</label>
-            <input
+            <DatePicker
               className='py-[10px] outline-none border-b'
-              type='date'
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            />
+            <input
+              className="py-[10px] outline-none border-b"
+              type="date"
               required
               {...register("patientDateOfBirth", { required: true })}
             />
             {errors.patientDateOfBirth && (
               <span className='text-[red]'>This field is required</span>
             )}
+          </div> */}
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Age </label>
+            {/* <DatePicker
+              className="py-[10px] outline-none border-b"
+              required
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            /> */}
+            <input
+              className='py-[10px] outline-none border-b'
+              // type='number'
+              placeholder='Enter age'
+              // {...register("patientAge", { required: true })}
+              required
+              value={patientAge}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setPatientAge(value);
+              }}
+            />
+            {/* {errors.patientAge && (
+              <span className='text-[red]'>This field is required</span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Phone *</label>
             <input
               className='py-[10px] outline-none border-b'
-              type='number'
+              // type='number'
               required
               minLength={10}
               maxLength={10}
+              value={patientPhone}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setPatientPhone(value);
+              }}
               placeholder='Enter patient phone number'
-              {...register("patientPhone", { required: true })}
+              // {...register("patientPhone", {
+              //   required: true,
+              //   minLength: 10,
+              //   maxLength: 10,
+              // })}
             />
-            {errors.patientPhone && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientPhone && (
+              <span className='text-[red]'>
+                This field is required with 10 digits
+              </span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Phone Number of Attendent</label>
             <input
               className='py-[10px] outline-none border-b'
-              type='number'
+              // type='number'
+              // required
               minLength={10}
               maxLength={10}
+              value={patientPhone2}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setPatientPhone2(value);
+              }}
               placeholder='Enter phone number of attendent'
-              {...register("patientPhone2")}
+              // {...register("patientPhone2", {
+              //   minLength: 10,
+              //   maxLength: 10,
+              // })}
             />
+            {/* {errors.patientPhone2 && (
+              <span className='text-[red]'>
+                This field is required with 10 digits
+              </span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Height</label>
@@ -543,11 +670,10 @@ export default function PatientTable() {
             </select>
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Patient Photo *</label>
+            <label className='text-[14px]'>Patient Photo</label>
             <div className='flex flex-col gap-[1rem]'>
               <input
                 type='file'
-                required
                 accept='image/png, image/gif, image/jpeg'
                 onChange={(e) => setPatientImage(e.target.files[0])}
               />
@@ -566,82 +692,90 @@ export default function PatientTable() {
         <h3 className='border-b py-[1rem]'>Patient Address Details</h3>
         <div className='grid grid-cols-2 gap-[2rem] border-b pb-[3rem]'>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Local Address *</label>
+            <label className='text-[14px]'>Local Address</label>
             <textarea
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient local address'
-              {...register("patientLocalAddress", { required: true })}
+              value={patientLocalAddress}
+              // {...register("patientLocalAddress")}
+              onChange={(e) => setPatientLocalAddress(e.target.value)}
             />
-            {errors.patientLocalAddress && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientLocalAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Permanent Address *</label>
+            <div className='flex gap-[1rem]'>
+              <label className='text-[14px]'>Permanent Address</label>
+              <div className='flex gap-[10px] items-center'>
+                <input
+                  type='checkbox'
+                  onChange={(e) => setSameAsLocalAddress(e.target.checked)}
+                />
+                <p className='text-[12px]'>Same as local address</p>
+              </div>
+            </div>
             <textarea
               className='py-[10px] outline-none border-b'
               type='text'
-              required
+              defaultValue={patientPermanentAddress}
+              disabled={sameAsLocalAddress === true ? true : false}
               placeholder='Enter patient permanent address'
-              {...register("patientPermanentAddress", { required: true })}
+              // {...register("patientPermanentAddress")}
+              onChange={(e) => setPatientPermanentAddress(e.target.value)}
             />
-            {errors.patientPermanentAddress && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientPermanentAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>City *</label>
+            <label className='text-[14px]'>City</label>
             <input
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient city'
-              {...register("patientCity", { required: true })}
+              {...register("patientCity")}
             />
-            {errors.patientCity && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientCity && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>State *</label>
+            <label className='text-[14px]'>State</label>
             <input
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient state'
-              {...register("patientState", { required: true })}
+              {...register("patientState")}
             />
-            {errors.patientState && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientState && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Country *</label>
+            <label className='text-[14px]'>Country</label>
             <input
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient country'
-              {...register("patientCountry", { required: true })}
+              {...register("patientCountry")}
             />
-            {errors.patientCountry && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientCountry && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
           <div className='flex flex-col gap-[6px]'>
-            <label className='text-[14px]'>Zipcode *</label>
+            <label className='text-[14px]'>Zipcode</label>
             <input
               className='py-[10px] outline-none border-b'
               type='number'
-              required
               placeholder='Enter patient zipcode'
-              {...register("patientZipCode", { required: true })}
+              {...register("patientZipCode")}
             />
-            {errors.patientZipcode && (
-              <span className='text-[red]'>This field is required</span>
-            )}
+            {/* {errors.patientZipcode && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
           </div>
         </div>
         <div className='flex gap-[1rem] items-center'>
@@ -682,7 +816,9 @@ export default function PatientTable() {
     formData.append("patientEmail", patientEmail);
     formData.append("patientFatherName", patientFatherName);
     formData.append("patientHusbandName", patientHusbandName);
-    formData.append("patientDateOfBirth", patientDateOfBirth);
+    // formData.append("patientDateOfBirth", patientDateOfBirth?.startDate);
+    formData.append("patientDateOfBirth", "NODATA");
+    formData.append("patientAge", patientAge);
     formData.append("patientPhone", patientPhone);
     formData.append("patientPhone2", patientPhone2);
     formData.append("patientHeight", patientHeight);
@@ -735,8 +871,6 @@ export default function PatientTable() {
             <input
               className='py-[10px] outline-none border-b'
               type='email'
-              required
-              disabled
               value={patientEmail}
               placeholder='Enter patient email'
               onChange={(e) => setPatientEmail(e.target.value)}
@@ -766,40 +900,84 @@ export default function PatientTable() {
               />
             </div>
           )}
-          <div className='flex flex-col gap-[6px]'>
+          {/* <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Date Of Birth</label>
-            <input
+            <DatePicker
               className='py-[10px] outline-none border-b'
-              type='date'
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            />
+            <input
+              className="py-[10px] outline-none border-b"
+              type="date"
               required
               value={patientDateOfBirth}
               onChange={(e) => setPatientDateOfBirth(e.target.value)}
+            />
+          </div> */}
+          <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Age</label>
+            {/* <DatePicker
+              className="py-[10px] outline-none border-b"
+              required
+              selected={patientDateOfBirth.startDate}
+              maxDate={new Date()}
+              onChange={(date) =>
+                setPatientDateOfBirth({
+                  startDate: date,
+                })
+              }
+            /> */}
+            <input
+              className='py-[10px] outline-none border-b'
+              // type='number'
+              placeholder='Enter age'
+              // value={patientAge}
+              // onChange={(e) => setPatientAge(e.target.value)}
+              required
+              value={patientAge}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setPatientAge(value);
+              }}
             />
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Phone</label>
             <input
               className='py-[10px] outline-none border-b'
-              type='number'
+              // type='number'
               required
-              disabled
               minLength={10}
               maxLength={10}
               placeholder='Enter patient phone number'
               value={patientPhone}
-              onChange={(e) => setPatientPhone(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setPatientPhone(value);
+              }}
+              // onChange={(e) => setPatientPhone(e.target.value)}
             />
           </div>
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>Phone number of attendent</label>
             <input
               className='py-[10px] outline-none border-b'
-              type='number'
+              // type='number'
               minLength={10}
               maxLength={10}
               placeholder='Enter phone number of attendent'
               value={patientPhone2}
-              onChange={(e) => setPatientPhone2(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setPatientPhone2(value);
+              }}
+              // onChange={(e) => setPatientPhone2(e.target.value)}
             />
           </div>
           <div className='flex flex-col gap-[6px]'>
@@ -886,7 +1064,44 @@ export default function PatientTable() {
             <textarea
               className='py-[10px] outline-none border-b'
               type='text'
-              required
+              placeholder='Enter patient local address'
+              value={patientLocalAddress}
+              // {...register("patientLocalAddress")}
+              onChange={(e) => setPatientLocalAddress(e.target.value)}
+            />
+            {/* {errors.patientLocalAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
+          </div>
+          <div className='flex flex-col gap-[6px]'>
+            <div className='flex gap-[1rem]'>
+              <label className='text-[14px]'>Permanent Address</label>
+              <div className='flex gap-[10px] items-center'>
+                <input
+                  type='checkbox'
+                  onChange={(e) => setSameAsLocalAddress(e.target.checked)}
+                />
+                <p className='text-[12px]'>Same as local address</p>
+              </div>
+            </div>
+            <textarea
+              className='py-[10px] outline-none border-b'
+              type='text'
+              value={patientPermanentAddress}
+              disabled={sameAsLocalAddress === true ? true : false}
+              placeholder='Enter patient permanent address'
+              // {...register("patientPermanentAddress")}
+              onChange={(e) => setPatientPermanentAddress(e.target.value)}
+            />
+            {/* {errors.patientPermanentAddress && (
+              <span className="text-[red]">This field is required</span>
+            )} */}
+          </div>
+          {/* <div className='flex flex-col gap-[6px]'>
+            <label className='text-[14px]'>Local Address</label>
+            <textarea
+              className='py-[10px] outline-none border-b'
+              type='text'
               placeholder='Enter patient local address'
               value={patientLocalAddress}
               onChange={(e) => setPatientLocalAddress(e.target.value)}
@@ -897,18 +1112,16 @@ export default function PatientTable() {
             <textarea
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient permanent address'
               value={patientPermanentAddress}
               onChange={(e) => setPatientPermanentAddress(e.target.value)}
             />
-          </div>
+          </div> */}
           <div className='flex flex-col gap-[6px]'>
             <label className='text-[14px]'>City</label>
             <input
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient city'
               value={patientCity}
               onChange={(e) => setPatientCity(e.target.value)}
@@ -919,7 +1132,6 @@ export default function PatientTable() {
             <input
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient state'
               value={patientState}
               onChange={(e) => setPatientState(e.target.value)}
@@ -930,7 +1142,6 @@ export default function PatientTable() {
             <input
               className='py-[10px] outline-none border-b'
               type='text'
-              required
               placeholder='Enter patient country'
               value={patientCountry}
               onChange={(e) => setPatientCountry(e.target.value)}
@@ -941,7 +1152,6 @@ export default function PatientTable() {
             <input
               className='py-[10px] outline-none border-b'
               type='number'
-              required
               placeholder='Enter patient zipcode'
               value={patientZipCode}
               onChange={(e) => setPatientZipCode(e.target.value)}
@@ -949,10 +1159,7 @@ export default function PatientTable() {
           </div>
         </div>
         <div className='flex gap-[1rem] items-center'>
-          <button
-            type='submit'
-            className='buttonFilled'>{`Save & Print >`}</button>
-          <button className='buttonOutlined'>{`Save >`}</button>
+          <button type='submit' className='buttonFilled'>{`Save >`}</button>
         </div>
       </form>
     </div>
@@ -963,7 +1170,7 @@ export default function PatientTable() {
   const filteredArray = patients?.filter((data) => {
     if (search !== "") {
       const userSearch = search.toLowerCase();
-      const searchInData = data?.patientId?.toLowerCase();
+      const searchInData = data?.patientName?.toLowerCase();
 
       return searchInData?.startsWith(userSearch);
     }
@@ -974,7 +1181,7 @@ export default function PatientTable() {
 
   const config = [
     {
-      label: "Reg No.",
+      label: "UHID",
       render: (list) => list.patientId,
     },
     {
@@ -1011,11 +1218,11 @@ export default function PatientTable() {
             className='p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer'>
             <RiEdit2Fill className='text-[25px] text-[#3497F9]' />
           </div>
-          <div
+          {/* <div
             onClick={() => handleClickOpenDialogBox(list)}
             className='p-[4px] h-fit w-fit border-[2px] border-[#EB5757] rounded-[12px] cursor-pointer'>
             <RiDeleteBin6Fill className='text-[25px] text-[#EB5757]' />
-          </div>
+          </div> */}
         </div>
       ),
     },
@@ -1040,7 +1247,7 @@ export default function PatientTable() {
             <FaSearch className='text-[#56585A]' />
             <input
               className='bg-transparent outline-none'
-              placeholder='Search by patient id'
+              placeholder='Search by patient name'
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
@@ -1093,10 +1300,16 @@ export default function PatientTable() {
               <h1 className='headingBottomUnderline w-fit pb-[10px]'>
                 Patient Details
               </h1>
-              <button className='buttonFilled flex items-center gap-[10px]'>
+              <Link
+                // onClick={handleGeneratePdf}
+                target='_blank'
+                to={patientData?.patientId}
+                // to={opdPatientData?.data?.mainId}
+                // to={`${browserLinks.superadmin.category}/${browserLinks.superadmin.internalPages.opdPatients}/${opdPatientData?.data?.mainId}`}
+                className='buttonFilled flex items-center gap-[10px]'>
                 <LuHardDriveDownload />
                 <p>Download</p>
-              </button>
+              </Link>
             </div>
           </Typography>
           <Typography id='modal-modal-description' sx={{ mt: 2 }}>
