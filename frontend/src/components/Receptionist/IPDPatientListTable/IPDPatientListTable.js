@@ -383,7 +383,7 @@ export default function IPDPatientList() {
 
   const config = [
     {
-      label: "UHID",
+      label: "IPD Bill No ",
       render: (list) => list.patientId,
     },
     {
@@ -391,15 +391,15 @@ export default function IPDPatientList() {
       render: (list) => list.patientName,
     },
     {
-      label: "Room No",
+      label: "Doctor Name",
       render: (list) => list.patientEmail,
     },
     {
-      label: "Bed No",
+      label: "TIme / Date",
       render: (list) => date(list.createdAt),
     },
     {
-      label: "Floor No",
+      label: "Doctor Visit Checked",
       render: (list) => list.bedNo,
     },
     // {
@@ -422,7 +422,7 @@ export default function IPDPatientList() {
     //   ),
     // },
     {
-      label: "Action",
+      label: "User Action",
       render: (list) => (
         <div className="flex gap-[10px] justify-center">
           <div
