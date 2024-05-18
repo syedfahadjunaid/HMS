@@ -58,156 +58,61 @@ export default function IPDDoctorVisitTable() {
     },
   ];
 
-  const filteredArray = doctorVisitData?.filter((data) => {
-    if (searchByPatientReg !== "") {
-      const userSearch = searchByPatientReg.toLowerCase();
-      const searchInData = data?.patientId?.toLowerCase();
-
-      return searchInData?.startsWith(userSearch);
-    }
-    if (searchByDoctorName !== "") {
-      const userSearch = searchByDoctorName.toLowerCase();
-      const searchInData = data?.doctorName?.toLowerCase();
-
-      return searchInData?.startsWith(userSearch);
-    }
-    if (searchByDate !== "") {
-      const userSearch = date(searchByDate);
-      const searchInData = date(data?.dateTime);
-
-      return searchInData?.startsWith(userSearch);
-    }
-    return data;
-  });
-
-  const [patientId, setPatientId] = React.useState("");
-
-  const renderedPatientForDropdownPrescription = patients?.map((data) => {
-    return {
-      value: data.patientId,
-      label: `${data.patientId} / ${data.patientName}`,
-    };
-  });
-
-  const [doctorId, setDoctorId] = React.useState("");
-
-  const renderedDoctorForDropdownPrescription = doctors?.map((data) => {
-    return {
-      value: data.doctorId,
-      label: `${data.doctorId} / ${data.doctorName}`,
-    };
-  });
-
   return (
     <Suspense fallback={<>...</>}>
-      <div className='flex flex-col gap-[1rem] p-[1rem]'>
-        <div className='flex justify-between'>
-          <h2 className='border-b-[4px] border-[#3497F9]'>Dr Visit List</h2>
+      <div className="flex flex-col gap-[1rem] p-[1rem]">
+        <div className="flex justify-between">
+          <h2 className="border-b-[4px] border-[#3497F9]">Dr Visit List</h2>
           {/* <button
             onClick={handleOpen}
             className='bg-[#3497F9] text-white p-[10px] rounded-md'>
             + Add Patient
           </button> */}
         </div>
-        <div className='flex flex-col gap-[2rem]'>
-          <div className='flex gap-[1rem]'>
-            <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
-              <FaSearch className='text-[#56585A]' />
+        <div className="flex flex-col gap-[2rem]">
+          <div className="flex gap-[1rem]">
+            <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+              <FaSearch className="text-[#56585A]" />
               <input
-                className='bg-transparent outline-none'
-                placeholder='Search by patient'
-                value={searchByPatientReg}
-                onChange={(e) => {
-                  setSearchByPatientReg(e.target.value);
-                  setSearchByDoctorName("");
-                  setSearchByDate("");
-                }}
+                className="bg-transparent outline-none"
+                placeholder="Search by patient"
               />
             </div>
-            <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
-              <FaSearch className='text-[#56585A]' />
+            <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+              <FaSearch className="text-[#56585A]" />
               <input
-                className='bg-transparent outline-none'
-                placeholder='Search by doctor'
-                value={searchByDoctorName}
-                onChange={(e) => {
-                  setSearchByDoctorName(e.target.value);
-                  setSearchByDate("");
-                  setSearchByPatientReg("");
-                }}
+                className="bg-transparent outline-none"
+                placeholder="Search by doctor"
               />
             </div>
 
-            <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
-              <input
-                type='date'
-                className='bg-transparent outline-none'
-                value={searchByDate}
-                onChange={(e) => {
-                  setSearchByDate(e.target.value);
-                  setSearchByDoctorName("");
-                  setSearchByPatientReg("");
-                }}
-              />
+            <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+              <input type="date" className="bg-transparent outline-none" />
             </div>
           </div>
-          <div className='grid grid-cols-4 gap-[1rem] border-b pb-[1rem]'>
-            <p>Dr. Name</p>
-            <p>p..Registration Number</p>
-            <p>Date / time</p>
-            <p>Save Details</p>
-          </div>
-          <form className='grid grid-cols-4 gap-[1rem] border-b pb-[1rem]'>
-            <Select
-              className='text-[12px] w-full'
-              required
-              options={renderedDoctorForDropdownPrescription}
-              onChange={setDoctorId}
-              value={doctorId}
-            />
-            <Select
-              className='text-[12px] w-full'
-              required
-              options={renderedPatientForDropdownPrescription}
-              onChange={setPatientId}
-              value={patientId}
-            />
-            <input
-              className='py-[10px] outline-none border-b w-full'
-              type='datetime-local'
-              required
-              //   onChange={(e) => setVisitTime(e.target.value)}
-            />
-            <div className='flex justify-center'>
-              <button type='submit' className='w-fit'>
-                <FaRegSave className='text-[30px] cursor-pointer' />
-              </button>
-            </div>
-          </form>
 
           <table>
-            <tr className='py-[1rem]'>
-              <th className='py-[1rem] border'>S No.</th>
-              <th className='py-[1rem] border'>Dr name</th>
-              <th className='py-[1rem] border'>p..Registration Number</th>
-              <th className='py-[1rem] border'>Date / time</th>
-              <th className='py-[1rem] border'>Action</th>
-            </tr>
-            {filteredArray?.map((data, index) => {
-              return (
-                <tr
-                  className=''
-                  key={`${index}-${data.patientId}-${data.doctorName}-${data.dateTime}`}>
-                  <td className='py-[1rem] border'>{index + 1}</td>
-                  <td className='py-[1rem] border'>{data.doctorName}</td>
-                  <td className='py-[1rem] border'>{data.patientId}</td>
-                  <td className='py-[1rem] border'>{data.dateTime}</td>
-                  <td className='py-[1rem] border flex justify-center'>
-                    <FaEdit className='text-[30px]' />
-                  </td>
-                </tr>
-              );
-            })}
+            <thead>
+              <tr className="py-[1rem]">
+                <th className="py-[1rem] border">S No.</th>
+                <th className="py-[1rem] border">Dr Name</th>
+                <th className="py-[1rem] border">Patients Uhid</th>
+                <th className="py-[1rem] border">Date / time</th>
+                <th className="py-[1rem] border">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr className="" key="1">
+                <td className="py-[1rem] border"> 1</td>
+                <td className="py-[1rem] border"></td>
+                <td className="py-[1rem] border"></td>
+                <td className="py-[1rem] border"></td>
+                <td className="py-[1rem] border flex justify-center">
+                  <FaEdit className="text-[30px]" />
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>

@@ -187,6 +187,9 @@ const ReceptionistPanelIPDPatientViewPage = lazy(() =>
     "./components/Receptionist/IPDPatientListTable/IPDPatientViewPage/IPDPatientViewPage"
   )
 );
+const ReferPatientsNurse = lazy(() =>
+  import("./pages/Receptionist/DischargePatients/DischargePatients")
+);
 
 // AdmissionAndCharges
 
@@ -1755,6 +1758,26 @@ function App() {
                         }
                       >
                         <ReceptionistPanelIPDDoctorVisitList />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.receptionist.category
+                    }/${browserLinks?.receptionist?.internalPages?.referPatients
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <ReferPatientsNurse />
                       </Suspense>
                     }
                   />
