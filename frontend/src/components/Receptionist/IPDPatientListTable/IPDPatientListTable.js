@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Button from "@mui/material/Button";
 import { MdDeleteForever } from "react-icons/md";
+import { GetAllDoctorsHandle } from "../../../Store/Slices/DoctorSlice";
 
 export default function IPDPatientList() {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ export default function IPDPatientList() {
     React.useState("");
   const [additionalInfo, setAdditionalInfo] = React.useState("");
   const [note, setNote] = React.useState("");
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     if (patientId !== "") {
@@ -459,6 +461,9 @@ export default function IPDPatientList() {
   const keyFn = (list) => {
     return list.patientName;
   };
+  React.useEffect(() => {
+    dispatch(GetAllDoctorsHandle());
+  }, []);
   return (
     <Suspense fallback={<>...</>}>
       <div className="flex flex-col gap-[1rem] p-[1rem]">
