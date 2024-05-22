@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./IPDDoctorVisitTable.css";
 import { Suspense } from "react";
 
@@ -14,6 +14,9 @@ import { FaRegSave } from "react-icons/fa";
 import Select from "react-select";
 
 import { useDispatch, useSelector } from "react-redux";
+import { getDoctorVisitListWithIpdPatientsData } from "../NurseApi";
+import { Switch } from "@mui/material";
+import { CiViewList } from "react-icons/ci";
 
 export default function IPDDoctorVisitTable() {
   const { patients } = useSelector((state) => state.PatientState);
@@ -57,7 +60,18 @@ export default function IPDDoctorVisitTable() {
       dateTime: "2024,04,16",
     },
   ];
+  const [doctorWithPatients, setDoctorWithPatients] = useState([]);
 
+  const getDoctorVisitListWithIpdPatientsDataHandle = async () => {
+    const result = await getDoctorVisitListWithIpdPatientsData();
+    if (result?.status === 200) {
+      setDoctorWithPatients(result?.data?.data);
+    }
+    console.log(result);
+  };
+  useEffect(() => {
+    getDoctorVisitListWithIpdPatientsDataHandle();
+  }, []);
   return (
     <Suspense fallback={<>...</>}>
       <div className="flex flex-col gap-[1rem] p-[1rem]">
@@ -91,27 +105,61 @@ export default function IPDDoctorVisitTable() {
             </div>
           </div>
 
-          <table>
+          <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
             <thead>
-              <tr className="py-[1rem]">
-                <th className="py-[1rem] border">S No.</th>
-                <th className="py-[1rem] border">Dr Name</th>
-                <th className="py-[1rem] border">Patients Uhid</th>
-                <th className="py-[1rem] border">Date / time</th>
-                <th className="py-[1rem] border">Action</th>
-              </tr>
+              <th className="border-[1px] p-1 font-semibold">
+                <p>S_N</p>
+              </th>
+              <th className="border-[1px] p-1 font-semibold">
+                <p>Patient Uhid</p>
+              </th>
+              <th className="border-[1px] p-1 font-semibold">
+                <p>Doctor Name</p>
+              </th>
+              <th className="border-[1px] p-1 font-semibold">
+                <p>TIme / date</p>
+              </th>
+
+              <th className="border-[1px] p-1 font-semibold">
+                <p>Doc Visit Checked</p>
+              </th>
+
+              <th className="border-[1px] p-1 font-semibold">
+                <p>Action</p>
+              </th>
             </thead>
 
             <tbody>
-              <tr className="" key="1">
-                <td className="py-[1rem] border"> 1</td>
-                <td className="py-[1rem] border"></td>
-                <td className="py-[1rem] border"></td>
-                <td className="py-[1rem] border"></td>
-                <td className="py-[1rem] border flex justify-center">
-                  <FaEdit className="text-[30px]" />
-                </td>
-              </tr>
+              {doctorWithPatients?.map((item, index) => (
+                <tr key={index} className="border-b-[1px]">
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {"Uhid" + item?.IpdpatientId}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {item?.doctorName}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {date(item?.IpdPatientCreatedTime)} /
+                    {time(item?.IpdPatientCreatedTime)}
+                  </td>{" "}
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    <Switch />
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
+                    <div className="flex gap-[10px] justify-center">
+                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer">
+                        <CiViewList className="text-[20px] text-[#96999C]" />
+                      </div>{" "}
+                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer">
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

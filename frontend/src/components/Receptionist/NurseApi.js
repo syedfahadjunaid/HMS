@@ -16,3 +16,11 @@ export const addNurseReferPatientsData = async (formData) => {
     throw new Error(error);
   }
 };
+export const getDoctorVisitListWithIpdPatientsData = async () => {
+  try {
+    const response = await axios.get("/api/get-each-doctor-with-patients");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
