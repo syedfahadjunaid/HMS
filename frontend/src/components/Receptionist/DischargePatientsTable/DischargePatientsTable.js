@@ -1,15 +1,140 @@
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CiViewList } from "react-icons/ci";
 import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
 import { IoIosArrowForward } from "react-icons/io";
+import {
+  addNurseDetailsForPatientsDischargeData,
+  getAllDischargePatientsListData,
+} from "../NurseApi";
+import Snackbars from "../../SnackBar";
 
 function DischargePatientsTable() {
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  // Snackbar--------------------
+  // ----Succcess
+  const [openSnackbarSuccess, setOpenSnackBarSuccess] = React.useState(false);
+  const [snackBarMessageSuccess, setSnackBarSuccessMessage] =
+    React.useState("");
+
+  const handleClickSnackbarSuccess = () => {
+    setOpenSnackBarSuccess(true);
+  };
+  // ----Warning
+  const [openSnackbarWarning, setOpenSnackBarWarning] = React.useState(false);
+  const [snackBarMessageWarning, setSnackBarSuccessWarning] =
+    React.useState("");
+
+  const handleClickSnackbarWarning = () => {
+    setOpenSnackBarWarning(true);
+  };
+  // ----------------------------
+
+  const [allDischargeData, setAllDischargeData] = useState([]);
+  const [patientsDischargeData, setPatientsDischargeData] = useState({
+    ipdPatientId: "",
+    admittedFor: "",
+    investigationORProcedure: "",
+    conditionDuringDischarge: "",
+    date: "",
+    operations: "",
+    indications: "",
+    surgeon: "",
+    assistants: "",
+    nurse: "",
+    anaesthetist: "",
+    anaesthesia: "",
+    implantDetails: "",
+  });
+  const getAllDischargePatientsListDataHandle = async () => {
+    const result = await getAllDischargePatientsListData();
+    if (result) {
+      const data = result?.data?.filter((item) => {
+        return (
+          item?.ipdPatientDoctorRequestForDischarge === true &&
+          item?.ipdPatientNurseRequestForDischarge === true
+        );
+      });
+      setAllDischargeData(data);
+    }
+  };
+  const addNurseDetailsForPatientsDischargeDataHandle = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("nurseId", "10101");
+    formData.append("admittedFor", patientsDischargeData?.admittedFor);
+    formData.append(
+      "investigationORProcedure",
+      patientsDischargeData?.investigationORProcedure
+    );
+    formData.append(
+      "conditionDuringDischarge",
+      patientsDischargeData?.conditionDuringDischarge
+    );
+    formData.append("date", patientsDischargeData?.date);
+    formData.append("operations", patientsDischargeData?.operations);
+    formData.append("indications", patientsDischargeData?.indications);
+    formData.append("surgeon", patientsDischargeData?.surgeon);
+    formData.append("assistants", patientsDischargeData?.assistants);
+    formData.append("nurse", patientsDischargeData?.nurse);
+    formData.append("anaesthetist", patientsDischargeData?.anaesthetist);
+    formData.append("anaesthesia", patientsDischargeData?.anaesthesia);
+    formData.append("implantDetails", patientsDischargeData?.implantDetails);
+    const result = await addNurseDetailsForPatientsDischargeData(
+      patientsDischargeData?.ipdPatientId,
+      formData
+    );
+    if (result?.status === 200) {
+      handleClickSnackbarSuccess();
+      setSnackBarSuccessMessage(result?.data?.message);
+      handleClose();
+      setPatientsDischargeData({
+        ipdPatientId: "",
+        admittedFor: "",
+        investigationORProcedure: "",
+        conditionDuringDischarge: "",
+        date: "",
+        operations: "",
+        indications: "",
+        surgeon: "",
+        assistants: "",
+        nurse: "",
+        anaesthetist: "",
+        anaesthesia: "",
+        implantDetails: "",
+      });
+    }
+    if (result?.status !== 200) {
+      handleClickSnackbarWarning();
+      setSnackBarSuccessWarning(result?.data?.message);
+      handleClose();
+      setPatientsDischargeData({
+        ipdPatientId: "",
+        admittedFor: "",
+        investigationORProcedure: "",
+        conditionDuringDischarge: "",
+        date: "",
+        operations: "",
+        indications: "",
+        surgeon: "",
+        assistants: "",
+        nurse: "",
+        anaesthetist: "",
+        anaesthesia: "",
+        implantDetails: "",
+      });
+    }
+  };
+  useEffect(() => {
+    getAllDischargePatientsListDataHandle();
+  }, []);
+  useEffect(() => {
+    console.log(patientsDischargeData);
+  }, [patientsDischargeData]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -26,9 +151,7 @@ function DischargePatientsTable() {
             <th className="border-[1px] p-1 font-semibold">
               <p>UIHD</p>
             </th>
-            <th className="border-[1px] p-1 font-semibold">
-              <p>Patient Name</p>
-            </th>
+
             <th className="border-[1px] p-1 font-semibold">
               <p>Dis Checked</p>
             </th>
@@ -41,36 +164,42 @@ function DischargePatientsTable() {
             </th>
           </thead>
           <tbody>
-            <tr key={1} className="border-b-[1px]">
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center ">
-                1
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center ">
-                uhid014110200
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center ">
-                Arman
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center ">
-                <Switch {...label} defaultChecked />
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center ">
-                21/02/24 15:30
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row">
-                <div className="flex gap-[10px] justify-center">
-                  <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer">
-                    <CiViewList className="text-[20px] text-[#96999C]" />
-                  </div>{" "}
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen}
-                  >
-                    <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+            {allDischargeData?.map((item, index) => (
+              <tr key={index} className="border-b-[1px]">
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                  {index + 1}
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                  {"Uhid" + item?.ipdPatientId}
+                </td>
+
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                  <Switch {...label} />
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                  21/02/24 15:30
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row">
+                  <div className="flex gap-[10px] justify-center">
+                    <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer">
+                      <CiViewList className="text-[20px] text-[#96999C]" />
+                    </div>{" "}
+                    <div
+                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                      onClick={() => [
+                        handleOpen(),
+                        setPatientsDischargeData({
+                          ...patientsDischargeData,
+                          ipdPatientId: item?.mainId,
+                        }),
+                      ]}
+                    >
+                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -92,13 +221,23 @@ function DischargePatientsTable() {
             <h2 className="border-b-[4px] border-[#3497F9] w-fit mb-2 pb-1">
               Discharge Patient
             </h2>
-            <form className="w-full flex flex-col justify-start items-start gap-2">
+            <form
+              className="w-full flex flex-col justify-start items-start gap-2"
+              onSubmit={addNurseDetailsForPatientsDischargeDataHandle}
+            >
               <div className="w-full flex flex-col justify-start items-start gap-1">
                 <p>Admitted For:</p>
                 <textarea
                   rows={3}
                   placeholder="Admitted For"
                   className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                  value={patientsDischargeData?.admittedFor}
+                  onChange={(e) =>
+                    setPatientsDischargeData({
+                      ...patientsDischargeData,
+                      admittedFor: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -107,6 +246,13 @@ function DischargePatientsTable() {
                   rows={3}
                   placeholder="Investigation / Procedure"
                   className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                  value={patientsDischargeData?.investigationORProcedure}
+                  onChange={(e) =>
+                    setPatientsDischargeData({
+                      ...patientsDischargeData,
+                      investigationORProcedure: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -116,6 +262,13 @@ function DischargePatientsTable() {
                   placeholder="Condition During 
                   Discharge"
                   className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                  value={patientsDischargeData?.conditionDuringDischarge}
+                  onChange={(e) =>
+                    setPatientsDischargeData({
+                      ...patientsDischargeData,
+                      conditionDuringDischarge: e.target.value,
+                    })
+                  }
                 />
               </div>
               <p className="text-[1rem] font-semibold">
@@ -124,10 +277,16 @@ function DischargePatientsTable() {
               <div className="w-full grid grid-cols-3 gap-2">
                 <div className="w-full flex flex-col justify-start items-start gap-1">
                   <p>Date:</p>
-                  <textarea
-                    rows={2}
-                    placeholder="Date"
-                    className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                  <input
+                    type="date"
+                    className="border-[2px] w-full rounded outline-none pl-1 pt-1 h-[3.4rem]"
+                    value={patientsDischargeData?.date}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        date: e.target.value,
+                      })
+                    }
                   />
                 </div>{" "}
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -136,6 +295,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Operation"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.operations}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        operations: e.target.value,
+                      })
+                    }
                   />
                 </div>{" "}
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -144,6 +310,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Indications"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.indications}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        indications: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -152,6 +325,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Surgeon"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.surgeon}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        surgeon: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -160,6 +340,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Assistants"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.admittedFor}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        admittedFor: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -168,6 +355,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Nurse"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.nurse}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        nurse: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -176,6 +370,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Anaesthetist"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.anaesthetist}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        anaesthetist: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -184,6 +385,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Anaesthesia"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.anaesthesia}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        anaesthesia: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -192,6 +400,13 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Implant Details"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={patientsDischargeData?.implantDetails}
+                    onChange={(e) =>
+                      setPatientsDischargeData({
+                        ...patientsDischargeData,
+                        implantDetails: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -202,6 +417,20 @@ function DischargePatientsTable() {
           </Box>
         </Fade>
       </Modal>
+      {/* Success Snackbar */}
+      <Snackbars
+        open={openSnackbarSuccess}
+        setOpen={setOpenSnackBarSuccess}
+        severity="success"
+        message={snackBarMessageSuccess}
+      />
+      {/* Warning Snackbar */}
+      <Snackbars
+        open={openSnackbarWarning}
+        setOpen={setOpenSnackBarWarning}
+        severity="warning"
+        message={snackBarMessageWarning}
+      />
     </div>
   );
 }

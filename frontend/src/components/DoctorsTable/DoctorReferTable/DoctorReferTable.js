@@ -1,13 +1,15 @@
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CiViewList } from "react-icons/ci";
 import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
 import img from "../../../assets/20180125_001_1_.jpg";
 import { IoIosArrowForward } from "react-icons/io";
+import { getReferPatientsData } from "../DoctorApi";
 
 function DoctorReferTable() {
   const label = { inputProps: { "aria-label": "Switch demo" } };
+  const [allReferPatients, setAllReferPatients] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -18,6 +20,16 @@ function DoctorReferTable() {
   const handleClose1 = () => {
     setOpen1(false);
   };
+  const getReferPatientsDataHandle = async () => {
+    const result = await getReferPatientsData();
+    if (result?.status === 200) {
+      setAllReferPatients(result?.data?.data?.reverse());
+    }
+    console.log(result);
+  };
+  useEffect(() => {
+    getReferPatientsDataHandle();
+  }, []);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -35,11 +47,9 @@ function DoctorReferTable() {
             <th className="border-[1px] p-1 font-semibold">
               <p>Patient Name</p>
             </th>
+
             <th className="border-[1px] p-1 font-semibold">
-              <p>Bed No</p>
-            </th>
-            <th className="border-[1px] p-1 font-semibold">
-              <p>Patient Notes</p>
+              <p>Referal Notes</p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
               <p>Patient Checked</p>
@@ -50,36 +60,41 @@ function DoctorReferTable() {
             </th>
           </thead>
           <tbody>
-            <tr key={""}>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                uhid014110200
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                Arman
-              </td>{" "}
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                <Switch {...label} />
-              </td>
-              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
-                <div className="flex gap-[10px] justify-center">
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen1}
-                  >
-                    <CiViewList className="text-[20px] text-[#96999C]" />
-                  </div>{" "}
-                  <div
-                    className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                    onClick={handleOpen}
-                  >
-                    <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+            {allReferPatients?.map((item, index) => (
+              <tr key={index}>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  {index + 1}
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  {"Uhid" + item?.ipdPatientsDetails?.ipdPatientId}
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  {item?.PatientsDetails?.[0]?.patientName}
+                </td>{" "}
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  {item?.ReasonForReferal}
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                  <Switch {...label} />
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
+                  <div className="flex gap-[10px] justify-center">
+                    <div
+                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                      onClick={handleOpen1}
+                    >
+                      <CiViewList className="text-[20px] text-[#96999C]" />
+                    </div>{" "}
+                    <div
+                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                      onClick={handleOpen}
+                    >
+                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

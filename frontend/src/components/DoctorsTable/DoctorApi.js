@@ -76,3 +76,38 @@ export const getOneIpdDoctorCheckData = async (Id) => {
     console.log(error);
   }
 };
+export const getReferPatientsData = async () => {
+  try {
+    const response = await axios.get("/api/get-all-refered-patients");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const addDoctorDetailsForPatientsDischargeData = async (
+  Id,
+  formData
+) => {
+  try {
+    const response = await axios.put(
+      `/api/IPDPatientDischarge-DoctorDischargeDetails-PUT/${Id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getAllIpdPatientsData = async () => {
+  try {
+    const response = await axios.get("/api/IPDPatient-GET-ALL");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

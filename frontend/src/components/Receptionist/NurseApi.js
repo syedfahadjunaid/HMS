@@ -24,3 +24,27 @@ export const getDoctorVisitListWithIpdPatientsData = async () => {
     throw new Error(error);
   }
 };
+export const getAllDischargePatientsListData = async () => {
+  try {
+    const response = await axios.get("/api/IPDPatient-GET-ALL");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const addNurseDetailsForPatientsDischargeData = async (Id, formData) => {
+  try {
+    const response = await axios.put(
+      `/api/IPDPatientDischarge-NurseDischargeDetails-PUT/${Id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
