@@ -68,6 +68,7 @@ const browserLinks = {
       doctorVisitListIPD: "Doctor Visit List IPD",
       referPatients: "Refer Patients",
       dischargePatients: "Discharge Patients",
+      emergency: "Emergency Patients",
     },
   },
   Doctor: {

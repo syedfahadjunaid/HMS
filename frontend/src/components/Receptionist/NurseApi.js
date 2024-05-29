@@ -48,3 +48,27 @@ export const addNurseDetailsForPatientsDischargeData = async (Id, formData) => {
     throw new Error(error);
   }
 };
+export const addDailyDoctorVisitIpdData = async (formData) => {
+  try {
+    const response = await axios.post("/api/IPD-Create", formData);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getOnePatientsDoctorVisitData = async (Id) => {
+  try {
+    const response = await axios.get(`/api/get-one-ipd-data/${Id}`);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getAllIpdPatientsAssignedData = async () => {
+  try {
+    const response = await axios.get("/api/IPDPatient-GET-ALL");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
