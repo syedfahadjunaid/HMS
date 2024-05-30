@@ -56,6 +56,17 @@ export const addDailyDoctorVisitIpdData = async (formData) => {
     throw new Error(error);
   }
 };
+export const addDailyDoctorVisitEmergencyData = async (formData) => {
+  try {
+    const response = await axios.post(
+      "/api/add-EmergencyPatientsChecks-Routes",
+      formData
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 export const getOnePatientsDoctorVisitData = async (Id) => {
   try {
     const response = await axios.get(`/api/get-one-ipd-data/${Id}`);
@@ -64,9 +75,53 @@ export const getOnePatientsDoctorVisitData = async (Id) => {
     throw new Error(error);
   }
 };
+export const getOneEmergencyPatientsDoctorVisitData = async (Id) => {
+  try {
+    const response = await axios.get(
+      `/api/get-one-EmergencyPatientsChecks/${Id}`
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 export const getAllIpdPatientsAssignedData = async () => {
   try {
     const response = await axios.get("/api/IPDPatient-GET-ALL");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getAllEmergencyPatientsData = async () => {
+  try {
+    const response = await axios.get(
+      "/api/get-each-doctor-with-patients-emergency"
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getAllEmergencyPatientsListData = async () => {
+  try {
+    const response = await axios.get("/api/All-EmergencyPatientsChecks-Routes");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getAllDoctorVisitPatientsListData = async () => {
+  try {
+    const response = await axios.get("/api/All-Ipd-Routes");
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getIpdPatientsFullDetailsData = async (Id) => {
+  try {
+    const response = await axios.get(`/api/IpdPatient-whole-data/${Id}`);
     return response;
   } catch (error) {
     throw new Error(error);

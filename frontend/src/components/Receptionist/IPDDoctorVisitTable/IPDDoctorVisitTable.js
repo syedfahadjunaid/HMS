@@ -11,6 +11,7 @@ import { getMedicineDataHandle } from "../../../Store/Slices/Medicine";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addDailyDoctorVisitIpdData,
+  getAllDoctorVisitPatientsListData,
   getDoctorVisitListWithIpdPatientsData,
   getOnePatientsDoctorVisitData,
 } from "../NurseApi";
@@ -32,6 +33,9 @@ export default function IPDDoctorVisitTable() {
   const [open1, setOpen1] = React.useState(false);
   const handleOpen1 = () => setOpen1(true);
   const handleClose1 = () => setOpen1(false);
+  const [open2, setOpen2] = React.useState(false);
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose2 = () => setOpen2(false);
 
   const date = (dateTime) => {
     const newdate = new Date(dateTime);
@@ -94,6 +98,7 @@ export default function IPDDoctorVisitTable() {
   const [searchMedicine, setSearchMedicine] = useState([]);
   const [searchTest, setSearchTest] = useState([]);
   const [selectedTest, setSelectedTest] = useState([]);
+  const [allIpdDoctorVisitList, setAllIpdDoctorVisitList] = useState([]);
   const [dailyDoctorVisitData, setDailyDoctorVisitData] = useState({
     doctorId: "",
     doctorName: "",
@@ -205,9 +210,9 @@ export default function IPDDoctorVisitTable() {
   const getDoctorVisitListWithIpdPatientsDataHandle = async () => {
     const result = await getDoctorVisitListWithIpdPatientsData();
     if (result?.status === 200) {
-      setDoctorWithPatients(result?.data?.data);
+      setDoctorWithPatients(result?.data?.data?.reverse());
     }
-    console.log(result);
+    console.log(result, "bghgch  gh ");
   };
   const addDailyDoctorVisitIpdDataHandle = async (e) => {
     e.preventDefault();
@@ -238,6 +243,11 @@ export default function IPDDoctorVisitTable() {
     setViewPatientsData(result && result?.data);
     console.log(result);
   };
+  const getAllDoctorVisitPatientsListDataHandle = async () => {
+    const result = await getAllDoctorVisitPatientsListData();
+    setAllIpdDoctorVisitList(result && result?.data?.data);
+    console.log(result, "all");
+  };
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeTestIndex, setActiveTestIndex] = useState(null);
   const selectRef = useRef(null);
@@ -262,6 +272,7 @@ export default function IPDDoctorVisitTable() {
   }, []);
   useEffect(() => {
     getDoctorVisitListWithIpdPatientsDataHandle();
+    getAllDoctorVisitPatientsListDataHandle();
   }, []);
 
   return (
@@ -335,17 +346,28 @@ export default function IPDDoctorVisitTable() {
                   </td>{" "}
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
                     <div className="flex gap-[10px] justify-center">
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          getOnePatientsDoctorVisitDataHandle(
-                            item?.Ipdpatient_id
-                          ),
-                          handleOpen1(),
-                        ]}
-                      >
-                        <CiViewList className="text-[20px] text-[#96999C]" />
-                      </div>{" "}
+                      {allIpdDoctorVisitList?.find(
+                        (val) => val.ipdPatientData === item?.Ipdpatient_id
+                      ) ? (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            getOnePatientsDoctorVisitDataHandle(
+                              item?.Ipdpatient_id
+                            ),
+                            handleOpen1(),
+                          ]}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>
+                      ) : (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={handleOpen2}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>
+                      )}
                       <div
                         className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
                         onClick={() => [
@@ -922,6 +944,27 @@ export default function IPDDoctorVisitTable() {
                 </div>
               ))}
             </form>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open2}
+        onClose={handleClose2}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={open2}>
+          <Box sx={style}>
+            <Typography className="flex items-center justify-center">
+              No Doctor Visit done
+            </Typography>
           </Box>
         </Fade>
       </Modal>

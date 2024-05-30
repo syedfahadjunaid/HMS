@@ -33,7 +33,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import { MdDeleteForever } from "react-icons/md";
 import { GetAllDoctorsHandle } from "../../../Store/Slices/DoctorSlice";
-import { getAllIpdPatientsAssignedData } from "../NurseApi";
+import {
+  getAllIpdPatientsAssignedData,
+  getIpdPatientsFullDetailsData,
+} from "../NurseApi";
 import { CiViewList } from "react-icons/ci";
 import { Switch } from "@mui/material";
 
@@ -470,6 +473,10 @@ export default function IPDPatientList() {
     setAllIpdPatientsData(result && result?.data);
     console.log(result);
   };
+  const getIpdPatientsFullDetailsDataHandle = async (Id) => {
+    const result = await getIpdPatientsFullDetailsData(Id);
+    console.log(result);
+  };
   React.useEffect(() => {
     dispatch(GetAllDoctorsHandle());
     getAllIpdPatientsAssignedDataHandle();
@@ -536,7 +543,14 @@ export default function IPDPatientList() {
                   </td>{" "}
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
                     <div className="flex gap-[10px] justify-center">
-                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer">
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        onClick={() =>
+                          getIpdPatientsFullDetailsDataHandle(
+                            item?.ipdPatientId
+                          )
+                        }
+                      >
                         <CiViewList className="text-[20px] text-[#96999C]" />
                       </div>{" "}
                     </div>
