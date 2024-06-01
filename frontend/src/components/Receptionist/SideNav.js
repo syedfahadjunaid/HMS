@@ -57,6 +57,11 @@ export default function SideNav({ activePage }) {
         },
         {
           icon: <VscReferences />,
+          name: browserLinks?.receptionist?.internalPages
+            ?.referPatientsDoctorVisit,
+        },
+        {
+          icon: <VscReferences />,
           name: browserLinks?.receptionist?.internalPages?.dischargePatients,
         },
         {

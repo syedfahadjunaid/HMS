@@ -69,6 +69,7 @@ const browserLinks = {
       referPatients: "Refer Patients",
       dischargePatients: "Discharge Patients",
       emergency: "Emergency Patients",
+      referPatientsDoctorVisit: "Refer Patients Doctor Visit",
     },
   },
   Doctor: {

@@ -1,47 +1,36 @@
-// import React from "react";
 import "./IPDPatientListTable.css";
 
 import { Suspense } from "react";
 
-import Table from "../../Table";
-
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-
-import placeholder from "../../../assets/imageplaceholder.png";
 
 import { FaSearch } from "react-icons/fa";
 import { MdViewKanban } from "react-icons/md";
 import { RiEdit2Fill } from "react-icons/ri";
-import { RiDeleteBin6Fill } from "react-icons/ri";
-import { LuHardDriveDownload } from "react-icons/lu";
 
 import * as React from "react";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-// import Select from "@mui/material/Select";
-
-import Select from "react-select";
 
 import { useNavigate } from "react-router-dom";
 import browserLinks from "../../../browserlinks";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import Button from "@mui/material/Button";
-import { MdDeleteForever } from "react-icons/md";
 import { GetAllDoctorsHandle } from "../../../Store/Slices/DoctorSlice";
 import {
   getAllIpdPatientsAssignedData,
   getIpdPatientsFullDetailsData,
 } from "../NurseApi";
 import { CiViewList } from "react-icons/ci";
-import { Switch } from "@mui/material";
-
+import { Backdrop, Fade } from "@mui/material";
+import style from "../../../styling/styling";
+import img from "../../../assets/20180125_001_1_.jpg";
 export default function IPDPatientList() {
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const { patients } = useSelector((state) => state.PatientState);
   const [status, setStatus] = React.useState("");
@@ -139,21 +128,6 @@ export default function IPDPatientList() {
     setTests(newArray);
   };
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "90%",
-    height: "90%",
-    bgcolor: "background.paper",
-    borderRadius: "12px",
-    border: "none",
-    outline: "none",
-    boxShadow: 24,
-    p: 4,
-  };
-
   const handleChangeStatus = (event) => {
     setStatus(event.target.value);
   };
@@ -185,187 +159,6 @@ export default function IPDPatientList() {
     console.log(submitData);
   };
 
-  const modalUpdatePatient = (
-    <div className="flex flex-col w-full text-[#3E454D] gap-[2rem] overflow-y-scroll px-[10px] pb-[2rem] h-[450px]">
-      <form onSubmit={handleUpdateIPDPatientSubscription}>
-        <div className="grid grid-cols-3 gap-[2rem] pb-[3rem]">
-          <div className="flex flex-col items-start gap-[6px]">
-            <label className="text-[14px]">Patient Registration No</label>
-            <Select
-              className="text-[12px] w-full"
-              required
-              options={renderedPatientForDropdownPrescription}
-              onChange={setPatientId}
-              value={patientId}
-            />
-          </div>
-
-          <div className="flex flex-col items-start gap-[6px]">
-            <label className="text-[14px]">Doctor Visited</label>
-            <select
-              required
-              className="py-[10px] outline-none border-b bg-transparent"
-            >
-              <option>No</option>
-              <option>Yes</option>
-            </select>
-          </div>
-          <div className="flex flex-col items-start gap-[6px]">
-            <label className="text-[14px]">Doctor Visit Time</label>
-            <input
-              className="py-[10px] outline-none border-b w-full"
-              type="datetime-local"
-              onChange={(e) => setVisitTime(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-[2rem] border-b pb-[3rem]">
-          <div className="flex flex-col items-start gap-[6px]">
-            <label className="text-[14px]">Note</label>
-            <textarea
-              rows={5}
-              className="py-[10px] outline-none border rounded-lg w-full p-[1rem]"
-              type="text"
-              required
-              placeholder="Enter notes"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col items-start gap-[10px]">
-            <h2 className="border-b w-full text-start">Prescription</h2>
-            <div className="border rounded-lg w-full p-[1rem] flex flex-col gap-[1rem]">
-              <div className="flex flex-row items-center justify-between">
-                <h2 className="text-start">Add Consumables</h2>
-                <Button onClick={() => handleAddInput()}>ADD +</Button>
-              </div>
-
-              <table className="w-fit border rounded-lg">
-                <tr className="flex flex-row w-full">
-                  <th className="w-[80px] text-start border-b border-r py-[10px] px-[6px]">
-                    S No.
-                  </th>
-                  <th className="w-[300px] text-start border-b border-r py-[10px] px-[6px]">
-                    Name
-                  </th>
-                  <th className="w-[200px] text-start border-b border-r py-[10px] px-[6px]">
-                    Qty
-                  </th>
-                  <th className="w-[200px] text-start border-b border-r py-[10px] px-[6px]">
-                    How many time in day
-                  </th>
-                  <th className="text-start border-b border-r py-[10px] px-[6px]">
-                    Action
-                  </th>
-                </tr>
-                {prescriptions.map((item, index) => (
-                  <tr key={index} className="flex flex-row w-full">
-                    <td className="w-[80px] text-start border-b border-r py-[10px] px-[6px]">
-                      <p>{index + 1}</p>
-                    </td>
-                    <td className="w-[300px] text-start border-b border-r py-[10px] px-[6px]">
-                      <input
-                        name="medicineName"
-                        type="text"
-                        placeholder="Enter medicine name"
-                        className="w-full border"
-                        value={item.medicineName}
-                        onChange={(event) => handleChange(event, index)}
-                      />
-                    </td>
-                    <td className="w-[200px] text-start border-b border-r py-[10px] px-[6px]">
-                      <input
-                        name="qty"
-                        type="text"
-                        placeholder="Enter quantity"
-                        className="w-full border"
-                        value={item.qty}
-                        onChange={(event) => handleChange(event, index)}
-                      />
-                    </td>
-                    <td className="w-[200px] text-start border-b border-r py-[10px] px-[6px]">
-                      <input
-                        name="times"
-                        type="text"
-                        placeholder="Enter times"
-                        className="w-full border"
-                        value={item.times}
-                        onChange={(event) => handleChange(event, index)}
-                      />
-                    </td>
-                    <td className="py-[10px] px-[6px]">
-                      <MdDeleteForever
-                        onClick={() => handleDeleteInput(index)}
-                        className="text-[red] cursor-pointer text-[20px]"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </table>
-            </div>
-          </div>
-          <div className="flex flex-col items-start gap-[10px]">
-            <h2 className="border-b w-full text-start">Test</h2>
-            <div className="flex flex-row items-center w-full">
-              <Select
-                className="text-[12px] w-[50%]"
-                options={testData?.map((data) => {
-                  return {
-                    value: data.id,
-                    label: data.name,
-                  };
-                })}
-                onChange={setTest}
-                value={test}
-              />
-              <Button
-                onClick={() =>
-                  setTests([
-                    ...tests,
-                    { testId: test.value, testName: test.label },
-                  ])
-                }
-              >
-                ADD +
-              </Button>
-            </div>
-          </div>
-          <div className="grid grid-cols-6 gap-[1rem]">
-            {tests?.map((data, index) => {
-              return (
-                <div
-                  key={`${index}-${data.testId}-${data.testName}`}
-                  className="border relative w-fit"
-                >
-                  <p className="p-[1rem]">{data.testName}</p>
-                  <p
-                    onClick={() => handleRemoveTestCard(index)}
-                    className="text-black font-[600] absolute right-[4px] top-0 cursor-pointer"
-                  >
-                    -
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="w-fit py-[1rem] flex gap-[10px]">
-          <button className="buttonFilled" type="submit">{`Save >`}</button>
-          <button className="buttonOutlined">
-            Request to Admit in Operation Theater (OT)
-          </button>
-          <button className="buttonOutlined">
-            Request to Admit in Emergency
-          </button>
-          <button className="buttonOutlined">
-            Request to Discharge from IPD
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-
   const date = (dateTime) => {
     const newdate = new Date(dateTime);
 
@@ -379,6 +172,7 @@ export default function IPDPatientList() {
   };
 
   const [search, setSearch] = React.useState("");
+  const [patientsData, setPatientsData] = React.useState([]);
 
   const mappedData = [
     {
@@ -475,6 +269,7 @@ export default function IPDPatientList() {
   };
   const getIpdPatientsFullDetailsDataHandle = async (Id) => {
     const result = await getIpdPatientsFullDetailsData(Id);
+    setPatientsData(result?.data?.data?.[0]);
     console.log(result);
   };
   React.useEffect(() => {
@@ -545,11 +340,12 @@ export default function IPDPatientList() {
                     <div className="flex gap-[10px] justify-center">
                       <div
                         className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                        onClick={() =>
+                        onClick={() => [
                           getIpdPatientsFullDetailsDataHandle(
                             item?.ipdPatientId
-                          )
-                        }
+                          ),
+                          handleOpen(),
+                        ]}
                       >
                         <CiViewList className="text-[20px] text-[#96999C]" />
                       </div>{" "}
@@ -562,21 +358,69 @@ export default function IPDPatientList() {
         </div>
       </div>
       <Modal
-        open={openUpdateModal}
-        onClose={handleCloseUpdateModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            <h1 className="headingBottomUnderline w-fit pb-[10px]">
-              Update IPD Patient Prescription
-            </h1>
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {modalUpdatePatient}
-          </Typography>
-        </Box>
+        <Fade in={open}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Patient Details
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <div className="flex pt-[10px] pb-[10px] gap-[10%]">
+                <span>
+                  <img src={img} alt="patients " className="w-[15rem] " />
+                </span>
+                <div class="w-full grid grid-cols-2 gap-1">
+                  <div className="flex gap-[10px]">
+                    <span>Patients Uhid</span>:
+                    <p>{"Uhid" + patientsData?.patientData?.[0]?.patientId}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admission Date / Time</span>:
+                    <p>
+                      {date(patientsData?.updatedAt)}-
+                      {time(patientsData?.updatedAt)}
+                    </p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Name</span>:
+                    <p>{patientsData?.patientData?.[0]?.patientName}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Gender</span>:
+                    <p>{patientsData?.patientData?.[0]?.patientGender}</p>
+                  </div>
+
+                  <div className="flex gap-[10px]">
+                    <span>Age</span>:
+                    <p>{patientsData?.patientData?.[0]?.patientAge}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Patient Mobile Number</span>:
+                    <p>{patientsData?.patientData?.[0]?.patientPhone}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>IPD NO</span>:<p>{patientsData?.ipdPatientId}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admitting Doctor Id</span>:
+                    <p>{patientsData?.ipdPatientId}</p>
+                  </div>
+                </div>
+              </div>
+            </Typography>
+          </Box>
+        </Fade>
       </Modal>
     </Suspense>
   );

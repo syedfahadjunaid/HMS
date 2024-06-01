@@ -196,6 +196,11 @@ const DischargePatientsNurse = lazy(() =>
 const EmergencyPatientsNurse = lazy(() =>
   import("./pages/Receptionist/EmergencyPatients/EmergencyPatients")
 );
+const ReferPatientsDailyVisitNurse = lazy(() =>
+  import(
+    "./pages/Receptionist/ReferPatientsDoctorVisit/ReferPatientsDoctorVisit"
+  )
+);
 
 // AdmissionAndCharges
 
@@ -1824,6 +1829,26 @@ function App() {
                         }
                       >
                         <EmergencyPatientsNurse />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.receptionist.category
+                    }/${browserLinks?.receptionist?.internalPages?.referPatientsDoctorVisit
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <ReferPatientsDailyVisitNurse />
                       </Suspense>
                     }
                   />
