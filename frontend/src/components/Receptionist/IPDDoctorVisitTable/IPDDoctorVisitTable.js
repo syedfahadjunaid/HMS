@@ -5,8 +5,7 @@ import img from "../../../assets/20180125_001_1_.jpg";
 import { FaSearch } from "react-icons/fa";
 import { MdDeleteForever, MdViewKanban } from "react-icons/md";
 import { RiEdit2Fill } from "react-icons/ri";
-import { RiDeleteBin6Fill } from "react-icons/ri";
-import { LuHardDriveDownload } from "react-icons/lu";
+
 import { getMedicineDataHandle } from "../../../Store/Slices/Medicine";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,15 +14,13 @@ import {
   getDoctorVisitListWithIpdPatientsData,
   getOnePatientsDoctorVisitData,
 } from "../NurseApi";
-import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
+import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
 import { CiViewList } from "react-icons/ci";
 import style from "../../../styling/styling";
-import Select from "react-select";
+
 import { getTestDataHandle } from "../../../Store/Slices/Test";
 import Snackbars from "../../SnackBar";
 export default function IPDDoctorVisitTable() {
-  const { patients } = useSelector((state) => state.PatientState);
-  const { doctors } = useSelector((state) => state.DoctorState);
   const { medicineData } = useSelector((state) => state.MedicineData);
   const { testData } = useSelector((state) => state.TestData);
   const dispatch = useDispatch();

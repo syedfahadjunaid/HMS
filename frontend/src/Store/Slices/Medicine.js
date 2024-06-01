@@ -8,7 +8,7 @@ export const getMedicineDataHandle = createAsyncThunk(
   "getMedicineDataHandle",
   async () => {
     const { data } = await axios.get("/api/GET-ALL-Medicine");
-    console.log(data, "data");
+
     return data;
   }
 );
