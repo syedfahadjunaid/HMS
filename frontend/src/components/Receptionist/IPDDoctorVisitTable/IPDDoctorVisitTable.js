@@ -20,6 +20,7 @@ import style from "../../../styling/styling";
 
 import { getTestDataHandle } from "../../../Store/Slices/Test";
 import Snackbars from "../../SnackBar";
+import PaginationComponent from "../../Pagination";
 export default function IPDDoctorVisitTable() {
   const { medicineData } = useSelector((state) => state.MedicineData);
   const { testData } = useSelector((state) => state.TestData);
@@ -33,7 +34,16 @@ export default function IPDDoctorVisitTable() {
   const [open2, setOpen2] = React.useState(false);
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const date = (dateTime) => {
     const newdate = new Date(dateTime);
 
@@ -326,66 +336,75 @@ export default function IPDDoctorVisitTable() {
             </thead>
 
             <tbody>
-              {doctorWithPatients?.map((item, index) => (
-                <tr key={index} className="border-b-[1px]">
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {index + 1}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {"Uhid" + item?.IpdpatientId}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {item?.doctorName}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {date(item?.IpdPatientCreatedTime)} /
-                    {time(item?.IpdPatientCreatedTime)}
-                  </td>{" "}
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
-                    <div className="flex gap-[10px] justify-center">
-                      {allIpdDoctorVisitList?.find(
-                        (val) => val.ipdPatientData === item?.Ipdpatient_id
-                      ) ? (
+              {doctorWithPatients
+                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                ?.map((item, index) => (
+                  <tr key={index} className="border-b-[1px]">
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {index + 1}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {"Uhid" + item?.IpdpatientId}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {item?.doctorName}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {date(item?.IpdPatientCreatedTime)} /
+                      {time(item?.IpdPatientCreatedTime)}
+                    </td>{" "}
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
+                      <div className="flex gap-[10px] justify-center">
+                        {allIpdDoctorVisitList?.find(
+                          (val) => val.ipdPatientData === item?.Ipdpatient_id
+                        ) ? (
+                          <div
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                            onClick={() => [
+                              getOnePatientsDoctorVisitDataHandle(
+                                item?.Ipdpatient_id
+                              ),
+                              handleOpen1(),
+                            ]}
+                          >
+                            <CiViewList className="text-[20px] text-[#96999C]" />
+                          </div>
+                        ) : (
+                          <div
+                            className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                            onClick={handleOpen2}
+                          >
+                            <CiViewList className="text-[20px] text-[#96999C]" />
+                          </div>
+                        )}
                         <div
-                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
                           onClick={() => [
-                            getOnePatientsDoctorVisitDataHandle(
-                              item?.Ipdpatient_id
-                            ),
-                            handleOpen1(),
+                            handleOpen(),
+                            setDailyDoctorVisitData({
+                              ...dailyDoctorVisitData,
+                              doctorId: item?._id,
+                              doctorName: item?.doctorName,
+                              patientsId: item?.IpdpatientId,
+                              ipdPatientId: item?.Ipdpatient_id,
+                            }),
                           ]}
                         >
-                          <CiViewList className="text-[20px] text-[#96999C]" />
+                          <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
                         </div>
-                      ) : (
-                        <div
-                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                          onClick={handleOpen2}
-                        >
-                          <CiViewList className="text-[20px] text-[#96999C]" />
-                        </div>
-                      )}
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          handleOpen(),
-                          setDailyDoctorVisitData({
-                            ...dailyDoctorVisitData,
-                            doctorId: item?._id,
-                            doctorName: item?.doctorName,
-                            patientsId: item?.IpdpatientId,
-                            ipdPatientId: item?.Ipdpatient_id,
-                          }),
-                        ]}
-                      >
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
+          <PaginationComponent
+            page={page}
+            rowsPerPage={rowsPerPage}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+            data={doctorWithPatients}
+          />
         </div>
       </div>
       <Modal

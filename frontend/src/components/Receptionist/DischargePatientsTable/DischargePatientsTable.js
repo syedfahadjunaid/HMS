@@ -174,28 +174,36 @@ function DischargePatientsTable() {
                 </td>
 
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  <Switch {...label} />
+                  <Switch
+                    {...label}
+                    checked={
+                      item?.ipdPatientNurseConfirmation === true ? true : false
+                    }
+                  />
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
                   21/02/24 15:30
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row">
                   <div className="flex gap-[10px] justify-center">
-                    <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer">
-                      <CiViewList className="text-[20px] text-[#96999C]" />
-                    </div>{" "}
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      onClick={() => [
-                        handleOpen(),
-                        setPatientsDischargeData({
-                          ...patientsDischargeData,
-                          ipdPatientId: item?.mainId,
-                        }),
-                      ]}
-                    >
-                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                    </div>
+                    {item?.ipdPatientNurseConfirmation === false ? (
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        onClick={() => [
+                          handleOpen(),
+                          setPatientsDischargeData({
+                            ...patientsDischargeData,
+                            ipdPatientId: item?.mainId,
+                          }),
+                        ]}
+                      >
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                      </div>
+                    ) : (
+                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-not-allowed">
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>

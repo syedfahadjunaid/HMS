@@ -10,9 +10,12 @@ import style from "../../../styling/styling";
 import { MdDeleteForever } from "react-icons/md";
 import img from "../../../assets/20180125_001_1_.jpg";
 import {
+  addDailyDoctorVisitIpdData,
   getAllDoctorVisitPatientsListData,
   getAllNurseReferData,
+  getOnePatientsDoctorVisitData,
 } from "../NurseApi";
+import Snackbars from "../../SnackBar";
 function ReferPatientsDoctorVisitTable() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -21,6 +24,9 @@ function ReferPatientsDoctorVisitTable() {
   const [open1, setOpen1] = React.useState(false);
   const handleOpen1 = () => setOpen1(true);
   const handleClose1 = () => setOpen1(false);
+  const [open2, setOpen2] = React.useState(false);
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose2 = () => setOpen2(false);
   const { medicineData } = useSelector((state) => state.MedicineData);
   const { testData } = useSelector((state) => state.TestData);
   const dispatch = useDispatch();
@@ -33,6 +39,10 @@ function ReferPatientsDoctorVisitTable() {
   const [allReferedPatients, setAllReferedPatients] = useState([]);
   const [dailyDoctorVisitData, setDailyDoctorVisitData] = useState({
     doctorId: "",
+    referDoctorId: "",
+    referringDoctorId: "",
+    referedDoctorName: "",
+    referringDoctorName: "",
     doctorName: "",
     patientsId: "",
     ipdPatientId: "",
@@ -40,6 +50,23 @@ function ReferPatientsDoctorVisitTable() {
     notes: "",
     visitDateTime: "",
   });
+  // Snackbar--------------------
+  // ----Succcess
+  const [openSnackbarSuccess, setOpenSnackBarSuccess] = React.useState(false);
+  const [snackBarMessageSuccess, setSnackBarSuccessMessage] =
+    React.useState("");
+
+  const handleClickSnackbarSuccess = () => {
+    setOpenSnackBarSuccess(true);
+  };
+  // ----Warning
+  const [openSnackbarWarning, setOpenSnackBarWarning] = React.useState(false);
+  const [snackBarMessageWarning, setSnackBarSuccessWarning] =
+    React.useState("");
+
+  const handleClickSnackbarWarning = () => {
+    setOpenSnackBarWarning(true);
+  };
   const selectMedicineHandle = (e) => {
     setIsLoading(true);
     setTimeout(() => {
@@ -74,12 +101,15 @@ function ReferPatientsDoctorVisitTable() {
     e.preventDefault();
     setSelectedMedicine([
       ...selectedMedicine,
-      { name: "", quantity: 1, price: "" },
+      { name: "", quantity: 1, price: 0, total: 0 },
     ]);
   };
   const addTestTableHandle = (e) => {
     e.preventDefault();
-    setSelectedTest([...selectedTest, { name: "", quantity: 1, price: "" }]);
+    setSelectedTest([
+      ...selectedTest,
+      { name: "", quantity: 1, price: 0, total: 0 },
+    ]);
   };
   const getMedicineData = (e, index) => {
     let oldValue = [...selectedMedicine];
@@ -87,8 +117,12 @@ function ReferPatientsDoctorVisitTable() {
       ...oldValue[index],
       [e.target.name]: e.target.value,
     };
+    oldValue[index] = {
+      ...oldValue[index],
+      total: oldValue[index].quantity * oldValue[index].price,
+    };
+
     setSelectedMedicine(oldValue && oldValue);
-    console.log(selectedMedicine);
   };
   const getTestData = (e, index) => {
     let oldValue = [...selectedTest];
@@ -96,8 +130,11 @@ function ReferPatientsDoctorVisitTable() {
       ...oldValue[index],
       [e.target.name]: e.target.value,
     };
+    oldValue[index] = {
+      ...oldValue[index],
+      total: oldValue[index].quantity * oldValue[index].price,
+    };
     setSelectedTest(oldValue && oldValue);
-    console.log(selectedTest);
   };
   const addSelectedMedicineDataHandle = (index, item) => {
     let oldValue = [...selectedMedicine];
@@ -106,6 +143,7 @@ function ReferPatientsDoctorVisitTable() {
       ...oldValue[index],
       name: item?.Name,
       price: item?.RATE,
+      total: item?.RATE * oldValue[index].quantity,
     };
     setSelectedMedicine(oldValue && oldValue);
     setSearchMedicine([]);
@@ -117,6 +155,7 @@ function ReferPatientsDoctorVisitTable() {
       ...oldValue[index],
       name: item?.Name,
       price: item?.Cost,
+      total: item?.Cost * oldValue[index].quantity,
     };
     setSelectedTest(oldValue && oldValue);
     setSearchTest([]);
@@ -137,6 +176,7 @@ function ReferPatientsDoctorVisitTable() {
 
     setSelectedTest(oldValue && oldValue);
   };
+
   const [viewPatientsData, setViewPatientsData] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeTestIndex, setActiveTestIndex] = useState(null);
@@ -156,14 +196,52 @@ function ReferPatientsDoctorVisitTable() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  useEffect(() => {
+    console.log(
+      dailyDoctorVisitData,
+      "dailyDoctorVisitData",
+      allIpdDoctorVisitList
+    );
+  }, [dailyDoctorVisitData]);
   const getAllNurseReferDataHandle = async () => {
     const result = await getAllNurseReferData();
-    setAllReferedPatients(result && result?.data?.data);
-    console.log(result);
+    setAllReferedPatients(result && result?.data?.data?.reverse());
+    console.log(result, "allReferedPatients");
   };
   const getAllDoctorVisitPatientsListDataHandle = async () => {
     const result = await getAllDoctorVisitPatientsListData();
     setAllIpdDoctorVisitList(result && result?.data?.data);
+    console.log(result);
+  };
+  const addDailyDoctorVisitIpdDataHandle = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("Symptoms", dailyDoctorVisitData?.symtoms);
+    formData.append("Note", dailyDoctorVisitData?.notes);
+    formData.append("ipdPatientData", dailyDoctorVisitData?.ipdPatientId);
+    formData.append("isPatientsChecked", true);
+    formData.append("doctorId", dailyDoctorVisitData?.referringDoctorId);
+    formData.append("ReferedDoctorId", dailyDoctorVisitData?.referDoctorId);
+    formData.append("VisitDateTime", dailyDoctorVisitData?.visitDateTime);
+    formData.append("medicine", JSON.stringify(selectedMedicine));
+    formData.append("test", JSON.stringify(selectedTest));
+    const result = await addDailyDoctorVisitIpdData(formData);
+    if (result?.status === 201) {
+      handleClickSnackbarSuccess();
+      setSnackBarSuccessMessage(result?.data?.message);
+      handleClose();
+    }
+    if (result?.status !== 201) {
+      handleClickSnackbarWarning();
+      setSnackBarSuccessWarning(result?.data?.message);
+      handleClose();
+    }
+    console.log(result);
+  };
+  const getOnePatientsDoctorVisitDataHandle = async (Id) => {
+    const result = await getOnePatientsDoctorVisitData(Id);
+
+    setViewPatientsData(result && result?.data);
     console.log(result);
   };
   useEffect(() => {
@@ -174,6 +252,7 @@ function ReferPatientsDoctorVisitTable() {
     getAllNurseReferDataHandle();
     getAllDoctorVisitPatientsListDataHandle();
   }, []);
+
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -191,7 +270,10 @@ function ReferPatientsDoctorVisitTable() {
               <p>Patient Uhid</p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
-              <p>Refered Doctor Id</p>
+              <p>Referring Doctor Name</p>
+            </th>
+            <th className="border-[1px] p-1 font-semibold">
+              <p>Referred Doctor Name</p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
               <p> Admiited Date/TIme </p>
@@ -212,6 +294,9 @@ function ReferPatientsDoctorVisitTable() {
                   {"Uhid" + item?.PatientsDetails?.[0]?.patientId}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                  {item?.ReferringDoctorDetails?.[0]?.doctorName}
+                </td>
+                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
                   {item?.ReferredDoctorDetails?.[0]?.doctorName}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
@@ -219,18 +304,49 @@ function ReferPatientsDoctorVisitTable() {
                 </td>{" "}
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
                   <div className="flex gap-[10px] justify-center">
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      onClick={() => [handleOpen1()]}
-                    >
-                      <CiViewList className="text-[20px] text-[#96999C]" />
-                    </div>{" "}
+                    {allIpdDoctorVisitList?.find(
+                      (val) =>
+                        val.ipdPatientData === item?.ipdPatientsDetails?._id &&
+                        val?.ReferedDoctorId ===
+                          item?.ReferredDoctorDetails?.[0]?._id
+                    ) ? (
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        onClick={() => [
+                          handleOpen1(),
+                          getOnePatientsDoctorVisitDataHandle(item?.ipdPatient),
+                          setDailyDoctorVisitData({
+                            ...dailyDoctorVisitData,
+                            referDoctorId:
+                              item?.ReferredDoctorDetails?.[0]?._id,
+                          }),
+                        ]}
+                      >
+                        <CiViewList className="text-[20px] text-[#96999C]" />
+                      </div>
+                    ) : (
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        onClick={handleOpen2}
+                      >
+                        <CiViewList className="text-[20px] text-[#96999C]" />
+                      </div>
+                    )}
                     <div
                       className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
                       onClick={() => [
                         handleOpen(),
                         setDailyDoctorVisitData({
                           ...dailyDoctorVisitData,
+                          referringDoctorId:
+                            item?.ReferringDoctorDetails?.[0]?._id,
+                          referDoctorId: item?.ReferredDoctorDetails?.[0]?._id,
+                          referedDoctorName:
+                            item?.ReferredDoctorDetails?.[0]?.doctorName,
+                          referringDoctorName:
+                            item?.ReferringDoctorDetails?.[0]?.doctorName,
+                          ipdPatientId: item?.ipdPatient,
+                          patientsId: item?.ipdPatientsDetails?.ipdDoctorId,
                         }),
                       ]}
                     >
@@ -266,20 +382,35 @@ function ReferPatientsDoctorVisitTable() {
             >
               Doctor Visit
             </Typography>
-            <form className="w-full flex flex-col gap-3">
+            <form
+              className="w-full flex flex-col gap-3"
+              onSubmit={addDailyDoctorVisitIpdDataHandle}
+            >
               <div className="w-full grid grid-cols-2 gap-3 pt-3">
                 <div className="w-full flex items-start justify-start flex-col gap-1">
-                  <p>Doctor Name</p>
+                  <p>Referring Doctor Name</p>
                   <span className="w-full border-[1px] rounded border-[#ccc] p-1">
                     <input
                       type="text"
                       placeholder="Doctor Name"
                       className="w-full border-none outline-none"
-                      value={""}
+                      value={dailyDoctorVisitData?.referringDoctorName}
                       disabled
                     />
                   </span>
                 </div>{" "}
+                <div className="w-full flex items-start justify-start flex-col gap-1">
+                  <p>Referred Doctor Name</p>
+                  <span className="w-full border-[1px] rounded border-[#ccc] p-1">
+                    <input
+                      type="text"
+                      placeholder="Doctor Name"
+                      className="w-full border-none outline-none"
+                      value={dailyDoctorVisitData?.referedDoctorName}
+                      disabled
+                    />
+                  </span>
+                </div>
                 <div className="w-full flex items-start justify-start flex-col gap-1">
                   <p>Doctor Visti Time</p>
                   <span className="w-full border-[1px] rounded border-[#ccc] p-1">
@@ -394,7 +525,7 @@ function ReferPatientsDoctorVisitTable() {
                             placeholder="quantity"
                             name="quantity"
                             value={item?.quantity}
-                            onChange={(e) => getMedicineData(e, index)}
+                            onChange={(e) => [getMedicineData(e, index)]}
                           />
                         </td>
                         <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
@@ -403,7 +534,7 @@ function ReferPatientsDoctorVisitTable() {
                             className="w-[5rem]  outline-none"
                             placeholder="price"
                             name="price"
-                            value={item?.price}
+                            value={item?.total}
                             onChange={(e) => getMedicineData(e, index)}
                           />
                         </td>
@@ -520,7 +651,7 @@ function ReferPatientsDoctorVisitTable() {
                             className="w-[5rem]  outline-none"
                             placeholder="price"
                             name="price"
-                            value={item?.price}
+                            value={item?.total}
                             onChange={(e) => getTestData(e, index)}
                           />
                         </td>
@@ -637,165 +768,206 @@ function ReferPatientsDoctorVisitTable() {
               </div>
             </div>
             <form className="w-full flex flex-col gap-3">
-              {viewPatientsData?.map((item) => (
-                <div>
-                  <div className="w-full flex items-center">
-                    <p className="text-[1.1rem] font-semibold pr-1">Date: </p>
-                    {date(item?.VisitDateTime)}-{time(item?.VisitDateTime)}
-                  </div>
-                  <div className="w-full ">
-                    <div className="w-full flex justify-between items-center pt-1 pb-3">
-                      <p className="text-[1rem] font-normal">Medicine</p>
+              {viewPatientsData
+                ?.filter(
+                  (item) =>
+                    item?.ReferedDoctor?.[0]?._id ===
+                    dailyDoctorVisitData?.referDoctorId
+                )
+                ?.map((item) => (
+                  <div>
+                    <div className="w-full flex items-center">
+                      <p className="text-[1.1rem] font-semibold pr-1">Date: </p>
+                      {date(item?.VisitDateTime)}-{time(item?.VisitDateTime)}
                     </div>
-                    <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
-                      <thead>
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>S_N</p>
-                        </th>
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>Medicine</p>
-                        </th>
+                    <div className="w-full ">
+                      <div className="w-full flex justify-between items-center pt-1 pb-3">
+                        <p className="text-[1rem] font-normal">Medicine</p>
+                      </div>
+                      <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
+                        <thead>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>S_N</p>
+                          </th>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>Medicine</p>
+                          </th>
 
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>Quantity</p>
-                        </th>
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>Price</p>
-                        </th>
-                      </thead>
-                      <tbody>
-                        {item?.medicine?.map((item, index) => (
-                          <tr key={index} className="border-b-[1px]">
-                            <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                              {index + 1}
-                            </td>
-                            <td className="justify-center text-[16px] py-4  text-center border-r flex flex-col relative">
-                              <input
-                                type="text"
-                                className="w-full  outline-none px-4"
-                                placeholder="Medicine"
-                                name="name"
-                                value={item?.Name}
-                                autocomplete="off"
-                                disabled
-                              />
-                            </td>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>Quantity</p>
+                          </th>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>Price</p>
+                          </th>
+                        </thead>
+                        <tbody>
+                          {item?.medicine?.map((item, index) => (
+                            <tr key={index} className="border-b-[1px]">
+                              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                                {index + 1}
+                              </td>
+                              <td className="justify-center text-[16px] py-4  text-center border-r flex flex-col relative">
+                                <input
+                                  type="text"
+                                  className="w-full  outline-none px-4"
+                                  placeholder="Medicine"
+                                  name="name"
+                                  value={item?.Name}
+                                  autocomplete="off"
+                                  disabled
+                                />
+                              </td>
 
-                            <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                              <input
-                                type="text"
-                                className="w-[5rem]  outline-none"
-                                placeholder="quantity"
-                                name="quantity"
-                                value={item?.Quantity}
-                                disabled
-                              />
-                            </td>
-                            <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                              <input
-                                type="text"
-                                className="w-[5rem]  outline-none"
-                                placeholder="price"
-                                name="price"
-                                value={item?.Price}
-                                disabled
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="w-full ">
-                    <div className="w-full flex justify-between items-center pt-1 pb-3">
-                      <p className="text-[1rem] font-normal">Test</p>
+                              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                                <input
+                                  type="text"
+                                  className="w-[5rem]  outline-none"
+                                  placeholder="quantity"
+                                  name="quantity"
+                                  value={item?.Quantity}
+                                  disabled
+                                />
+                              </td>
+                              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                                <input
+                                  type="text"
+                                  className="w-[5rem]  outline-none"
+                                  placeholder="price"
+                                  name="price"
+                                  value={item?.Price}
+                                  disabled
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                    <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
-                      <thead>
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>S_N</p>
-                        </th>
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>Test</p>
-                        </th>
+                    <div className="w-full ">
+                      <div className="w-full flex justify-between items-center pt-1 pb-3">
+                        <p className="text-[1rem] font-normal">Test</p>
+                      </div>
+                      <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
+                        <thead>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>S_N</p>
+                          </th>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>Test</p>
+                          </th>
 
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>Quantity</p>
-                        </th>
-                        <th className="border-[1px] p-1 font-semibold">
-                          <p>Price</p>
-                        </th>
-                      </thead>
-                      <tbody>
-                        {item?.test?.map((item, index) => (
-                          <tr key={index} className="border-b-[1px]">
-                            <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                              {index + 1}
-                            </td>
-                            <td className="justify-center text-[16px] py-4  text-center border-r flex flex-col relative">
-                              <input
-                                type="text"
-                                className="w-full  outline-none px-4"
-                                placeholder="Test"
-                                name="name"
-                                value={item?.Name}
-                                disabled
-                              />
-                            </td>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>Quantity</p>
+                          </th>
+                          <th className="border-[1px] p-1 font-semibold">
+                            <p>Price</p>
+                          </th>
+                        </thead>
+                        <tbody>
+                          {item?.test?.map((item, index) => (
+                            <tr key={index} className="border-b-[1px]">
+                              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                                {index + 1}
+                              </td>
+                              <td className="justify-center text-[16px] py-4  text-center border-r flex flex-col relative">
+                                <input
+                                  type="text"
+                                  className="w-full  outline-none px-4"
+                                  placeholder="Test"
+                                  name="name"
+                                  value={item?.Name}
+                                  disabled
+                                />
+                              </td>
 
-                            <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                              <input
-                                type="text"
-                                className="w-[5rem]  outline-none"
-                                placeholder="quantity"
-                                name="quantity"
-                                value={item?.Quantity}
-                                disabled
-                              />
-                            </td>
-                            <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                              <input
-                                type="text"
-                                className="w-[5rem]  outline-none"
-                                placeholder="quantity"
-                                name="quantity"
-                                value={item?.Price}
-                                disabled
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="w-full gap-3 py-2 grid grid-cols-2">
-                    <div className="w-full flex flex-col items-start justify-start gap-2">
-                      <p>Symptoms</p>
-                      <textarea
-                        rows={3}
-                        className="w-full border outline-none pl-1 pt-1"
-                        placeholder="Symptoms"
-                        value={item?.Symptoms}
-                        disabled
-                      />{" "}
+                              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                                <input
+                                  type="text"
+                                  className="w-[5rem]  outline-none"
+                                  placeholder="quantity"
+                                  name="quantity"
+                                  value={item?.Quantity}
+                                  disabled
+                                />
+                              </td>
+                              <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                                <input
+                                  type="text"
+                                  className="w-[5rem]  outline-none"
+                                  placeholder="quantity"
+                                  name="quantity"
+                                  value={item?.Price}
+                                  disabled
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                    <div className="w-full flex flex-col items-start justify-start gap-2">
-                      <p>Notes</p>
-                      <textarea
-                        rows={3}
-                        className="w-full border outline-none pl-1 pt-1"
-                        placeholder="Note's"
-                        value={item?.Note}
-                        disabled
-                      />{" "}
+                    <div className="w-full gap-3 py-2 grid grid-cols-2">
+                      <div className="w-full flex flex-col items-start justify-start gap-2">
+                        <p>Symptoms</p>
+                        <textarea
+                          rows={3}
+                          className="w-full border outline-none pl-1 pt-1"
+                          placeholder="Symptoms"
+                          value={item?.Symptoms}
+                          disabled
+                        />{" "}
+                      </div>
+                      <div className="w-full flex flex-col items-start justify-start gap-2">
+                        <p>Notes</p>
+                        <textarea
+                          rows={3}
+                          className="w-full border outline-none pl-1 pt-1"
+                          placeholder="Note's"
+                          value={item?.Note}
+                          disabled
+                        />{" "}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </form>
           </Box>
         </Fade>
       </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open2}
+        onClose={handleClose2}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={open2}>
+          <Box sx={style}>
+            <Typography className="flex items-center justify-center">
+              No Doctor Visit done
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
+      {/* Success Snackbar */}
+      <Snackbars
+        open={openSnackbarSuccess}
+        setOpen={setOpenSnackBarSuccess}
+        severity="success"
+        message={snackBarMessageSuccess}
+      />
+      {/* Warning Snackbar */}
+      <Snackbars
+        open={openSnackbarWarning}
+        setOpen={setOpenSnackBarWarning}
+        severity="warning"
+        message={snackBarMessageWarning}
+      />
     </div>
   );
 }
