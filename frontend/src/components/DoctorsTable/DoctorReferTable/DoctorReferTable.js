@@ -6,9 +6,10 @@ import style from "../../../styling/styling";
 import img from "../../../assets/20180125_001_1_.jpg";
 import { IoIosArrowForward } from "react-icons/io";
 import { getReferPatientsData } from "../DoctorApi";
+import { useSelector } from "react-redux";
 
 function DoctorReferTable() {
-  const label = { inputProps: { "aria-label": "Switch demo" } };
+  const { adminUniqueId } = useSelector((state) => state.AdminState);
   const [allReferPatients, setAllReferPatients] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
@@ -22,10 +23,14 @@ function DoctorReferTable() {
   };
   const getReferPatientsDataHandle = async () => {
     const result = await getReferPatientsData();
+
     if (result?.status === 200) {
-      setAllReferPatients(result?.data?.data?.reverse());
+      const filter = result?.data?.data?.filter(
+        (item) => item?.ReferredDoctorDetails?.[0]?.doctorId === adminUniqueId
+      );
+
+      setAllReferPatients(filter?.reverse());
     }
-    console.log(result);
   };
   useEffect(() => {
     getReferPatientsDataHandle();
@@ -52,7 +57,7 @@ function DoctorReferTable() {
               <p>Referal Notes</p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
-              <p>Patient Checked</p>
+              <p>Refering Doctor </p>
             </th>
 
             <th className="border-[1px] p-1 font-semibold">
@@ -75,7 +80,7 @@ function DoctorReferTable() {
                   {item?.ReasonForReferal}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  <Switch {...label} />
+                  {item?.ReferringDoctorDetails?.[0]?.doctorName}
                 </td>
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
                   <div className="flex gap-[10px] justify-center">

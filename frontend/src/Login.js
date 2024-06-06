@@ -19,6 +19,7 @@ import {
   getAdminLoggedIn,
   getAdminLoggedInData,
   getAdminRole,
+  getAllAdminUniqueId,
 } from "./Store/Slices/AdminSlice";
 
 import Cookies from "js-cookie";
@@ -171,10 +172,14 @@ export default function Login() {
         //   secure: true,
         // });
         // dispatch(getAdminLoggedIn(responseAdminLogin?.data?.token));
+        console.log(responseAdminLogin, "responseAdminLogin");
         localStorage.setItem("AdminToken", responseAdminLogin?.data?.token);
         dispatch(getAdminLoggedIn(responseAdminLogin?.data?.token));
         dispatch(getAdminLoggedInData(responseAdminLogin?.data?.data));
         dispatch(getAdminRole(responseAdminLogin?.data?.adminRole));
+        dispatch(
+          getAllAdminUniqueId(responseAdminLogin?.data?.data?.adminUniqueId)
+        );
 
         setSnackBarSuccessMessage(responseAdminLogin?.data?.message);
         handleClickSnackbarSuccess();

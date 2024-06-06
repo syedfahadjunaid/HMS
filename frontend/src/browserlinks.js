@@ -9,6 +9,7 @@ const browserLinks = {
       patients: "Patients",
       appointments: "Appointments",
       doctors: "Doctors",
+      nurses: "Nurses",
       messages: "Messages",
       educationContent: "Education Content",
       medicineInventory: "Medicine Inventory",

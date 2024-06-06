@@ -89,7 +89,9 @@ const SuperAdminAppointmentPage = lazy(() =>
 const SuperAdminAuthenticatedUserPage = lazy(() =>
   import("./pages/superadmin/AuthenticatedUsers/AuthenticatedUsers")
 );
-
+const SuperAdminNursePage = lazy(() =>
+  import("./pages/superadmin/Nurses/Nurses")
+);
 const SuperAdminIPDPage = lazy(() => import("./pages/superadmin/IPD/IPD"));
 const SuperAdminOPDPage = lazy(() => import("./pages/superadmin/OPD/OPD"));
 
@@ -492,6 +494,24 @@ function App() {
                         }
                       >
                         <SuperAdminDoctorPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={browserLinks.superadmin.internalPages.nurses
+                      .split(" ")
+                      .join("")}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <SuperAdminNursePage />
                       </Suspense>
                     }
                   />

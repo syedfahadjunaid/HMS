@@ -58,6 +58,7 @@ function DoctorIpdTable() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  const { adminUniqueId } = useSelector((state) => state.AdminState);
   const { medicineData } = useSelector((state) => state.MedicineData);
   const { testData } = useSelector((state) => state.TestData);
   const [medicine, setMedicine] = useState([]);
@@ -234,7 +235,7 @@ function DoctorIpdTable() {
   const getAllIPDPatientsDataByDoctorIdHandle = async (Id) => {
     const response = await getAllIPDPatientsDataByDoctorId(Id);
     setIpdPatientsListByDoctorId(response?.data?.data?.reverse());
-    console.log(response);
+    console.log(response, "bnh");
   };
   const getAllIPDPatientsDoctorVisitDataHandle = async () => {
     const response = await getAllIPDPatientsDoctorVisitData();
@@ -275,7 +276,7 @@ function DoctorIpdTable() {
     console.log(result);
   };
   useEffect(() => {
-    getAllIPDPatientsDataByDoctorIdHandle("202405070001");
+    getAllIPDPatientsDataByDoctorIdHandle(adminUniqueId);
     getAllIPDPatientsDoctorVisitDataHandle();
   }, []);
   useEffect(() => {

@@ -43,6 +43,7 @@ function DoctorTable() {
   const [snackBarMessageWarning, setSnackBarSuccessWarning] =
     React.useState("");
   const label = { inputProps: { "aria-label": "Switch demo" } };
+  const { adminUniqueId } = useSelector((state) => state.AdminState);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -277,7 +278,11 @@ function DoctorTable() {
   const getAllOpdPatientsDataHandle = async () => {
     const data = await getAllOpdPatientsData();
 
-    setOpdPatients(data?.data?.reverse());
+    const filter = data?.data?.filter(
+      (item) => item?.opdDoctorId === adminUniqueId
+    );
+
+    setOpdPatients(filter && filter?.reverse());
   };
 
   const getAllOpdPatientsDoctorDataHandle = async () => {
