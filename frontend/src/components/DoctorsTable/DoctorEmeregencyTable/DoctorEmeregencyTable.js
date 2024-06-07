@@ -1,5 +1,5 @@
 import { Backdrop, Box, Fade, Modal, Switch, Typography } from "@mui/material";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { CiViewList } from "react-icons/ci";
 import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
@@ -39,6 +39,16 @@ function DoctorEmeregencyTable() {
   const handleClose1 = () => setOpen1(false);
   const IndicatorSeparator = ({ innerProps }) => {
     return <span style={indicatorSeparatorStyle} {...innerProps} />;
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
   const componentRef = useRef();
   const handlePrint = useReactToPrint({

@@ -15,6 +15,7 @@ import {
 } from "../DoctorApi";
 import { useSelector } from "react-redux";
 import { convertValue } from "../convertValueStructure";
+import PaginationComponent from "../../Pagination";
 const indicatorSeparatorStyle = {
   alignSelf: "stretch",
   backgroundColor: "",
@@ -58,6 +59,16 @@ function DoctorIpdTable() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const { adminUniqueId } = useSelector((state) => state.AdminState);
   const { medicineData } = useSelector((state) => state.MedicineData);
   const { testData } = useSelector((state) => state.TestData);
@@ -352,84 +363,93 @@ function DoctorIpdTable() {
             </th>
           </thead>
           <tbody>
-            {ipdPatientsListByDoctorId?.map((item, index) => (
-              <tr key={index}>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {index + 1}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  uhid014110200
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  Arman
-                </td>{" "}
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {item?.ipdPatientNotes}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  <Switch
-                    {...label}
-                    checked={
-                      previouePatientsData?.find(
-                        (value) => value?.ipdPatientData === item?._id
-                      )
-                        ? true
-                        : false
-                    }
-                  />
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
-                  <div className="flex gap-[10px] justify-center">
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      onClick={handleOpen1}
-                    >
-                      <CiViewList className="text-[20px] text-[#96999C]" />
-                    </div>{" "}
-                    {previouePatientsData?.find(
-                      (value) => value?.ipdPatientData == item?._id
-                    ) ? (
+            {ipdPatientsListByDoctorId
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
+                <tr key={index}>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    uhid014110200
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    Arman
+                  </td>{" "}
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {item?.ipdPatientNotes}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    <Switch
+                      {...label}
+                      checked={
+                        previouePatientsData?.find(
+                          (value) => value?.ipdPatientData === item?._id
+                        )
+                          ? true
+                          : false
+                      }
+                    />
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
+                    <div className="flex gap-[10px] justify-center">
                       <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          handleOpen(),
-                          setSelectedPatient({
-                            ...selectedPatient,
-                            ipdPatientId: item?._id,
-                            patientId: item?.ipdPatientId,
-                          }),
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        onClick={handleOpen1}
+                      >
+                        <CiViewList className="text-[20px] text-[#96999C]" />
+                      </div>{" "}
+                      {previouePatientsData?.find(
+                        (value) => value?.ipdPatientData == item?._id
+                      ) ? (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen(),
+                            setSelectedPatient({
+                              ...selectedPatient,
+                              ipdPatientId: item?._id,
+                              patientId: item?.ipdPatientId,
+                            }),
 
-                          getOneIpdDoctorCheckDataHandle(
-                            previouePatientsData?.find(
-                              (val) => val?.ipdPatientData == item?._id
-                            )
-                          ),
-                        ]}
-                      >
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                      </div>
-                    ) : (
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          handleOpen(),
-                          setSelectedPatient({
-                            ...selectedPatient,
-                            ipdPatientId: item?._id,
-                            patientId: item?.ipdPatientId,
-                          }),
-                        ]}
-                      >
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                            getOneIpdDoctorCheckDataHandle(
+                              previouePatientsData?.find(
+                                (val) => val?.ipdPatientData == item?._id
+                              )
+                            ),
+                          ]}
+                        >
+                          <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                        </div>
+                      ) : (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen(),
+                            setSelectedPatient({
+                              ...selectedPatient,
+                              ipdPatientId: item?._id,
+                              patientId: item?.ipdPatientId,
+                            }),
+                          ]}
+                        >
+                          <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        <PaginationComponent
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          data={ipdPatientsListByDoctorId}
+        />
       </div>
       {printView}
       <Modal

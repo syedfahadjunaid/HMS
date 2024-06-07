@@ -423,93 +423,95 @@ function DoctorTable() {
             </th>
           </thead>
           <tbody>
-            {opdPatients?.map((item, index) => (
-              <tr key={index}>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {index + 1}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {"uhid" + item?.opdPatientId}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  Arman
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  <Switch
-                    {...label}
-                    checked={
-                      previousPatientsList?.find(
-                        (value) => value?.OpdPatientData === item?._id
-                      )
-                        ? true
-                        : false
-                    }
-                  />
-                </td>
+            {opdPatients
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
+                <tr key={index}>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {"uhid" + item?.opdPatientId}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    Arman
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    <Switch
+                      {...label}
+                      checked={
+                        previousPatientsList?.find(
+                          (value) => value?.OpdPatientData === item?._id
+                        )
+                          ? true
+                          : false
+                      }
+                    />
+                  </td>
 
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
-                  <div className="flex gap-[10px] justify-center">
-                    {previousPatientsList?.find(
-                      (value) => value?.OpdPatientData === item?._id
-                    ) ? (
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          handleOpen1(),
-                          getOneOpdDoctorCheckDataHandle(
-                            previousPatientsList?.filter(
-                              (val) => val?.OpdPatientData == item?._id
-                            )
-                          ),
-                        ]}
-                      >
-                        <CiViewList className="text-[20px] text-[#96999C]" />
-                      </div>
-                    ) : (
-                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px]  cursor-not-allowed">
-                        <CiViewList className="text-[20px] text-[#96999C]" />
-                      </div>
-                    )}
-                    {previousPatientsList?.find(
-                      (value) => value?.OpdPatientData === item?._id
-                    ) ? (
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          handleOpen(),
-                          setSelectedPatient({
-                            ...selectedPatient,
-                            opdPatientId: item?._id,
-                            patientId: item?.opdPatientId,
-                          }),
-                          getOneOpdDoctorCheckDataHandle(
-                            previousPatientsList?.filter(
-                              (val) => val?.OpdPatientData == item?._id
-                            )
-                          ),
-                        ]}
-                      >
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                      </div>
-                    ) : (
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          handleOpen(),
-                          setSelectedPatient({
-                            ...selectedPatient,
-                            opdPatientId: item?._id,
-                            patientId: item?.opdPatientId,
-                          }),
-                        ]}
-                      >
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
+                    <div className="flex gap-[10px] justify-center">
+                      {previousPatientsList?.find(
+                        (value) => value?.OpdPatientData === item?._id
+                      ) ? (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen1(),
+                            getOneOpdDoctorCheckDataHandle(
+                              previousPatientsList?.filter(
+                                (val) => val?.OpdPatientData == item?._id
+                              )
+                            ),
+                          ]}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>
+                      ) : (
+                        <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px]  cursor-not-allowed">
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>
+                      )}
+                      {previousPatientsList?.find(
+                        (value) => value?.OpdPatientData === item?._id
+                      ) ? (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen(),
+                            setSelectedPatient({
+                              ...selectedPatient,
+                              opdPatientId: item?._id,
+                              patientId: item?.opdPatientId,
+                            }),
+                            getOneOpdDoctorCheckDataHandle(
+                              previousPatientsList?.filter(
+                                (val) => val?.OpdPatientData == item?._id
+                              )
+                            ),
+                          ]}
+                        >
+                          <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                        </div>
+                      ) : (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen(),
+                            setSelectedPatient({
+                              ...selectedPatient,
+                              opdPatientId: item?._id,
+                              patientId: item?.opdPatientId,
+                            }),
+                          ]}
+                        >
+                          <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
         <PaginationComponent

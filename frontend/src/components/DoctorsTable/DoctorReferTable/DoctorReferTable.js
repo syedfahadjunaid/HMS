@@ -7,10 +7,21 @@ import img from "../../../assets/20180125_001_1_.jpg";
 import { IoIosArrowForward } from "react-icons/io";
 import { getReferPatientsData } from "../DoctorApi";
 import { useSelector } from "react-redux";
+import PaginationComponent from "../../Pagination";
 
 function DoctorReferTable() {
   const { adminUniqueId } = useSelector((state) => state.AdminState);
   const [allReferPatients, setAllReferPatients] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -65,43 +76,52 @@ function DoctorReferTable() {
             </th>
           </thead>
           <tbody>
-            {allReferPatients?.map((item, index) => (
-              <tr key={index}>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {index + 1}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {"Uhid" + item?.ipdPatientsDetails?.ipdPatientId}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {item?.PatientsDetails?.[0]?.patientName}
-                </td>{" "}
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {item?.ReasonForReferal}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                  {item?.ReferringDoctorDetails?.[0]?.doctorName}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
-                  <div className="flex gap-[10px] justify-center">
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                      onClick={handleOpen1}
-                    >
-                      <CiViewList className="text-[20px] text-[#96999C]" />
-                    </div>{" "}
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      onClick={handleOpen}
-                    >
-                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+            {allReferPatients
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
+                <tr key={index}>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {"Uhid" + item?.ipdPatientsDetails?.ipdPatientId}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {item?.PatientsDetails?.[0]?.patientName}
+                  </td>{" "}
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {item?.ReasonForReferal}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {item?.ReferringDoctorDetails?.[0]?.doctorName}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
+                    <div className="flex gap-[10px] justify-center">
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        onClick={handleOpen1}
+                      >
+                        <CiViewList className="text-[20px] text-[#96999C]" />
+                      </div>{" "}
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        onClick={handleOpen}
+                      >
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        <PaginationComponent
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          data={allReferPatients}
+        />
       </div>
       <Modal
         aria-labelledby="transition-modal-title"
