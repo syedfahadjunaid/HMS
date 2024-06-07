@@ -81,7 +81,7 @@ function DoctorDischargePatientsTable() {
           );
         }
       });
-      setAllDischargeData(data);
+      setAllDischargeData(data?.reverse());
       console.log(data);
     }
   };
@@ -120,18 +120,22 @@ function DoctorDischargePatientsTable() {
       handleClickSnackbarSuccess();
       setSnackBarSuccessMessage(result?.data?.message);
       handleClose();
+      getAllIpdPatientsDataHandle();
     }
     if (result?.status !== 200) {
       handleClickSnackbarWarning();
       setSnackBarSuccessWarning(result?.data?.message);
       handleClose();
+      getAllIpdPatientsDataHandle();
     }
     console.log(result);
   };
   useEffect(() => {
     getAllIpdPatientsDataHandle();
   }, []);
-
+  useEffect(() => {
+    console.log(dischargePatientsFinalReport);
+  }, [dischargePatientsFinalReport]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
