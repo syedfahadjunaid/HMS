@@ -18,6 +18,7 @@ import { convertValue } from "../convertValueStructure";
 import PaginationComponent from "../../Pagination";
 import {
   getAllDoctorVisitPatientsListData,
+  getIpdPatientsDetailsData,
   getOnePatientsDoctorVisitData,
 } from "../../Receptionist/NurseApi";
 import { date, time } from "../../../utils/DateAndTimeConvertor";
@@ -83,6 +84,7 @@ function DoctorIpdTable() {
   const [previousTest, setPreviousTest] = useState([]);
   const [isMedicineLoading, setIsMedicineLoading] = useState(false);
   const [isTestLoading, setIsTestLoading] = useState(false);
+  const [patientData, setPatientData] = useState([]);
   const [allIpdDoctorVisitList, setAllIpdDoctorVisitList] = useState([]);
   const [viewPatientsData, setViewPatientsData] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState({
@@ -301,6 +303,11 @@ function DoctorIpdTable() {
     setViewPatientsData(result && result?.data);
     console.log(result, "result");
   };
+  const getIpdPatientsDetailsDataHandle = async (Id) => {
+    const result = await getIpdPatientsDetailsData(Id);
+    setPatientData(result && result?.data?.data?.[0]);
+    console.log(result);
+  };
   useEffect(() => {
     getAllIPDPatientsDataByDoctorIdHandle(adminUniqueId);
     getAllIPDPatientsDoctorVisitDataHandle();
@@ -410,7 +417,10 @@ function DoctorIpdTable() {
                       ) : (
                         <div
                           className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                          onClick={handleOpen}
+                          onClick={() => [
+                            handleOpen(),
+                            getIpdPatientsDetailsDataHandle(item?.ipdPatientId),
+                          ]}
                         >
                           <CiViewList className="text-[20px] text-[#96999C]" />
                         </div>
@@ -460,49 +470,49 @@ function DoctorIpdTable() {
                 </span>
                 <div class="grid grid-cols-2 gap-4">
                   <div className="flex gap-[10px]">
-                    <span>Patients Reg ID</span>:<p>19</p>
+                    <span>Patients Reg ID</span>:
+                    <p>{"Uhid" + patientData?.ipdPatientId}</p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Admission Date / Time</span>:<p>19</p>
+                    <span>Admission Date / Time</span>:
+                    <p>
+                      {date(patientData?.updatedAt)}-
+                      {time(patientData?.updatedAt)}
+                    </p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Name</span>:<p>19</p>
+                    <span>Name</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientName}</p>
+                  </div>
+
+                  <div className="flex gap-[10px]">
+                    <span>Gender</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientGender}</p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Discharge Date / Time</span>:<p>19</p>
+                    <span>Patient Categ</span>:<p>IPD</p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Gender</span>:<p>19</p>
+                    <span>Age</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientAge}</p>
+                  </div>
+
+                  <div className="flex gap-[10px]">
+                    <span>IPD NO</span>:<p>{patientData?.ipdPatientId}</p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Patient Categ</span>:<p>19</p>
+                    <span>Patient Mobile</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientPhone}</p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Age</span>:<p>19</p>
+                    <span>Bed/Floor </span>:
+                    <p>
+                      {patientData?.ipdBedNo}/{patientData?.ipdFloorNo}
+                    </p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <span>Tarilt Catrg</span>:<p>19</p>
-                  </div>
-                  <div className="flex gap-[10px]">
-                    <span>IPD NO</span>:<p>19</p>
-                  </div>
-                  <div className="flex gap-[10px]">
-                    <span>MR and IP No</span>:<p>19</p>
-                  </div>
-                  <div className="flex gap-[10px]">
-                    <span>Bill Bed Catrg</span>:<p>19</p>
-                  </div>
-                  <div className="flex gap-[10px]">
-                    <span>Admitting Doctor</span>:<p>19</p>
-                  </div>
-                  <div className="flex gap-[10px]">
-                    <span>OCC bed categ</span>:<p>19</p>
-                  </div>
-                  <div className="flex gap-[10px]">
-                    <span>Room and bed NO</span>:<p>19</p>
-                  </div>
-                  <div className="flex gap-[10px]">
-                    <span>Bill Date and Time</span>:<p>19</p>
+                    <span>Admitting Doctor Id</span>:
+                    <p>{patientData?.ipdDoctorId}</p>
                   </div>
                 </div>
               </div>

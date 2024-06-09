@@ -127,3 +127,13 @@ export const getIpdPatientsFullDetailsData = async (Id) => {
     throw new Error(error);
   }
 };
+export const getIpdPatientsDetailsData = async (Id) => {
+  try {
+    const response = await axios.get(
+      `/api/get-patients-details-with-ipdId/${Id}`
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

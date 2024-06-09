@@ -8,12 +8,17 @@ import { IoIosArrowForward } from "react-icons/io";
 import { getReferPatientsData } from "../DoctorApi";
 import { useSelector } from "react-redux";
 import PaginationComponent from "../../Pagination";
+import {
+  getAllDoctorVisitPatientsListData,
+  getOnePatientsDoctorVisitData,
+} from "../../Receptionist/NurseApi";
 
 function DoctorReferTable() {
   const { adminUniqueId } = useSelector((state) => state.AdminState);
   const [allReferPatients, setAllReferPatients] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [viewPatientsData, setViewPatientsData] = useState([]);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -32,6 +37,13 @@ function DoctorReferTable() {
   const handleClose1 = () => {
     setOpen1(false);
   };
+  const [allIpdDoctorVisitList, setAllIpdDoctorVisitList] = useState([]);
+  const getAllDoctorVisitPatientsListDataHandle = async () => {
+    const result = await getAllDoctorVisitPatientsListData();
+    setAllIpdDoctorVisitList(result && result?.data?.data);
+    console.log(result, "gfhfg");
+  };
+
   const getReferPatientsDataHandle = async () => {
     const result = await getReferPatientsData();
 
@@ -41,10 +53,19 @@ function DoctorReferTable() {
       );
 
       setAllReferPatients(filter?.reverse());
+      console.log(result);
     }
   };
+  const getOnePatientsDoctorVisitDataHandle = async (Id) => {
+    const result = await getOnePatientsDoctorVisitData(Id);
+
+    setViewPatientsData(result && result?.data);
+    console.log(result);
+  };
+
   useEffect(() => {
     getReferPatientsDataHandle();
+    getAllDoctorVisitPatientsListDataHandle();
   }, []);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
@@ -97,12 +118,31 @@ function DoctorReferTable() {
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px] flex-row">
                     <div className="flex gap-[10px] justify-center">
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                        onClick={handleOpen1}
-                      >
-                        <CiViewList className="text-[20px] text-[#96999C]" />
-                      </div>{" "}
+                      {allIpdDoctorVisitList?.find(
+                        (val) =>
+                          val.ipdPatientData ===
+                            item?.ipdPatientsDetails?._id &&
+                          val?.ReferedDoctorId ===
+                            item?.ReferedDoctorId?.[0]?._id
+                      ) ? (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen1(),
+                            getOnePatientsDoctorVisitDataHandle(item?.mainId),
+                          ]}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>
+                      ) : (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={handleOpen1}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />1
+                        </div>
+                      )}
+
                       <div
                         className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
                         onClick={handleOpen}
