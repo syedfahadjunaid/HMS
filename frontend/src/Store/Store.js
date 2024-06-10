@@ -7,6 +7,12 @@ import OPDPatientSlice from "./Slices/OPDPatientSlice";
 import IPDPatientSlice from "./Slices/IPDPatientSlice";
 import BillingSlice from "./Slices/BillingSlice";
 import AdminSlice from "./Slices/AdminSlice";
+import BedSlice from "./Slices/BedSlice";
+import DepartmentSlice from "./Slices/DepartmentSlice";
+import WardSlice from "./Slices/WardSlice";
+import FloorDepartmentSlice from "./Slices/FloorDepartmentSlice";
+import EmergencyPatientSlice from "./Slices/EmergencyPatientSlice";
+import IPDPatientBalanceSlice from "./Slices/IPDPatientBalanceSlice";
 import NurseSlice from "./Slices/NurseSlice";
 // Services
 import { patientService } from "./Services/PatientService";
@@ -18,6 +24,12 @@ import { AdminService } from "./Services/AdminService";
 import Employee from "./Slices/HrSlice";
 import Medicine from "./Slices/Medicine";
 import Test from "./Slices/Test";
+import { BedService } from "./Services/BedService";
+import { departmentService } from "./Services/DepartmentService";
+import { WardService } from "./Services/WardService";
+import { floorDepartmentServices } from "./Services/FloorDepartmentService";
+import { emergencyPatientService } from "./Services/EmergencyPatientService";
+import { IPDPatientBalanceService } from "./Services/IPDPatientBalanceService";
 import { NurseService } from "./Services/NurseService";
 export const store = configureStore({
   reducer: {
@@ -37,6 +49,19 @@ export const store = configureStore({
     MedicineData: Medicine,
     TestData: Test,
     NurseState: NurseSlice,
+    BedState: BedSlice,
+    [BedService.reducerPath]: BedService.reducer,
+    DepartmentState: DepartmentSlice,
+    [departmentService.reducerPath]: departmentService.reducer,
+    WardState: WardSlice,
+    [WardService.reducerPath]: WardService.reducer,
+    FloorDepartmentState: FloorDepartmentSlice,
+    [floorDepartmentServices.reducerPath]: floorDepartmentServices.reducer,
+    EmergencyPatientState: EmergencyPatientSlice,
+    [emergencyPatientService.reducerPath]: emergencyPatientService.reducer,
+    IPDPatientBalanceState: IPDPatientBalanceSlice,
+    [IPDPatientBalanceService.reducerPath]: IPDPatientBalanceService.reducer,
+    NurseState: NurseSlice,
     [NurseService.reducerPath]: NurseService.reducer,
   },
 
@@ -48,6 +73,12 @@ export const store = configureStore({
       IPDPatientService.middleware,
       billingService.middleware,
       AdminService.middleware,
+      BedService.middleware,
+      departmentService.middleware,
+      WardService.middleware,
+      floorDepartmentServices.middleware,
+      emergencyPatientService.middleware,
+      IPDPatientBalanceService.middleware,
       NurseService.middleware,
     ]),
 });

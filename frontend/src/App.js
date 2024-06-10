@@ -143,12 +143,6 @@ const NursePanelIPDPatientList = lazy(() =>
 const NursePanelOPDPatientList = lazy(() =>
   import("./pages/Nurse/OPDPatientList/OPDPatientList")
 );
-const NursePanelEmergencyPatientList = lazy(() =>
-  import("./pages/Nurse/EmergencyPatientList/EmergencyPatientLIst")
-);
-const NursePanelTestPatient = lazy(() =>
-  import("./pages/Nurse/TestPatient/TestPatient")
-);
 
 const PatientViewPageToPrint = lazy(() =>
   import(
@@ -171,6 +165,12 @@ const TestPatientReceipt = lazy(() =>
     "./components/Nurse/TestPatientTable/TestPatientReceipt/TestPatientReceipt"
   )
 );
+const NursePanelEmergencyPatientList = lazy(() =>
+  import("./pages/Nurse/EmergencyPatientList/EmergencyPatientLIst")
+);
+const NursePanelTestPatient = lazy(() =>
+  import("./pages/Nurse/TestPatient/TestPatient")
+);
 // Nurse Panel
 const ReceptionistPanelDashboard = lazy(() =>
   import("./pages/Receptionist/Dashboard")
@@ -189,6 +189,7 @@ const ReceptionistPanelIPDPatientViewPage = lazy(() =>
     "./components/Receptionist/IPDPatientListTable/IPDPatientViewPage/IPDPatientViewPage"
   )
 );
+
 const ReferPatientsNurse = lazy(() =>
   import("./pages/Receptionist/ReferPatients/ReferPatients")
 );
@@ -960,6 +961,26 @@ function App() {
                         }
                       >
                         <OPDPatientRecieptDownloadPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={`${
+                      browserLinks.nurse.category
+                    }/${browserLinks?.nurse?.internalPages?.testPatient
+                      ?.split(" ")
+                      .join("")}`}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <NursePanelTestPatient />
                       </Suspense>
                     }
                   />

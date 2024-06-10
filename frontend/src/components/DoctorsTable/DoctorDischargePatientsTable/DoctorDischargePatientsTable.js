@@ -332,19 +332,24 @@ function DoctorDischargePatientsTable() {
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p>Result : :</p>
-                  <textarea
-                    rows={5}
-                    placeholder="Note"
-                    className="border-[2px] w-full rounded outline-none w-full   pl-[5px] pt-[5px]"
-                    value={dischargePatientsFinalReport?.result}
+                  <select
                     onChange={(e) =>
                       setDischargePatientsFinalReport({
                         ...dischargePatientsFinalReport,
                         result: e.target.value,
                       })
                     }
+                    className="border-[2px] w-full rounded outline-none w-full h-[2.2rem]  pl-[5px] "
                     required
-                  />
+                  >
+                    <option value="">Select One Reason</option>
+                    <option value="Cured">Cured </option>
+                    <option value="Relived">Relived </option>
+                    <option value="LAMA">LAMA </option>
+                    <option value="Absconded">Absconded </option>
+                    <option value="Expired">Expired </option>
+                    <option value="Referred">Referred </option>
+                  </select>
                 </span>
                 <span className="flex flex-col justify-start gap-1">
                   <p> Disease / Diagnose :</p>

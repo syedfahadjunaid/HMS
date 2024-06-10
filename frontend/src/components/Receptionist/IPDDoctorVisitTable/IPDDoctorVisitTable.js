@@ -12,6 +12,7 @@ import {
   addDailyDoctorVisitIpdData,
   getAllDoctorVisitPatientsListData,
   getDoctorVisitListWithIpdPatientsData,
+  getIpdPatientsDetailsData,
   getOnePatientsDoctorVisitData,
 } from "../NurseApi";
 import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
@@ -34,6 +35,7 @@ export default function IPDDoctorVisitTable() {
   const [open2, setOpen2] = React.useState(false);
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
+  const [patientData, setPatientData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event, newPage) => {
@@ -236,6 +238,7 @@ export default function IPDDoctorVisitTable() {
     formData.append("ipdPatientMainId", dailyDoctorVisitData?.mainId);
     formData.append("isPatientsChecked", true);
     formData.append("doctorId", dailyDoctorVisitData?.doctorId);
+    formData.append("submittedBy", "Assigned Doctor");
     formData.append("VisitDateTime", dailyDoctorVisitData?.visitDateTime);
     formData.append("medicine", JSON.stringify(selectedMedicine));
     formData.append("test", JSON.stringify(selectedTest));
@@ -261,6 +264,10 @@ export default function IPDDoctorVisitTable() {
     const result = await getAllDoctorVisitPatientsListData();
     setAllIpdDoctorVisitList(result && result?.data?.data);
     console.log(result, "all");
+  };
+  const getIpdPatientsDetailsDataHandle = async (Id) => {
+    const result = await getIpdPatientsDetailsData(Id);
+    setPatientData(result && result?.data?.data?.[0]);
   };
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeTestIndex, setActiveTestIndex] = useState(null);
@@ -379,7 +386,12 @@ export default function IPDDoctorVisitTable() {
                         ) : (
                           <div
                             className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                            onClick={handleOpen2}
+                            onClick={() => [
+                              handleOpen2(),
+                              getIpdPatientsDetailsDataHandle(
+                                item?.IpdpatientId
+                              ),
+                            ]}
                           >
                             <CiViewList className="text-[20px] text-[#96999C]" />
                           </div>
@@ -986,9 +998,61 @@ export default function IPDDoctorVisitTable() {
       >
         <Fade in={open2}>
           <Box sx={style}>
-            <Typography className="flex items-center justify-center">
-              No Doctor Visit done
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <div className="flex pt-[10px] pb-[10px] gap-[10%]">
+                <span>
+                  <img src={img} alt="patients " className="w-[15rem] " />
+                </span>
+                <div class="grid grid-cols-2 gap-4">
+                  <div className="flex gap-[10px]">
+                    <span>Patients Reg ID</span>:
+                    <p>{"Uhid" + patientData?.ipdPatientId}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admission Date / Time</span>:
+                    <p>
+                      {date(patientData?.updatedAt)}-
+                      {time(patientData?.updatedAt)}
+                    </p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Name</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientName}</p>
+                  </div>
+
+                  <div className="flex gap-[10px]">
+                    <span>Gender</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientGender}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Patient Categ</span>:<p>IPD</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Age</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientAge}</p>
+                  </div>
+
+                  <div className="flex gap-[10px]">
+                    <span>IPD NO</span>:<p>{patientData?.ipdPatientId}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Patient Mobile</span>:
+                    <p>{patientData?.PatientData?.[0]?.patientPhone}</p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Bed/Floor </span>:
+                    <p>
+                      {patientData?.ipdBedNo}/{patientData?.ipdFloorNo}
+                    </p>
+                  </div>
+                  <div className="flex gap-[10px]">
+                    <span>Admitting Doctor Id</span>:
+                    <p>{patientData?.ipdDoctorId}</p>
+                  </div>
+                </div>
+              </div>
             </Typography>
+            <Typography>No Doctor Visit one Yet!</Typography>
           </Box>
         </Fade>
       </Modal>
