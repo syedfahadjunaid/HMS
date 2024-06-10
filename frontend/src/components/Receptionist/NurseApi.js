@@ -121,7 +121,9 @@ export const getAllDoctorVisitPatientsListData = async () => {
 };
 export const getIpdPatientsFullDetailsData = async (Id) => {
   try {
-    const response = await axios.get(`/api/IpdPatient-whole-data/${Id}`);
+    const response = await axios.get(
+      `/api/get-patients-details-with-ipdId/${Id}`
+    );
     return response;
   } catch (error) {
     throw new Error(error);
@@ -132,6 +134,14 @@ export const getIpdPatientsDetailsData = async (Id) => {
     const response = await axios.get(
       `/api/get-patients-details-with-ipdId/${Id}`
     );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const getOneReferPatientDataData = async (Id) => {
+  try {
+    const response = await axios.get(`/api/get-one-refered-patients/${Id}`);
     return response;
   } catch (error) {
     throw new Error(error);

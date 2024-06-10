@@ -26,6 +26,7 @@ import { CiViewList } from "react-icons/ci";
 import { Backdrop, Fade } from "@mui/material";
 import style from "../../../styling/styling";
 import img from "../../../assets/20180125_001_1_.jpg";
+import PaginationComponent from "../../Pagination";
 export default function IPDPatientList() {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -43,7 +44,10 @@ export default function IPDPatientList() {
       label: `${data.patientId} / ${data.patientName}`,
     };
   });
-
+  const { adminUniqueId, adminLoggedInData } = useSelector(
+    (state) => state.AdminState
+  );
+  console.log(adminLoggedInData?.adminUniqueId, "adminLoggedInData");
   const [patientName, setPatientName] = React.useState("");
   const [patientPhone, setPatientPhone] = React.useState("");
   const [patientFatherName, setPatientFatherName] = React.useState("");
@@ -63,6 +67,16 @@ export default function IPDPatientList() {
   const [additionalInfo, setAdditionalInfo] = React.useState("");
   const [note, setNote] = React.useState("");
   const dispatch = useDispatch();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   React.useEffect(() => {
     if (patientId !== "") {
@@ -264,8 +278,10 @@ export default function IPDPatientList() {
   const [allIpdPatientsData, setAllIpdPatientsData] = React.useState([]);
   const getAllIpdPatientsAssignedDataHandle = async () => {
     const result = await getAllIpdPatientsAssignedData();
-    setAllIpdPatientsData(result && result?.data);
-    console.log(result);
+    const filter = result?.data?.filter(
+      (item) => item?.ipdNurseId === adminLoggedInData?.adminUniqueId
+    );
+    setAllIpdPatientsData(filter && filter?.reverse());
   };
   const getIpdPatientsFullDetailsDataHandle = async (Id) => {
     const result = await getIpdPatientsFullDetailsData(Id);
@@ -322,39 +338,48 @@ export default function IPDPatientList() {
             </thead>
 
             <tbody>
-              {allIpdPatientsData?.map((item, index) => (
-                <tr key={index} className="border-b-[1px]">
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {index + 1}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {"Uhid" + item?.ipdPatientId}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {item?.ipdDoctorId}
-                  </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    {date(item?.updatedAt)}-{time(item?.updatedAt)}
-                  </td>{" "}
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
-                    <div className="flex gap-[10px] justify-center">
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          getIpdPatientsFullDetailsDataHandle(
-                            item?.ipdPatientId
-                          ),
-                          handleOpen(),
-                        ]}
-                      >
-                        <CiViewList className="text-[20px] text-[#96999C]" />
-                      </div>{" "}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {allIpdPatientsData
+                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                ?.map((item, index) => (
+                  <tr key={index} className="border-b-[1px]">
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {index + 1}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {"Uhid" + item?.ipdPatientId}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {item?.ipdDoctorId}
+                    </td>
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                      {date(item?.updatedAt)}-{time(item?.updatedAt)}
+                    </td>{" "}
+                    <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
+                      <div className="flex gap-[10px] justify-center">
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            getIpdPatientsFullDetailsDataHandle(
+                              item?.ipdPatientId
+                            ),
+                            handleOpen(),
+                          ]}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>{" "}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
+          <PaginationComponent
+            page={page}
+            rowsPerPage={rowsPerPage}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+            data={allIpdPatientsData}
+          />
         </div>
       </div>
       <Modal
@@ -383,7 +408,7 @@ export default function IPDPatientList() {
                 <div class="w-full grid grid-cols-2 gap-1">
                   <div className="flex gap-[10px]">
                     <span>Patients Uhid</span>:
-                    <p>{"Uhid" + patientsData?.patientData?.[0]?.patientId}</p>
+                    <p>{"Uhid" + patientsData?.PatientData?.[0]?.patientId}</p>
                   </div>
                   <div className="flex gap-[10px]">
                     <span>Admission Date / Time</span>:
@@ -394,20 +419,20 @@ export default function IPDPatientList() {
                   </div>
                   <div className="flex gap-[10px]">
                     <span>Name</span>:
-                    <p>{patientsData?.patientData?.[0]?.patientName}</p>
+                    <p>{patientsData?.PatientData?.[0]?.patientName}</p>
                   </div>
                   <div className="flex gap-[10px]">
                     <span>Gender</span>:
-                    <p>{patientsData?.patientData?.[0]?.patientGender}</p>
+                    <p>{patientsData?.PatientData?.[0]?.patientGender}</p>
                   </div>
 
                   <div className="flex gap-[10px]">
                     <span>Age</span>:
-                    <p>{patientsData?.patientData?.[0]?.patientAge}</p>
+                    <p>{patientsData?.PatientData?.[0]?.patientAge}</p>
                   </div>
                   <div className="flex gap-[10px]">
                     <span>Patient Mobile Number</span>:
-                    <p>{patientsData?.patientData?.[0]?.patientPhone}</p>
+                    <p>{patientsData?.PatientData?.[0]?.patientPhone}</p>
                   </div>
                   <div className="flex gap-[10px]">
                     <span>IPD NO</span>:<p>{patientsData?.ipdPatientId}</p>

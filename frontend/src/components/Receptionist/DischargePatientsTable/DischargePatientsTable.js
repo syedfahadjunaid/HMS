@@ -9,12 +9,24 @@ import {
   getAllDischargePatientsListData,
 } from "../NurseApi";
 import Snackbars from "../../SnackBar";
+import PaginationComponent from "../../Pagination";
+import { useSelector } from "react-redux";
 
 function DischargePatientsTable() {
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   // Snackbar--------------------
   // ----Succcess
   const [openSnackbarSuccess, setOpenSnackBarSuccess] = React.useState(false);
@@ -33,7 +45,9 @@ function DischargePatientsTable() {
     setOpenSnackBarWarning(true);
   };
   // ----------------------------
-
+  const { adminUniqueId, adminLoggedInData } = useSelector(
+    (state) => state.AdminState
+  );
   const [allDischargeData, setAllDischargeData] = useState([]);
   const [patientsDischargeData, setPatientsDischargeData] = useState({
     ipdPatientId: "",
@@ -55,17 +69,19 @@ function DischargePatientsTable() {
     if (result) {
       const data = result?.data?.filter((item) => {
         return (
+          item?.ipdNurseId === adminLoggedInData?.adminUniqueId &&
           item?.ipdPatientDoctorRequestForDischarge === true &&
           item?.ipdPatientNurseRequestForDischarge === true
         );
       });
-      setAllDischargeData(data);
+      setAllDischargeData(data?.reverse());
+      console.log(result, data);
     }
   };
   const addNurseDetailsForPatientsDischargeDataHandle = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("nurseId", "10101");
+    formData.append("nurseId", "");
     formData.append("admittedFor", patientsDischargeData?.admittedFor);
     formData.append(
       "investigationORProcedure",
@@ -164,52 +180,63 @@ function DischargePatientsTable() {
             </th>
           </thead>
           <tbody>
-            {allDischargeData?.map((item, index) => (
-              <tr key={index} className="border-b-[1px]">
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  {index + 1}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  {"Uhid" + item?.ipdPatientId}
-                </td>
+            {allDischargeData
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
+                <tr key={index} className="border-b-[1px]">
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {"Uhid" + item?.ipdPatientId}
+                  </td>
 
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  <Switch
-                    {...label}
-                    checked={
-                      item?.ipdPatientNurseConfirmation === true ? true : false
-                    }
-                  />
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  21/02/24 15:30
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row">
-                  <div className="flex gap-[10px] justify-center">
-                    {item?.ipdPatientNurseConfirmation === false ? (
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                        onClick={() => [
-                          handleOpen(),
-                          setPatientsDischargeData({
-                            ...patientsDischargeData,
-                            ipdPatientId: item?.mainId,
-                          }),
-                        ]}
-                      >
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                      </div>
-                    ) : (
-                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-not-allowed">
-                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    <Switch
+                      {...label}
+                      checked={
+                        item?.ipdPatientNurseConfirmation === true
+                          ? true
+                          : false
+                      }
+                    />
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    21/02/24 15:30
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row">
+                    <div className="flex gap-[10px] justify-center">
+                      {item?.ipdPatientNurseConfirmation === false ? (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen(),
+                            setPatientsDischargeData({
+                              ...patientsDischargeData,
+                              ipdPatientId: item?.mainId,
+                            }),
+                          ]}
+                        >
+                          <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                        </div>
+                      ) : (
+                        <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-not-allowed">
+                          <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        <PaginationComponent
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          data={allDischargeData}
+        />
       </div>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -348,11 +375,11 @@ function DischargePatientsTable() {
                     rows={2}
                     placeholder="Assistants"
                     className="border-[2px] w-full rounded outline-none pl-1 pt-1"
-                    value={patientsDischargeData?.admittedFor}
+                    value={patientsDischargeData?.assistants}
                     onChange={(e) =>
                       setPatientsDischargeData({
                         ...patientsDischargeData,
-                        admittedFor: e.target.value,
+                        assistants: e.target.value,
                       })
                     }
                   />

@@ -75,7 +75,9 @@ function DoctorIpdTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const { adminUniqueId } = useSelector((state) => state.AdminState);
+  const { adminUniqueId, adminLoggedInData } = useSelector(
+    (state) => state.AdminState
+  );
   const { medicineData } = useSelector((state) => state.MedicineData);
   const { testData } = useSelector((state) => state.TestData);
   const [medicine, setMedicine] = useState([]);
@@ -255,6 +257,7 @@ function DoctorIpdTable() {
   const getAllIPDPatientsDataByDoctorIdHandle = async (Id) => {
     const response = await getAllIPDPatientsDataByDoctorId(Id);
     setIpdPatientsListByDoctorId(response?.data?.data?.reverse());
+    console.log(response);
   };
   const getAllIPDPatientsDoctorVisitDataHandle = async () => {
     const response = await getAllIPDPatientsDoctorVisitData();
@@ -306,10 +309,9 @@ function DoctorIpdTable() {
   const getIpdPatientsDetailsDataHandle = async (Id) => {
     const result = await getIpdPatientsDetailsData(Id);
     setPatientData(result && result?.data?.data?.[0]);
-    console.log(result);
   };
   useEffect(() => {
-    getAllIPDPatientsDataByDoctorIdHandle(adminUniqueId);
+    getAllIPDPatientsDataByDoctorIdHandle(adminLoggedInData?.adminUniqueId);
     getAllIPDPatientsDoctorVisitDataHandle();
     getAllDoctorVisitPatientsListDataHandle();
   }, []);
@@ -369,10 +371,10 @@ function DoctorIpdTable() {
               <p>UHID</p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
-              <p>Patient Name</p>
+              <p>Doctor Id</p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
-              <p>Bed No</p>
+              <p>Bed/Floor </p>
             </th>
             <th className="border-[1px] p-1 font-semibold">
               <p>Patient Notes</p>
@@ -391,12 +393,14 @@ function DoctorIpdTable() {
                     {index + 1}
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                    uhid014110200
+                    {"uhid" + item?.ipdPatientId}
                   </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
-                    Arman
+                    {item?.ipdDoctorId}
                   </td>{" "}
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]"></td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
+                    {item?.ipdBedNo}/{item?.ipdFloorNo}
+                  </td>
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-[1px]">
                     {item?.ipdPatientNotes}
                   </td>

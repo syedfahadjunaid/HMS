@@ -5,7 +5,11 @@ import { RiEdit2Fill } from "react-icons/ri";
 import style from "../../../styling/styling";
 import Select from "react-select";
 import { IoIosArrowForward } from "react-icons/io";
-import { addNurseReferPatientsData, getAllNurseReferData } from "../NurseApi";
+import {
+  addNurseReferPatientsData,
+  getAllNurseReferData,
+  getOneReferPatientDataData,
+} from "../NurseApi";
 import { useDispatch, useSelector } from "react-redux";
 import { GetIpdPatientsHandle } from "../../../Store/Slices/IPDPatientSlice";
 import { GetAllDoctorsHandle } from "../../../Store/Slices/DoctorSlice";
@@ -43,6 +47,12 @@ function DischargePatientsTable() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [open1, setOpen1] = React.useState(false);
+  const handleOpen1 = () => setOpen1(true);
+  const handleClose1 = () => setOpen1(false);
+  const [open2, setOpen2] = React.useState(false);
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose2 = () => setOpen2(false);
   const [allReferedpatients, setAllReferedpatients] = useState([]);
   const todayDate = new Date();
   const startOfDay = new Date(todayDate.setHours(0, 0, 0, 0));
@@ -50,6 +60,11 @@ function DischargePatientsTable() {
   const dispatch = useDispatch();
   const { ipdPatients } = useSelector((state) => state.IPDPatientState);
   const { doctors } = useSelector((state) => state.DoctorState);
+  const { adminUniqueId, adminLoggedInData } = useSelector(
+    (state) => state.AdminState
+  );
+  const [referPatientData, setReferPatientData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [addReferPatients, setAddReferPatients] = useState({
     ipdPatients: "",
     referingDoctor: "",
@@ -83,7 +98,12 @@ function DischargePatientsTable() {
   const getAllNurseReferDataHandle = async () => {
     const result = await getAllNurseReferData();
     if (result?.status === 200) {
-      setAllReferedpatients(result?.data?.data);
+      const filter = result?.data?.data?.filter(
+        (item) =>
+          item?.ipdPatientsDetails?.ipdNurseId ===
+          adminLoggedInData?.adminUniqueId
+      );
+      setAllReferedpatients(filter);
     }
   };
   const addNurseReferPatientsDataHandle = async (e) => {
@@ -102,6 +122,13 @@ function DischargePatientsTable() {
       handleClose();
       getAllNurseReferDataHandle();
     }
+    console.log(result);
+  };
+  const getOneReferPatientDataDataHandle = async (Id) => {
+    setIsLoading(true);
+    const result = await getOneReferPatientDataData(Id);
+    setReferPatientData(result && result?.data?.data?.[0]);
+    setIsLoading(false);
     console.log(result);
   };
   useEffect(() => {
@@ -146,10 +173,6 @@ function DischargePatientsTable() {
             </th>
 
             <th className="border-[1px] p-1 font-semibold">
-              <p>Patient Checked</p>
-            </th>
-
-            <th className="border-[1px] p-1 font-semibold">
               <p>Action</p>
             </th>
           </thead>
@@ -173,18 +196,27 @@ function DischargePatientsTable() {
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
                     {item?.ReferedDateAndTime}
                   </td>
-                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                    <Switch {...label} />
-                  </td>
 
                   <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
                     <div className="flex gap-[10px] justify-center">
-                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer">
+                      <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        onClick={() => [
+                          handleOpen2(),
+                          getOneReferPatientDataDataHandle(item?._id),
+                        ]}
+                      >
                         <CiViewList className="text-[20px] text-[#96999C]" />
                       </div>{" "}
-                      <div className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer">
+                      {/* <div
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
+                        onClick={() => [
+                          handleOpen1(),
+                          getOneReferPatientDataDataHandle(item?._id),
+                        ]}
+                      >
                         <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
-                      </div>
+                      </div> */}
                     </div>
                   </td>
                 </tr>
@@ -324,6 +356,300 @@ function DischargePatientsTable() {
               <button className="flex items-center gap-1 bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md">
                 Save <IoIosArrowForward />
               </button>
+            </form>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open1}
+        onClose={handleClose1}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={open1}>
+          <Box sx={style}>
+            <form
+              className="w-full flex flex-col items-start justify-start gap-2"
+              // onSubmit={addNurseReferPatientsDataHandle}
+            >
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Patients Uhid</p>
+                  {!isLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ indicatorSeparatorStyle }}
+                      options={renderedIpdPatientsForDropdown}
+                      defaultValue={{
+                        label:
+                          referPatientData?.IpdPatientDetails?.[0]
+                            ?.ipdPatientId,
+                        value: referPatientData?.IpdPatientDetails?.[0]?._id,
+                      }}
+                      className="border-[2px] w-full rounded"
+                      onChange={(e) =>
+                        setAddReferPatients({
+                          ...addReferPatients,
+                          ipdPatients: e,
+                        })
+                      }
+                      required
+                    />
+                  )}
+                </span>
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Refrring Doc ID</p>
+                  {!isLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ indicatorSeparatorStyle }}
+                      options={renderedDoctorIDForDropdown}
+                      defaultValue={{
+                        label:
+                          referPatientData?.referringDoctor?.[0]?.doctorName,
+                        value: referPatientData?.referringDoctor?.[0]?._id,
+                      }}
+                      className="border-[2px] w-full rounded"
+                      onChange={(e) =>
+                        setAddReferPatients({
+                          ...addReferPatients,
+                          referingDoctor: e,
+                        })
+                      }
+                      required
+                    />
+                  )}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Referred Doc ID </p>
+                  {!isLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ indicatorSeparatorStyle }}
+                      options={renderedDoctorIDForDropdown}
+                      className="border-[2px] w-full rounded"
+                      defaultValue={{
+                        label:
+                          referPatientData?.ReferredDoctor?.[0]?.doctorName,
+                        value: referPatientData?.ReferredDoctor?.[0]?._id,
+                      }}
+                      onChange={(e) =>
+                        setAddReferPatients({
+                          ...addReferPatients,
+                          referedDoctor: e,
+                        })
+                      }
+                      required
+                    />
+                  )}
+                </span>
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Referral Date</p>
+                  <input
+                    type="datetime-local"
+                    id="meeting-time"
+                    name="meeting-time"
+                    min={startOfDay.toISOString().slice(0, 16)}
+                    max={endOfDay.toISOString().slice(0, 16)}
+                    className="border-[2px] w-full h-[2.4rem] rounded outline-none"
+                    style={{ borderWidth: "2px" }}
+                    value={referPatientData?.ReferedDateAndTime}
+                    onChange={(e) =>
+                      setAddReferPatients({
+                        ...addReferPatients,
+                        referingDate: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap- w-full">
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Reason for Referral </p>
+                  <textarea
+                    rows={3}
+                    placeholder="Reason for Referral"
+                    className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={referPatientData?.ReasonForReferal}
+                    onChange={(e) =>
+                      setAddReferPatients({
+                        ...addReferPatients,
+                        reasonForReferal: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </span>
+              </div>
+              <div className="flex flex-col items-start justify-start gap-2 w-full">
+                <p>Note </p>
+                <textarea
+                  rows={4}
+                  placeholder="Additional Info"
+                  className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                  value={referPatientData?.Note}
+                  onChange={(e) =>
+                    setAddReferPatients({
+                      ...addReferPatients,
+                      note: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <button className="flex items-center gap-1 bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md">
+                Update <IoIosArrowForward />
+              </button>
+            </form>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open2}
+        onClose={handleClose2}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={open2}>
+          <Box sx={style}>
+            <form
+              className="w-full flex flex-col items-start justify-start gap-2"
+              // onSubmit={addNurseReferPatientsDataHandle}
+            >
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Patients Uhid</p>
+                  {!isLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ indicatorSeparatorStyle }}
+                      options={renderedIpdPatientsForDropdown}
+                      defaultValue={{
+                        label:
+                          referPatientData?.IpdPatientDetails?.[0]
+                            ?.ipdPatientId,
+                        value: referPatientData?.IpdPatientDetails?.[0]?._id,
+                      }}
+                      className="border-[2px] w-full rounded"
+                      isDisabled
+                      required
+                    />
+                  )}
+                </span>
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Refrring Doc ID</p>
+                  {!isLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ indicatorSeparatorStyle }}
+                      options={renderedDoctorIDForDropdown}
+                      defaultValue={{
+                        label:
+                          referPatientData?.referringDoctor?.[0]?.doctorName,
+                        value: referPatientData?.referringDoctor?.[0]?._id,
+                      }}
+                      className="border-[2px] w-full rounded"
+                      isDisabled
+                      required
+                    />
+                  )}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Referred Doc ID </p>
+                  {!isLoading && (
+                    <Select
+                      closeMenuOnSelect={false}
+                      components={{ indicatorSeparatorStyle }}
+                      options={renderedDoctorIDForDropdown}
+                      className="border-[2px] w-full rounded"
+                      defaultValue={{
+                        label:
+                          referPatientData?.ReferredDoctor?.[0]?.doctorName,
+                        value: referPatientData?.ReferredDoctor?.[0]?._id,
+                      }}
+                      isDisabled
+                      required
+                    />
+                  )}
+                </span>
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Referral Date</p>
+                  <input
+                    type="datetime-local"
+                    id="meeting-time"
+                    name="meeting-time"
+                    min={startOfDay.toISOString().slice(0, 16)}
+                    max={endOfDay.toISOString().slice(0, 16)}
+                    className="border-[2px] w-full h-[2.4rem] rounded outline-none"
+                    style={{ borderWidth: "2px" }}
+                    value={referPatientData?.ReferedDateAndTime}
+                    onChange={(e) =>
+                      setAddReferPatients({
+                        ...addReferPatients,
+                        referingDate: e.target.value,
+                      })
+                    }
+                    disabled
+                    required
+                  />
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap- w-full">
+                <span className="flex flex-col justify-start items-start w-full gap-2">
+                  <p>Reason for Referral </p>
+                  <textarea
+                    rows={3}
+                    placeholder="Reason for Referral"
+                    className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                    value={referPatientData?.ReasonForReferal}
+                    onChange={(e) =>
+                      setAddReferPatients({
+                        ...addReferPatients,
+                        reasonForReferal: e.target.value,
+                      })
+                    }
+                    disabled
+                    required
+                  />
+                </span>
+              </div>
+              <div className="flex flex-col items-start justify-start gap-2 w-full">
+                <p>Note </p>
+                <textarea
+                  rows={4}
+                  placeholder="Additional Info"
+                  className="border-[2px] w-full rounded outline-none pl-1 pt-1"
+                  value={referPatientData?.Note}
+                  onChange={(e) =>
+                    setAddReferPatients({
+                      ...addReferPatients,
+                      note: e.target.value,
+                    })
+                  }
+                  disabled
+                />
+              </div>
+              {/* <button className="flex items-center gap-1 bg-[#3497F9] text-white py-[5px] px-[10px] rounded-md">
+                Update <IoIosArrowForward />
+              </button> */}
             </form>
           </Box>
         </Fade>

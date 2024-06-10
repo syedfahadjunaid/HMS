@@ -28,21 +28,11 @@ export default function SideNav({ activePage }) {
   const sideNavLinksData = [
     {
       category: "Dashboard",
-      pages: [
-        {
-          icon: <AiFillDashboard />,
-          name: browserLinks.receptionist.internalPages.dashboard,
-        },
-      ],
+      pages: [],
     },
     {
       category: browserLinks?.receptionist?.pageCategories?.ipdPatient,
       pages: [
-        {
-          icon: <FaEdit />,
-          name: browserLinks?.receptionist?.internalPages
-            ?.addIPDPatientPrescription,
-        },
         {
           icon: <FaUser />,
           name: browserLinks?.receptionist?.internalPages?.ipdPatientList,

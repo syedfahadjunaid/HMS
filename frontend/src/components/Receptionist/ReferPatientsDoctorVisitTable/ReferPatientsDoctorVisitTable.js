@@ -16,6 +16,7 @@ import {
   getOnePatientsDoctorVisitData,
 } from "../NurseApi";
 import Snackbars from "../../SnackBar";
+import PaginationComponent from "../../Pagination";
 function ReferPatientsDoctorVisitTable() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -50,6 +51,16 @@ function ReferPatientsDoctorVisitTable() {
     notes: "",
     visitDateTime: "",
   });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   // Snackbar--------------------
   // ----Succcess
   const [openSnackbarSuccess, setOpenSnackBarSuccess] = React.useState(false);
@@ -181,6 +192,9 @@ function ReferPatientsDoctorVisitTable() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeTestIndex, setActiveTestIndex] = useState(null);
   const selectRef = useRef(null);
+  const { adminUniqueId, adminLoggedInData } = useSelector(
+    (state) => state.AdminState
+  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -205,8 +219,13 @@ function ReferPatientsDoctorVisitTable() {
   }, [dailyDoctorVisitData]);
   const getAllNurseReferDataHandle = async () => {
     const result = await getAllNurseReferData();
-    setAllReferedPatients(result && result?.data?.data?.reverse());
-    console.log(result, "allReferedPatients");
+    const filter = result?.data?.data?.filter(
+      (item) =>
+        item?.ipdPatientsDetails?.ipdNurseId ===
+        adminLoggedInData?.adminUniqueId
+    );
+    setAllReferedPatients(filter);
+    console.log(result, "allReferedPatients", filter);
   };
   const getAllDoctorVisitPatientsListDataHandle = async () => {
     const result = await getAllDoctorVisitPatientsListData();
@@ -219,6 +238,7 @@ function ReferPatientsDoctorVisitTable() {
     formData.append("Symptoms", dailyDoctorVisitData?.symtoms);
     formData.append("Note", dailyDoctorVisitData?.notes);
     formData.append("ipdPatientData", dailyDoctorVisitData?.ipdPatientId);
+    formData.append("ipdPatientMainId", dailyDoctorVisitData?.mainId);
     formData.append("isPatientsChecked", true);
     formData.append("doctorId", dailyDoctorVisitData?.referringDoctorId);
     formData.append("ReferedDoctorId", dailyDoctorVisitData?.referDoctorId);
@@ -252,7 +272,9 @@ function ReferPatientsDoctorVisitTable() {
     getAllNurseReferDataHandle();
     getAllDoctorVisitPatientsListDataHandle();
   }, []);
-
+  useEffect(() => {
+    console.log(viewPatientsData, "viewPatientsData");
+  }, [viewPatientsData]);
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
@@ -285,79 +307,93 @@ function ReferPatientsDoctorVisitTable() {
           </thead>
 
           <tbody>
-            {allReferedPatients?.map((item, index) => (
-              <tr key={index} className="border-b-[1px]">
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  {index + 1}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  {"Uhid" + item?.PatientsDetails?.[0]?.patientId}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  {item?.ReferringDoctorDetails?.[0]?.doctorName}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  {item?.ReferredDoctorDetails?.[0]?.doctorName}
-                </td>
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
-                  {date(item?.updatedAt)}-{time(item?.updatedAt)}
-                </td>{" "}
-                <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
-                  <div className="flex gap-[10px] justify-center">
-                    {allIpdDoctorVisitList?.find(
-                      (val) =>
-                        val.ipdPatientData === item?.ipdPatientsDetails?._id &&
-                        val?.ReferedDoctorId ===
-                          item?.ReferredDoctorDetails?.[0]?._id
-                    ) ? (
+            {allReferedPatients
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
+                <tr key={index} className="border-b-[1px]">
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {index + 1}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {"Uhid" + item?.PatientsDetails?.[0]?.patientId}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {item?.ReferringDoctorDetails?.[0]?.doctorName}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {item?.ReferredDoctorDetails?.[0]?.doctorName}
+                  </td>
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
+                    {date(item?.updatedAt)}-{time(item?.updatedAt)}
+                  </td>{" "}
+                  <td className="justify-center text-[16px] py-4 px-[4px] text-center  flex-row border-r">
+                    <div className="flex gap-[10px] justify-center">
+                      {allIpdDoctorVisitList?.find(
+                        (val) =>
+                          val.ipdPatientData ===
+                            item?.ipdPatientsDetails?._id &&
+                          val?.ReferedDoctorId ===
+                            item?.ReferredDoctorDetails?.[0]?._id
+                      ) ? (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={() => [
+                            handleOpen1(),
+                            getOnePatientsDoctorVisitDataHandle(
+                              item?.ipdPatientsDetails?.mainId
+                            ),
+                            setDailyDoctorVisitData({
+                              ...dailyDoctorVisitData,
+                              referDoctorId:
+                                item?.ReferredDoctorDetails?.[0]?._id,
+                            }),
+                          ]}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>
+                      ) : (
+                        <div
+                          className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                          onClick={handleOpen2}
+                        >
+                          <CiViewList className="text-[20px] text-[#96999C]" />
+                        </div>
+                      )}
                       <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
+                        className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
                         onClick={() => [
-                          handleOpen1(),
-                          getOnePatientsDoctorVisitDataHandle(item?.ipdPatient),
+                          handleOpen(),
                           setDailyDoctorVisitData({
                             ...dailyDoctorVisitData,
+                            referringDoctorId:
+                              item?.ReferringDoctorDetails?.[0]?._id,
                             referDoctorId:
                               item?.ReferredDoctorDetails?.[0]?._id,
+                            referedDoctorName:
+                              item?.ReferredDoctorDetails?.[0]?.doctorName,
+                            referringDoctorName:
+                              item?.ReferringDoctorDetails?.[0]?.doctorName,
+                            ipdPatientId: item?.ipdPatient,
+                            patientsId: item?.ipdPatientsDetails?.ipdDoctorId,
+                            mainId: item?.ipdPatientsDetails?.mainId,
                           }),
                         ]}
                       >
-                        <CiViewList className="text-[20px] text-[#96999C]" />
+                        <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
                       </div>
-                    ) : (
-                      <div
-                        className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
-                        onClick={handleOpen2}
-                      >
-                        <CiViewList className="text-[20px] text-[#96999C]" />
-                      </div>
-                    )}
-                    <div
-                      className="p-[4px] h-fit w-fit border-[2px] border-[#3497F9] rounded-[12px] cursor-pointer"
-                      onClick={() => [
-                        handleOpen(),
-                        setDailyDoctorVisitData({
-                          ...dailyDoctorVisitData,
-                          referringDoctorId:
-                            item?.ReferringDoctorDetails?.[0]?._id,
-                          referDoctorId: item?.ReferredDoctorDetails?.[0]?._id,
-                          referedDoctorName:
-                            item?.ReferredDoctorDetails?.[0]?.doctorName,
-                          referringDoctorName:
-                            item?.ReferringDoctorDetails?.[0]?.doctorName,
-                          ipdPatientId: item?.ipdPatient,
-                          patientsId: item?.ipdPatientsDetails?.ipdDoctorId,
-                        }),
-                      ]}
-                    >
-                      <RiEdit2Fill className="text-[20px] text-[#3497F9]" />
                     </div>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        <PaginationComponent
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          data={allReferedPatients}
+        />
       </div>
       <Modal
         aria-labelledby="transition-modal-title"

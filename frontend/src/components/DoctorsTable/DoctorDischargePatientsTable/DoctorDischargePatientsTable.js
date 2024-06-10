@@ -43,7 +43,9 @@ function DoctorDischargePatientsTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const { adminUniqueId } = useSelector((state) => state.AdminState);
+  const { adminUniqueId, adminLoggedInData } = useSelector(
+    (state) => state.AdminState
+  );
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -74,7 +76,7 @@ function DoctorDischargePatientsTable() {
     if (result) {
       const data = result?.data?.filter((item) => {
         console.log(item, adminUniqueId);
-        if (item?.ipdDoctorId === adminUniqueId) {
+        if (item?.ipdDoctorId === adminLoggedInData?.adminUniqueId) {
           return (
             item?.ipdPatientDoctorRequestForDischarge === true &&
             item?.ipdPatientNurseRequestForDischarge === true

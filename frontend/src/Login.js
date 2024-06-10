@@ -120,7 +120,7 @@ export default function Login() {
         adminLoggedInData?.adminRole === "Nurse"
       ) {
         navigate(
-          `${browserLinks.receptionist.category}/${browserLinks.receptionist.internalPages.dashboard}`
+          `${browserLinks.receptionist.category}/${browserLinks?.receptionist?.internalPages?.ipdPatientList}`
         );
       }
       if (

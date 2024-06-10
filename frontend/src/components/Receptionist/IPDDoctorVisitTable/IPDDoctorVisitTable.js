@@ -100,6 +100,9 @@ export default function IPDDoctorVisitTable() {
       dateTime: "2024,04,16",
     },
   ];
+  const { adminUniqueId, adminLoggedInData } = useSelector(
+    (state) => state.AdminState
+  );
   const [doctorWithPatients, setDoctorWithPatients] = useState([]);
   const [selectedMedicine, setSelectedMedicine] = useState([]);
   const [searchMedicine, setSearchMedicine] = useState([]);
@@ -217,7 +220,10 @@ export default function IPDDoctorVisitTable() {
   const getDoctorVisitListWithIpdPatientsDataHandle = async () => {
     const result = await getDoctorVisitListWithIpdPatientsData();
     if (result?.status === 200) {
-      setDoctorWithPatients(result?.data?.data?.reverse());
+      const filter = result?.data?.data?.filter(
+        (item) => item?.IpdPatientNurseId === adminLoggedInData?.adminUniqueId
+      );
+      setDoctorWithPatients(filter);
     }
     console.log(result, "bghgch  gh ");
   };
@@ -227,6 +233,7 @@ export default function IPDDoctorVisitTable() {
     formData.append("Symptoms", dailyDoctorVisitData?.symtoms);
     formData.append("Note", dailyDoctorVisitData?.notes);
     formData.append("ipdPatientData", dailyDoctorVisitData?.ipdPatientId);
+    formData.append("ipdPatientMainId", dailyDoctorVisitData?.mainId);
     formData.append("isPatientsChecked", true);
     formData.append("doctorId", dailyDoctorVisitData?.doctorId);
     formData.append("VisitDateTime", dailyDoctorVisitData?.visitDateTime);
@@ -362,7 +369,7 @@ export default function IPDDoctorVisitTable() {
                             className="p-[4px] h-fit w-fit border-[2px] border-[#96999C] rounded-[12px] cursor-pointer"
                             onClick={() => [
                               getOnePatientsDoctorVisitDataHandle(
-                                item?.Ipdpatient_id
+                                item?.IpdPatientMainId
                               ),
                               handleOpen1(),
                             ]}
@@ -387,6 +394,7 @@ export default function IPDDoctorVisitTable() {
                               doctorName: item?.doctorName,
                               patientsId: item?.IpdpatientId,
                               ipdPatientId: item?.Ipdpatient_id,
+                              mainId: item?.IpdPatientMainId,
                             }),
                           ]}
                         >
