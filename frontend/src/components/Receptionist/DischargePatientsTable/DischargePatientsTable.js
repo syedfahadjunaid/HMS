@@ -11,6 +11,7 @@ import {
 import Snackbars from "../../SnackBar";
 import PaginationComponent from "../../Pagination";
 import { useSelector } from "react-redux";
+import { FaSearch } from "react-icons/fa";
 
 function DischargePatientsTable() {
   const label = { inputProps: { "aria-label": "Switch demo" } };
@@ -75,6 +76,7 @@ function DischargePatientsTable() {
         );
       });
       setAllDischargeData(data?.reverse());
+      setFilteredData(data?.reverse());
       console.log(result, data);
     }
   };
@@ -145,6 +147,22 @@ function DischargePatientsTable() {
       });
     }
   };
+  const [search, setSearch] = React.useState("");
+  const [filteredData, setFilteredData] = React.useState([]);
+  const searchHandle = () => {
+    const filter = allDischargeData?.filter((item) => {
+      if (search != "") {
+        return item?.ipdPatientId?.toLowerCase().includes(search.toLowerCase());
+      }
+      return item;
+    });
+    setFilteredData(filter && filter);
+
+    console.log(filter);
+  };
+  React.useEffect(() => {
+    searchHandle();
+  }, [search]);
   useEffect(() => {
     getAllDischargePatientsListDataHandle();
   }, []);
@@ -157,6 +175,19 @@ function DischargePatientsTable() {
         <h2 className="border-b-[4px] border-[#3497F9]">
           Discharge Patient List
         </h2>
+      </div>
+      <div className="flex justify-between">
+        <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+          <FaSearch className="text-[#56585A]" />
+          <input
+            className="bg-transparent outline-none"
+            placeholder="Search by patient id"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        {/* <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
+            <input type='date' className='bg-transparent outline-none' />
+          </div> */}
       </div>
       <div className="w-full">
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -180,7 +211,7 @@ function DischargePatientsTable() {
             </th>
           </thead>
           <tbody>
-            {allDischargeData
+            {filteredData
               ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               ?.map((item, index) => (
                 <tr key={index} className="border-b-[1px]">
@@ -235,7 +266,7 @@ function DischargePatientsTable() {
           rowsPerPage={rowsPerPage}
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
-          data={allDischargeData}
+          data={filteredData}
         />
       </div>
       <Modal

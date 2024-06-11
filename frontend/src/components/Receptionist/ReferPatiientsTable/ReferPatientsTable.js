@@ -15,6 +15,7 @@ import { GetIpdPatientsHandle } from "../../../Store/Slices/IPDPatientSlice";
 import { GetAllDoctorsHandle } from "../../../Store/Slices/DoctorSlice";
 import Snackbars from "../../SnackBar";
 import PaginationComponent from "../../Pagination";
+import { FaSearch } from "react-icons/fa";
 function DischargePatientsTable() {
   // Snackbar--------------------
   // ----Succcess
@@ -104,6 +105,7 @@ function DischargePatientsTable() {
           adminLoggedInData?.adminUniqueId
       );
       setAllReferedpatients(filter);
+      setFilteredData(filter);
     }
   };
   const addNurseReferPatientsDataHandle = async (e) => {
@@ -131,6 +133,24 @@ function DischargePatientsTable() {
     setIsLoading(false);
     console.log(result);
   };
+  const [search, setSearch] = React.useState("");
+  const [filteredData, setFilteredData] = React.useState([]);
+  const searchHandle = () => {
+    const filter = allReferedpatients?.filter((item) => {
+      if (search != "") {
+        return item?.PatientsDetails?.[0]?.patientId
+          ?.toLowerCase()
+          .includes(search.toLowerCase());
+      }
+      return item;
+    });
+    setFilteredData(filter && filter);
+
+    console.log(filter);
+  };
+  React.useEffect(() => {
+    searchHandle();
+  }, [search]);
   useEffect(() => {
     getAllNurseReferDataHandle();
   }, []);
@@ -151,6 +171,19 @@ function DischargePatientsTable() {
         >
           Add Referral
         </button>
+      </div>
+      <div className="flex justify-between">
+        <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+          <FaSearch className="text-[#56585A]" />
+          <input
+            className="bg-transparent outline-none"
+            placeholder="Search by patient id"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        {/* <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
+            <input type='date' className='bg-transparent outline-none' />
+          </div> */}
       </div>
       <div className="w-full">
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -177,7 +210,7 @@ function DischargePatientsTable() {
             </th>
           </thead>
           <tbody>
-            {allReferedpatients
+            {filteredData
               ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               ?.map((item, index) => (
                 <tr key={index} className="border-b-[1px]">
@@ -228,7 +261,7 @@ function DischargePatientsTable() {
           rowsPerPage={rowsPerPage}
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
-          data={allReferedpatients}
+          data={filteredData}
         />
       </div>
       <Modal

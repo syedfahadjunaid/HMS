@@ -17,6 +17,7 @@ import {
 } from "../NurseApi";
 import Snackbars from "../../SnackBar";
 import PaginationComponent from "../../Pagination";
+import { FaSearch } from "react-icons/fa";
 function ReferPatientsDoctorVisitTable() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -225,7 +226,7 @@ function ReferPatientsDoctorVisitTable() {
         adminLoggedInData?.adminUniqueId
     );
     setAllReferedPatients(filter);
-    console.log(result, "allReferedPatients", filter);
+    setFilteredData(filter);
   };
   const getAllDoctorVisitPatientsListDataHandle = async () => {
     const result = await getAllDoctorVisitPatientsListData();
@@ -264,6 +265,24 @@ function ReferPatientsDoctorVisitTable() {
     setViewPatientsData(result && result?.data);
     console.log(result);
   };
+  const [search, setSearch] = React.useState("");
+  const [filteredData, setFilteredData] = React.useState([]);
+  const searchHandle = () => {
+    const filter = allReferedPatients?.filter((item) => {
+      if (search != "") {
+        return item?.PatientsDetails?.[0]?.patientId
+          ?.toLowerCase()
+          .includes(search.toLowerCase());
+      }
+      return item;
+    });
+    setFilteredData(filter && filter);
+
+    console.log(filter);
+  };
+  React.useEffect(() => {
+    searchHandle();
+  }, [search]);
   useEffect(() => {
     dispatch(getMedicineDataHandle());
     dispatch(getTestDataHandle());
@@ -281,6 +300,19 @@ function ReferPatientsDoctorVisitTable() {
         <h2 className="border-b-[4px] border-[#3497F9]">
           Refer Patients Doctor Visit Table
         </h2>
+      </div>
+      <div className="flex justify-between">
+        <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+          <FaSearch className="text-[#56585A]" />
+          <input
+            className="bg-transparent outline-none"
+            placeholder="Search by patient id"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        {/* <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
+            <input type='date' className='bg-transparent outline-none' />
+          </div> */}
       </div>
       <div className="w-full">
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -307,7 +339,7 @@ function ReferPatientsDoctorVisitTable() {
           </thead>
 
           <tbody>
-            {allReferedPatients
+            {filteredData
               ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               ?.map((item, index) => (
                 <tr key={index} className="border-b-[1px]">
@@ -392,7 +424,7 @@ function ReferPatientsDoctorVisitTable() {
           rowsPerPage={rowsPerPage}
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
-          data={allReferedPatients}
+          data={filteredData}
         />
       </div>
       <Modal

@@ -187,6 +187,7 @@ export default function IPDPatientList() {
 
   const [search, setSearch] = React.useState("");
   const [patientsData, setPatientsData] = React.useState([]);
+  const [filteredData, setFilteredData] = React.useState([]);
 
   const mappedData = [
     {
@@ -282,16 +283,32 @@ export default function IPDPatientList() {
       (item) => item?.ipdNurseId === adminLoggedInData?.adminUniqueId
     );
     setAllIpdPatientsData(filter && filter?.reverse());
+    setFilteredData(filter && filter?.reverse());
   };
   const getIpdPatientsFullDetailsDataHandle = async (Id) => {
     const result = await getIpdPatientsFullDetailsData(Id);
     setPatientsData(result?.data?.data?.[0]);
     console.log(result);
   };
+  const searchHandle = () => {
+    const filter = allIpdPatientsData?.filter((item) => {
+      if (search != "") {
+        return item?.ipdPatientId?.toLowerCase().includes(search.toLowerCase());
+      }
+      return item;
+    });
+    setFilteredData(filter && filter);
+  };
   React.useEffect(() => {
     dispatch(GetAllDoctorsHandle());
     getAllIpdPatientsAssignedDataHandle();
   }, []);
+  React.useEffect(() => {
+    console.log(allIpdPatientsData, "allIpdPatientsData");
+  }, [allIpdPatientsData]);
+  React.useEffect(() => {
+    searchHandle();
+  }, [search]);
   return (
     <Suspense fallback={<>...</>}>
       <div className="flex flex-col gap-[1rem] p-[1rem]">
@@ -338,7 +355,7 @@ export default function IPDPatientList() {
             </thead>
 
             <tbody>
-              {allIpdPatientsData
+              {filteredData
                 ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 ?.map((item, index) => (
                   <tr key={index} className="border-b-[1px]">
@@ -378,7 +395,7 @@ export default function IPDPatientList() {
             rowsPerPage={rowsPerPage}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={handleChangeRowsPerPage}
-            data={allIpdPatientsData}
+            data={filteredData}
           />
         </div>
       </div>

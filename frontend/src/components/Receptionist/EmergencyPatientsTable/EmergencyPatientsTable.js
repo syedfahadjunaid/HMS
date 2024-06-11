@@ -18,6 +18,7 @@ import { getTestDataHandle } from "../../../Store/Slices/Test";
 import { date } from "../../../utils/DateAndTimeConvertor";
 import { time } from "../../../utils/DateAndTimeConvertor";
 import Snackbars from "../../SnackBar";
+import { FaSearch } from "react-icons/fa";
 
 function EmergencyPatientsTable() {
   const [open, setOpen] = React.useState(false);
@@ -194,9 +195,12 @@ function EmergencyPatientsTable() {
     setViewPatientsData(result && result?.data?.data);
     console.log(result, "ghfgfh");
   };
+  const [allEmergencyPatients, setAllEmergencyPatients] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeTestIndex, setActiveTestIndex] = useState(null);
   const selectRef = useRef(null);
+  const [search, setSearch] = React.useState("");
+  const [filteredData, setFilteredData] = React.useState([]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -216,27 +220,55 @@ function EmergencyPatientsTable() {
     dispatch(getMedicineDataHandle());
     dispatch(getTestDataHandle());
   }, []);
-  const [allEmergencyPatients, setAllEmergencyPatients] = useState([]);
+
   const getAllEmergencyPatientsDataHandle = async () => {
     const result = await getAllEmergencyPatientsData();
-    setAllEmergencyPatients(result && result?.data);
+    setAllEmergencyPatients(result && result?.data?.data);
+    setFilteredData(result && result?.data?.data);
     console.log(result, "dasfsgZ");
   };
   const getAllEmergencyPatientsListDataHandle = async () => {
     const result = await getAllEmergencyPatientsListData();
     setAllEmergencyPatientsListData(result && result?.data?.data);
   };
+  const searchHandle = () => {
+    const filter = allEmergencyPatients?.filter((item) => {
+      if (search != "") {
+        return item?.patientsId?.toLowerCase().includes(search.toLowerCase());
+      }
+      return item;
+    });
+    setFilteredData(filter && filter);
+
+    console.log(filter);
+  };
+  React.useEffect(() => {
+    searchHandle();
+  }, [search]);
   useEffect(() => {
     getAllEmergencyPatientsDataHandle();
     getAllEmergencyPatientsListDataHandle();
   }, []);
-
+  console.log(allEmergencyPatients, "allEmergencyPatients");
   return (
     <div className="flex flex-col gap-[1rem] p-[1rem]">
       <div className="flex justify-between">
         <h2 className="border-b-[4px] border-[#3497F9]">
           Emergency Visit List
         </h2>
+      </div>
+      <div className="flex justify-between">
+        <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+          <FaSearch className="text-[#56585A]" />
+          <input
+            className="bg-transparent outline-none"
+            placeholder="Search by patient id"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        {/* <div className='flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]'>
+            <input type='date' className='bg-transparent outline-none' />
+          </div> */}
       </div>
       <div className="w-full">
         <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -260,7 +292,7 @@ function EmergencyPatientsTable() {
           </thead>
 
           <tbody>
-            {allEmergencyPatients?.data?.map((item, index) => (
+            {filteredData?.map((item, index) => (
               <tr key={index} className="border-b-[1px]">
                 <td className="justify-center text-[16px] py-4 px-[4px] text-center border-r">
                   {index + 1}

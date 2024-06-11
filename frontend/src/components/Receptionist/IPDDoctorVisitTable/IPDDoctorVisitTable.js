@@ -105,6 +105,8 @@ export default function IPDDoctorVisitTable() {
   const { adminUniqueId, adminLoggedInData } = useSelector(
     (state) => state.AdminState
   );
+  const [searchByPatientsId, setSearchByPatientsId] = useState();
+  const [searchByDoctorsId, setSearchByDoctorsId] = useState();
   const [doctorWithPatients, setDoctorWithPatients] = useState([]);
   const [selectedMedicine, setSelectedMedicine] = useState([]);
   const [searchMedicine, setSearchMedicine] = useState([]);
@@ -226,6 +228,7 @@ export default function IPDDoctorVisitTable() {
         (item) => item?.IpdPatientNurseId === adminLoggedInData?.adminUniqueId
       );
       setDoctorWithPatients(filter);
+      setFilteredData(filter);
     }
     console.log(result, "bghgch  gh ");
   };
@@ -271,8 +274,24 @@ export default function IPDDoctorVisitTable() {
   };
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeTestIndex, setActiveTestIndex] = useState(null);
+  const [filteredData, setFilteredData] = React.useState([]);
   const selectRef = useRef(null);
+  const searchHandle = () => {
+    const filter = doctorWithPatients?.filter((item) => {
+      if (searchByPatientsId != "") {
+        return item?.IpdpatientId?.toLowerCase()?.includes(
+          searchByPatientsId?.toLowerCase()
+        );
+      }
 
+      return item;
+    });
+    setFilteredData(filter && filter);
+    console.log(filter);
+  };
+  useEffect(() => {
+    searchHandle();
+  }, [searchByPatientsId]);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectRef.current && !selectRef.current.contains(event.target)) {
@@ -314,19 +333,21 @@ export default function IPDDoctorVisitTable() {
               <input
                 className="bg-transparent outline-none"
                 placeholder="Search by patient"
+                onChange={(e) => setSearchByPatientsId(e.target.value)}
               />
             </div>
-            <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
+            {/* <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
               <FaSearch className="text-[#56585A]" />
               <input
                 className="bg-transparent outline-none"
                 placeholder="Search by doctor"
+                onChange={(e) => setSearchByDoctorsId(e.target.value)}
               />
             </div>
 
             <div className="flex gap-[10px] bg-[#F4F6F6] items-center p-[10px] rounded-[18px]">
               <input type="date" className="bg-transparent outline-none" />
-            </div>
+            </div> */}
           </div>
 
           <table className="w-full table-auto border-spacing-2 text-[#595959] font-[300]">
@@ -350,7 +371,7 @@ export default function IPDDoctorVisitTable() {
             </thead>
 
             <tbody>
-              {doctorWithPatients
+              {filteredData
                 ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 ?.map((item, index) => (
                   <tr key={index} className="border-b-[1px]">
@@ -423,7 +444,7 @@ export default function IPDDoctorVisitTable() {
             rowsPerPage={rowsPerPage}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={handleChangeRowsPerPage}
-            data={doctorWithPatients}
+            data={filteredData}
           />
         </div>
       </div>
