@@ -228,7 +228,7 @@ export default function IPDDoctorVisitTable() {
         (item) => item?.IpdPatientNurseId === adminLoggedInData?.adminUniqueId
       );
       setDoctorWithPatients(filter);
-      setFilteredData(filter);
+      setFilteredData(filter?.reverse());
     }
     console.log(result, "bghgch  gh ");
   };
