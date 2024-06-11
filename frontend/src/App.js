@@ -94,6 +94,9 @@ const SuperAdminNursePage = lazy(() =>
 );
 const SuperAdminIPDPage = lazy(() => import("./pages/superadmin/IPD/IPD"));
 const SuperAdminOPDPage = lazy(() => import("./pages/superadmin/OPD/OPD"));
+const SuperAdminDepartmentPage = lazy(() =>
+  import("./pages/superadmin/Departments/Departments")
+);
 
 const BillDownloadPage = lazy(() =>
   import("./components/superadmin/BillingTable/BillDownload/BillDownload")
@@ -529,6 +532,22 @@ function App() {
                         }
                       >
                         <SuperAdminAppointmentPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path={browserLinks.superadmin.internalPages.department}
+                    element={
+                      <Suspense
+                        fallback={
+                          <>
+                            <Box sx={{ width: "100%" }}>
+                              <LinearProgress />
+                            </Box>
+                          </>
+                        }
+                      >
+                        <SuperAdminDepartmentPage />
                       </Suspense>
                     }
                   />

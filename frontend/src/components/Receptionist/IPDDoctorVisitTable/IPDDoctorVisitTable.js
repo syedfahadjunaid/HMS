@@ -229,8 +229,9 @@ export default function IPDDoctorVisitTable() {
       );
       setDoctorWithPatients(filter);
       setFilteredData(filter?.reverse());
+      console.log(filter, "filter", adminLoggedInData?.adminUniqueId);
     }
-    console.log(result, "bghgch  gh ");
+    console.log(result, "docor all data   ");
   };
   const addDailyDoctorVisitIpdDataHandle = async (e) => {
     e.preventDefault();
